@@ -157,6 +157,24 @@
   .btn-ghost { background: var(--surface-2); color: var(--muted); border-color: var(--border); }
   .btn-ghost:hover:not(:disabled) { color: var(--text); border-color: var(--border-2); background: var(--surface-3); }
 
+  /* ── TOGGLE ── */
+  .toggle { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+  .toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .toggle-track {
+    width: 36px; height: 20px; border-radius: 999px; flex: 0 0 auto;
+    background: var(--surface-2); border: 1px solid var(--border);
+    position: relative; transition: background .2s var(--ease), border-color .2s var(--ease);
+  }
+  .toggle-thumb {
+    position: absolute; top: 1px; left: 1px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--muted); transition: transform .2s var(--ease), background .2s var(--ease);
+  }
+  .toggle input:checked + .toggle-track { background: var(--accent-dim); border-color: var(--accent); }
+  .toggle input:checked + .toggle-track .toggle-thumb { transform: translateX(16px); background: var(--accent); }
+  .toggle-label { font-size: 0.78rem; color: var(--muted); font-family: var(--font-mono); white-space: nowrap; }
+  .toggle input:checked ~ .toggle-label { color: var(--text); }
+
   .btn-good {
     background: linear-gradient(135deg, var(--good), #2dd4bf);
     color: #05281d;
@@ -429,6 +447,7 @@
   @media (max-width: 640px) {
     nav { padding: var(--space-s) var(--space-m); }
     .nav-meta { display: none; }
+    .toggle-label { display: none; }
     main { padding: var(--space-m); }
     .qcard, .summary { padding: var(--space-m); }
     .progress-wrap { top: 59px; }
@@ -471,6 +490,11 @@
   </a>
   <div class="nav-right">
     <span class="nav-meta" id="navMeta">Đang tải…</span>
+    <label class="toggle">
+      <input type="checkbox" id="shuffleToggle">
+      <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      <span class="toggle-label">Xáo đáp án</span>
+    </label>
     <button class="btn btn-ghost" id="resetBtn"><svg class="icon"><use href="#i-refresh"/></svg>Làm lại</button>
   </div>
 </nav>
@@ -507,10 +531,13 @@
 <script>
 const DATA_URL = 'aws_aip_c01.json';
 const STORAGE_KEY = 'aip-c01-progress';
+const SHUFFLE_KEY = 'aip-c01-shuffle';
 
 let questions = [];
 let idx = 0;
 let answered = {};
+let shuffleAnswers = false;
+let shuffleOrder = {}; // idx -> shuffled key order, cached so it stays stable while answering
 
 const $ = id => document.getElementById(id);
 const app = $('app');
@@ -537,13 +564,13 @@ function toPlainText(str) {
 }
 
 /* Build a clean prompt with question + options for pasting into an AI. */
-function questionToText(q) {
+function questionToText(q, qi) {
   const multi = isMulti(q);
   const cset = correctSet(q);
   const lines = [];
   lines.push(toPlainText(q.question_text));
   lines.push('');
-  Object.keys(q.answers).sort().forEach(k => {
+  getDisplayKeys(qi, q).forEach(k => {
     lines.push(`${k}. ${toPlainText(q.answers[k])}`);
   });
   lines.push('');
@@ -554,6 +581,32 @@ function questionToText(q) {
 
 function isMulti(q) { return (q.answer || '').replace(/[^A-Z]/gi, '').length > 1; }
 function correctSet(q) { return new Set((q.answer || '').toUpperCase().replace(/[^A-Z]/g, '').split('')); }
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* Order in which answers are displayed/copied for question qi.
+   Correctness checking always keys off the original letter (data-key), never this order,
+   so shuffling never affects grading — only visual/copy order. */
+function getDisplayKeys(qi, q) {
+  const sortedKeys = Object.keys(q.answers).sort();
+  if (!shuffleAnswers) return sortedKeys;
+  if (!shuffleOrder[qi]) shuffleOrder[qi] = shuffleArray(sortedKeys);
+  return shuffleOrder[qi];
+}
+
+function loadShufflePref() {
+  try { shuffleAnswers = localStorage.getItem(SHUFFLE_KEY) === '1'; } catch (e) {}
+}
+function saveShufflePref() {
+  try { localStorage.setItem(SHUFFLE_KEY, shuffleAnswers ? '1' : '0'); } catch (e) {}
+}
 
 function loadProgress() {
   try {
@@ -587,7 +640,7 @@ function render() {
   const multi = isMulti(q);
   const cset = correctSet(q);
   const prev = answered[idx];
-  const keys = Object.keys(q.answers).sort();
+  const keys = getDisplayKeys(idx, q);
 
   const answersHTML = keys.map(k => {
     let cls = 'answer ' + (multi ? 'multi' : 'single');
@@ -651,7 +704,7 @@ function render() {
     renderActions(true, new Set(prev.picked), multi, cset, q);
   }
 
-  $('copyBtn').addEventListener('click', () => copyQuestion(q, $('copyBtn')));
+  $('copyBtn').addEventListener('click', () => copyQuestion(q, idx, $('copyBtn')));
   $('prevBtn').addEventListener('click', () => go(-1));
   $('nextBtn').addEventListener('click', () => goNext());
   $('jumpInput').addEventListener('change', e => {
@@ -683,8 +736,8 @@ function renderActions(isAnswered, selected, multi, cset, q) {
   }
 }
 
-function copyQuestion(q, btn) {
-  const text = questionToText(q);
+function copyQuestion(q, qi, btn) {
+  const text = questionToText(q, qi);
   const ok = () => {
     const orig = btn.innerHTML;
     btn.classList.add('done');
@@ -760,12 +813,21 @@ function showSummary() {
 
 function resetAll() {
   if (!confirm('Xóa toàn bộ tiến trình và làm lại từ đầu?')) return;
-  answered = {}; idx = 0;
+  answered = {}; idx = 0; shuffleOrder = {};
   localStorage.removeItem(STORAGE_KEY);
   render(); updateProgress();
 }
 
 $('resetBtn').addEventListener('click', resetAll);
+
+loadShufflePref();
+$('shuffleToggle').checked = shuffleAnswers;
+$('shuffleToggle').addEventListener('change', e => {
+  shuffleAnswers = e.target.checked;
+  shuffleOrder = {};
+  saveShufflePref();
+  if (questions.length) render();
+});
 
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
