@@ -65,6 +65,7 @@
   ::selection { background: var(--accent-dim); color: var(--text); }
   *:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; border-radius: 4px; }
   a { color: var(--accent-2); }
+  .icon { width: 1.15em; height: 1.15em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
   code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-3); border: 1px solid var(--border); border-radius: 5px; padding: 0.05em 0.4em; color: var(--accent-2); }
 
   nav {
@@ -85,12 +86,16 @@
   .nav-title { display: flex; flex-direction: column; line-height: 1.15; }
   .nav-title b { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; letter-spacing: -0.02em; }
   .nav-title span { font-size: 0.68rem; color: var(--muted-2); letter-spacing: 0.02em; }
+  .nav-links { display: flex; align-items: center; gap: 4px; }
   .navlink {
     display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 0.9rem; border-radius: var(--radius);
     font-size: 0.85rem; font-weight: 500; color: var(--muted); text-decoration: none;
     background: var(--surface-2); border: 1px solid var(--border);
+    transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
   }
+  .navlink .icon { width: 15px; height: 15px; }
   .navlink:hover { color: var(--text); border-color: var(--border-2); }
+  .navlink.active { color: var(--accent-2); background: var(--accent-dim); border-color: rgba(99,102,241,0.3); font-weight: 600; }
 
   main { max-width: 980px; margin: 0 auto; padding: var(--space-l) var(--space-l) var(--space-xl); }
 
@@ -184,7 +189,8 @@
   footer a:hover { text-decoration: underline; }
 
   @media (max-width: 720px) {
-    nav { padding: var(--space-s) var(--space-m); }
+    nav { padding: var(--space-s) var(--space-m); flex-wrap: wrap; }
+    .nav-links { order: 3; width: 100%; justify-content: space-between; }
     main { padding: var(--space-m); }
     .section, .toc { padding: var(--space-m); }
     .hero h1 { font-size: 1.5rem; }
@@ -197,12 +203,27 @@
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.2L19 10l-5.1 1.8L12 17l-1.9-5.2L5 10l5.1-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/><path d="M10 6h10M10 12h10M10 18h10"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 2h6v4H9z"/><path d="M9 11h6M9 15h6"/></symbol>
+  </defs>
+</svg>
+
 <nav>
   <a href="index.html" class="nav-brand">
-    <span class="nav-logo"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.2L19 10l-5.1 1.8L12 17l-1.9-5.2L5 10l5.1-1.8z"/></svg></span>
+    <span class="nav-logo"><svg class="icon"><use href="#i-spark"/></svg></span>
     <span class="nav-title"><b>AIP-C01</b><span>AWS GenAI Developer Pro</span></span>
   </a>
-  <a class="navlink" href="index.html">← Về trang Trắc nghiệm</a>
+  <div class="nav-links">
+    <a class="navlink" href="index.html"><svg class="icon"><use href="#i-list"/></svg>Trắc nghiệm</a>
+    <a class="navlink" href="theory.html"><svg class="icon"><use href="#i-book"/></svg>Lý thuyết</a>
+    <a class="navlink" href="tips.html"><svg class="icon"><use href="#i-target"/></svg>Kinh nghiệm thi</a>
+    <a class="navlink active" href="official-exam-guide.html"><svg class="icon"><use href="#i-clipboard"/></svg>Exam Guide</a>
+  </div>
 </nav>
 
 <main>
