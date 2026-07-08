@@ -673,7 +673,7 @@ function render() {
       else if (prev.picked.includes(k)) { cls += ' wrong'; mark = `<span class="mark">${ico('i-x')}</span>`; }
     }
     return `<button type="button" class="${cls}" data-key="${k}">
-      <span class="key">${k}</span>
+      <span class="key">${shuffleAnswers ? '' : k}</span>
       <span class="atext">${renderHTML(q.answers[k])}</span>
       ${mark}
     </button>`;
@@ -747,9 +747,12 @@ function renderActions(isAnswered, selected, multi, cset, q) {
     $('checkBtn').addEventListener('click', () => check(selected, cset, q));
   } else {
     const correct = answered[idx].correct;
+    const hintText = shuffleAnswers
+      ? 'Đáp án đúng đã được đánh dấu trực tiếp ở trên'
+      : `Đáp án đúng: <b>${[...cset].sort().join(', ')}</b>`;
     el.innerHTML = `
       <span class="verdict ${correct ? 'ok' : 'err'}">${ico(correct ? 'i-check' : 'i-x')}${correct ? 'Chính xác' : 'Chưa đúng'}</span>
-      <span class="hint">Đáp án đúng: <b>${[...cset].sort().join(', ')}</b></span>
+      <span class="hint">${hintText}</span>
       <button class="btn ${correct ? 'btn-good' : 'btn-primary'}" id="contBtn" style="margin-left:auto">
         ${idx === questions.length - 1 ? `${ico('i-award')}Xem kết quả` : `Câu tiếp${ico('i-next')}`}
       </button>
