@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinh nghiệm & Lưu ý làm bài — AIP-C01</title>
+<meta name="description" content="Chiến lược làm bài, từ khóa bẫy đề, và kinh nghiệm thi AWS Certified Generative AI Developer – Professional (AIP-C01).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0B0D13;
+    --bg-2:      #0F1117;
+    --surface:   #161925;
+    --surface-2: #1C2030;
+    --surface-3: #232838;
+    --border:    #272C3E;
+    --border-2:  #333A52;
+    --text:      #F2F4FA;
+    --muted:     #9AA3B7;
+    --muted-2:   #6B7488;
+
+    --accent:    #6366F1;
+    --accent-2:  #818CF8;
+    --accent-dim: rgba(99, 102, 241, 0.14);
+    --good:      #34D399;
+    --good-dim:  rgba(52, 211, 153, 0.14);
+    --bad:       #F87171;
+    --bad-dim:   rgba(248, 113, 113, 0.14);
+    --warn:      #FBBF24;
+    --warn-dim:  rgba(251, 191, 36, 0.14);
+
+    --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    --font-body: 'IBM Plex Sans', -apple-system, 'Segoe UI', system-ui, sans-serif;
+
+    --space-xs: 0.375rem;
+    --space-s:  0.75rem;
+    --space-m:  1.25rem;
+    --space-l:  2rem;
+    --space-xl: 3rem;
+
+    --radius:    10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+
+    --shadow:    0 8px 24px rgba(0,0,0,0.35);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+
+  body {
+    background:
+      radial-gradient(900px 500px at 12% -10%, rgba(99,102,241,0.10), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(52,211,153,0.06), transparent 55%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  ::selection { background: var(--accent-dim); color: var(--text); }
+  *:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; border-radius: 4px; }
+
+  .icon { width: 1.15em; height: 1.15em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+  code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-3); border: 1px solid var(--border); border-radius: 5px; padding: 0.05em 0.4em; color: var(--accent-2); }
+  a { color: var(--accent-2); }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-m);
+    padding: var(--space-s) var(--space-l);
+    background: rgba(11, 13, 19, 0.72);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { display: flex; align-items: center; gap: var(--space-s); text-decoration: none; color: var(--text); }
+  .nav-logo {
+    width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
+    box-shadow: 0 4px 14px rgba(99,102,241,0.45);
+  }
+  .nav-logo .icon { width: 19px; height: 19px; stroke-width: 2.25; }
+  .nav-title { display: flex; flex-direction: column; line-height: 1.15; }
+  .nav-title b { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; letter-spacing: -0.02em; }
+  .nav-title span { font-size: 0.68rem; color: var(--muted-2); letter-spacing: 0.02em; }
+
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .navlink {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0.5rem 0.9rem; border-radius: var(--radius);
+    font-size: 0.85rem; font-weight: 500; color: var(--muted);
+    text-decoration: none; transition: color .2s var(--ease), background .2s var(--ease);
+  }
+  .navlink .icon { width: 15px; height: 15px; }
+  .navlink:hover { color: var(--text); background: var(--surface-2); }
+  .navlink.active { color: var(--accent-2); background: var(--accent-dim); font-weight: 600; }
+
+  /* ── LAYOUT ── */
+  main { max-width: 980px; margin: 0 auto; padding: var(--space-l) var(--space-l) var(--space-xl); }
+
+  .hero { margin-bottom: var(--space-l); }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
+    color: var(--good); background: var(--good-dim); border: 1px solid rgba(52,211,153,0.3);
+    padding: 3px 11px; border-radius: 999px; margin-bottom: var(--space-m);
+  }
+  .hero h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: var(--space-s); }
+  .hero p { color: var(--muted); font-size: 1rem; max-width: 68ch; }
+
+  .toc {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: var(--space-l) 0; padding: var(--space-m);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  }
+  .toc a {
+    text-decoration: none; color: var(--muted); font-size: 0.82rem; font-weight: 500;
+    padding: 6px 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border);
+    transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .toc a:hover { color: var(--text); border-color: var(--border-2); background: var(--surface-3); }
+
+  .section {
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
+    border: 1px solid var(--border); border-radius: var(--radius-xl);
+    padding: var(--space-l); margin-bottom: var(--space-l);
+    scroll-margin-top: 130px;
+  }
+  .section h2 {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em;
+    margin-bottom: var(--space-m); color: var(--text);
+  }
+  .section h2 .num {
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+    color: var(--good); background: var(--good-dim); border: 1px solid rgba(52,211,153,0.3);
+    width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; flex: 0 0 auto;
+  }
+  .section h3 { font-size: 1rem; font-weight: 700; margin: var(--space-m) 0 var(--space-xs); color: #E7EAF3; }
+  .section p { color: #D3D7E4; margin-bottom: var(--space-s); }
+  .section ul, .section ol { color: #D3D7E4; margin: 0 0 var(--space-s) 1.3em; }
+  .section li { margin-bottom: 6px; }
+  .section li b, .section p b, .section li strong { color: var(--text); }
+
+  .callout {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
+    border-radius: var(--radius); padding: var(--space-s) var(--space-m); margin: var(--space-m) 0;
+    font-size: 0.9rem; color: #E7EAF3;
+  }
+  .callout .icon { color: var(--accent-2); margin-top: 2px; width: 17px; height: 17px; }
+  .callout.warn { background: var(--warn-dim); border-color: rgba(251,191,36,0.35); }
+  .callout.warn .icon { color: var(--warn); }
+  .callout.good { background: var(--good-dim); border-color: rgba(52,211,153,0.35); }
+  .callout.good .icon { color: var(--good); }
+  .callout.bad { background: var(--bad-dim); border-color: rgba(248,113,113,0.35); }
+  .callout.bad .icon { color: var(--bad); }
+
+  /* ── KEYWORD TABLE ── */
+  .kw-table { width: 100%; border-collapse: collapse; margin: var(--space-m) 0; font-size: 0.88rem; }
+  .kw-table th {
+    text-align: left; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--muted-2); padding: 8px 10px; border-bottom: 1px solid var(--border-2);
+  }
+  .kw-table td { padding: 10px; border-bottom: 1px dashed var(--border); color: #D3D7E4; vertical-align: top; }
+  .kw-table tr:last-child td { border-bottom: none; }
+  .kw-table code { white-space: nowrap; }
+
+  /* ── TRAP CARDS ── */
+  .trap {
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: var(--space-m); margin-bottom: var(--space-s);
+    background: var(--surface-2);
+  }
+  .trap-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .trap-num {
+    font-family: var(--font-mono); font-weight: 800; font-size: 0.8rem;
+    width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--bad-dim); color: var(--bad); border: 1px solid rgba(248,113,113,0.35); flex: 0 0 auto;
+  }
+  .trap-title { font-weight: 700; color: var(--text); font-size: 0.95rem; }
+  .trap p { margin: 0; font-size: 0.88rem; }
+  .trap .fix { color: var(--good); }
+
+  .checklist { list-style: none; margin-left: 0; }
+  .checklist li {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px dashed var(--border);
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist .icon { color: var(--good); margin-top: 3px; flex: 0 0 auto; }
+
+  footer { border-top: 1px solid var(--border); padding: var(--space-l); text-align: center; }
+  footer p { font-size: 0.76rem; color: var(--muted-2); font-family: var(--font-mono); }
+  footer a { text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 720px) {
+    nav { padding: var(--space-s) var(--space-m); flex-wrap: wrap; }
+    .nav-links { order: 3; width: 100%; justify-content: space-between; }
+    main { padding: var(--space-m); }
+    .section, .toc { padding: var(--space-m); }
+    .hero h1 { font-size: 1.5rem; }
+    .kw-table { display: block; overflow-x: auto; white-space: nowrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.2L19 10l-5.1 1.8L12 17l-1.9-5.2L5 10l5.1-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/><path d="M10 6h10M10 12h10M10 18h10"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+  </defs>
+</svg>
+
+<nav>
+  <a href="index.html" class="nav-brand">
+    <span class="nav-logo"><svg class="icon"><use href="#i-spark"/></svg></span>
+    <span class="nav-title"><b>AIP-C01</b><span>AWS GenAI Developer Pro</span></span>
+  </a>
+  <div class="nav-links">
+    <a class="navlink" href="index.html"><svg class="icon"><use href="#i-list"/></svg>Trắc nghiệm</a>
+    <a class="navlink" href="theory.html"><svg class="icon"><use href="#i-book"/></svg>Lý thuyết</a>
+    <a class="navlink active" href="tips.html"><svg class="icon"><use href="#i-target"/></svg>Kinh nghiệm thi</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <span class="eyebrow"><svg class="icon"><use href="#i-target"/></svg>KINH NGHIỆM LÀM BÀI</span>
+    <h1>Lưu ý & Kinh nghiệm thi AIP-C01</h1>
+    <p>Chiến lược đọc đề, các từ khóa quyết định đáp án, và những "bẫy" lặp lại trong bộ đề luyện thi
+       <b>AWS Certified Generative AI Developer – Professional</b>, đúc kết từ việc phân tích toàn bộ 97 câu hỏi.</p>
+  </div>
+
+  <nav class="toc" aria-label="Mục lục">
+    <a href="#format">1. Định dạng đề & cách dùng công cụ này</a>
+    <a href="#keywords">2. Từ khóa quyết định đáp án</a>
+    <a href="#traps">3. 10 bẫy thường gặp</a>
+    <a href="#domains">4. Chiến lược theo từng nhóm chủ đề</a>
+    <a href="#time">5. Quản lý thời gian & tâm lý phòng thi</a>
+    <a href="#checklist">6. Checklist trước khi thi</a>
+  </nav>
+
+  <section class="section" id="format">
+    <h2><span class="num">1</span>Định dạng đề & cách dùng công cụ luyện tập này</h2>
+    <ul>
+      <li>Phần lớn câu hỏi là <b>chọn 1 đáp án</b>, nhưng khoảng 1/5 số câu là <b>chọn nhiều đáp án</b>
+          ("Choose two"/"Choose three") — đề luôn ghi rõ số lượng cần chọn ngay trong câu hỏi, hãy đọc kỹ dòng cuối
+          cùng của đề bài trước khi chọn.</li>
+      <li>Công cụ luyện tập ở trang <a href="index.html">Trắc nghiệm</a> tự động nhận diện câu hỏi single/multi-select
+          dựa trên số ký tự đáp án đúng, hiển thị badge <code>Một đáp án</code> hoặc <code>Chọn N đáp án</code> ở đầu mỗi câu.</li>
+      <li>Bật toggle <b>"Xáo đáp án"</b> ở thanh điều hướng để đảo ngẫu nhiên thứ tự A/B/C/D mỗi khi luyện lại — tránh
+          tình trạng "nhớ vị trí" (ví dụ luôn nhớ "đáp án C") thay vì thực sự hiểu bản chất câu hỏi.</li>
+      <li>Dùng nút <b>"Copy cho AI"</b> trên mỗi câu để dán sang một trợ lý AI khác và hỏi thêm phần giải thích chi tiết
+          khi không chắc lý do một đáp án đúng/sai.</li>
+      <li>Đối chiếu phần <a href="theory.html">Lý thuyết</a> ngay khi sai một câu để hiểu gốc rễ khái niệm, thay vì chỉ
+          học thuộc đáp án của riêng câu đó (bộ đề thi thật sẽ diễn đạt lại tình huống theo cách khác).</li>
+    </ul>
+  </section>
+
+  <section class="section" id="keywords">
+    <h2><span class="num">2</span>Từ khóa quyết định đáp án</h2>
+    <p>Đề thi AIP-C01 hầu như luôn có 3-4 phương án <i>nghe hợp lý</i>, khác biệt chủ yếu ở một cụm từ ràng buộc
+       (constraint) trong câu hỏi. Nhận diện đúng cụm từ này giúp loại đáp án sai rất nhanh:</p>
+    <table class="kw-table">
+      <thead><tr><th>Từ khóa trong đề</th><th>Thường ưu tiên đáp án nào</th></tr></thead>
+      <tbody>
+        <tr><td><b>"LEAST operational overhead"</b> / <b>"LEAST maintenance"</b></td><td>Dịch vụ managed/native của Bedrock (Guardrails, Knowledge Bases, Agents, Prompt Management, Model Evaluation) thay vì tự dựng bằng Lambda + Step Functions + DynamoDB thủ công.</td></tr>
+        <tr><td><b>"LEAST development effort"</b></td><td>Tính năng có sẵn, cấu hình qua console/API thay vì viết code tùy chỉnh (custom tokenizer, custom parser, custom ranking model...).</td></tr>
+        <tr><td><b>"MOST cost-effective"</b></td><td>Kiến trúc serverless/on-demand tự scale (Bedrock on-demand, OpenSearch Serverless, SageMaker serverless endpoint) trừ khi đề nói rõ tải <i>ổn định, liên tục, dự đoán được</i> — khi đó Provisioned Throughput mới là câu trả lời đúng.</td></tr>
+        <tr><td><b>"real-time" / "streaming" / "character by character"</b></td><td><code>InvokeModelWithResponseStream</code>/<code>ConverseStream</code> + API Gateway <b>WebSocket API</b> — không bao giờ là REST API + client-side polling.</td></tr>
+        <tr><td><b>"private connectivity only" / "must not traverse the internet"</b></td><td><b>VPC endpoint (interface endpoint)</b> cho Bedrock — loại ngay các đáp án dùng NAT gateway hoặc "public fallback".</td></tr>
+        <tr><td><b>"human review" / "regulatory approval before action"</b></td><td>Step Functions <b>Standard workflow</b> với <code>waitForTaskToken</code>/<code>SendTaskSuccess</code>, hoặc <b>Amazon A2I</b> — không phải SQS + Lambda polling thủ công.</td></tr>
+        <tr><td><b>"reduce hallucination" / "factually grounded"</b></td><td>RAG tốt hơn (chunking hợp lý, hybrid search, reranking) + Guardrails <b>contextual grounding check</b>. KHÔNG BAO GIỜ là tăng <code>temperature</code>.</td></tr>
+        <tr><td><b>"multiple sensitivity levels" cho cùng loại nội dung</b></td><td>Một guardrail với <b>nhiều policy/filter cấu hình khác nhau</b> theo ngữ cảnh — không cần nhiều guardrail nối chuỗi bằng Step Functions.</td></tr>
+        <tr><td><b>"data residency" / "must remain within Region/continent"</b></td><td>Kiểm tra cả <b>SCP</b> lẫn <b>inference profile Region scope</b>; lỗi hay nằm ở SCP chặn nhầm ARN của inference profile, không phải do thiếu model access.</td></tr>
+        <tr><td><b>"exact terms/acronyms bị bỏ sót" trong RAG</b></td><td><b>Hybrid search</b> (vector + keyword), không phải tăng dimensionality hay đổi toàn bộ datastore.</td></tr>
+        <tr><td><b>"payload/JSON vượt giới hạn 256 KB" giữa các bước Step Functions</b></td><td>Lưu dữ liệu lớn vào <b>S3</b>, truyền reference (URI) giữa các state — không nén dữ liệu bằng Lambda.</td></tr>
+        <tr><td><b>"switch models without redeploying code"</b></td><td><b>AWS AppConfig</b> (có JSON schema validation + rollout an toàn) tốt hơn Parameter Store thuần hoặc hard-code trong Lambda.</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <svg class="icon"><use href="#i-info"/></svg>
+      <span>Nguyên tắc chung: AIP-C01 là chứng chỉ <b>Professional</b>, luôn thiên về giải pháp <b>fully-managed, ít
+      code tùy chỉnh nhất, nhưng vẫn đáp ứng đúng và đủ mọi ràng buộc nêu trong đề</b>. Một đáp án "nghe managed" nhưng
+      bỏ sót một ràng buộc nhỏ (ví dụ thiếu audit trail, thiếu multi-Region, thiếu đúng loại filter) vẫn là đáp án SAI.</span>
+    </div>
+  </section>
+
+  <section class="section" id="traps">
+    <h2><span class="num">3</span>10 bẫy thường gặp trong bộ đề</h2>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">1</span><span class="trap-title">Provisioned Throughput đã mua nhưng vẫn bị throttle</span></div>
+      <p>Nguyên nhân gần như luôn là code vẫn gọi <code>modelId</code> on-demand thay vì <b>ARN của provisioned model</b>.
+         <span class="fix">Fix: đổi tham số <code>modelId</code> sang ARN mà <code>CreateProvisionedModelThroughput</code> trả về</span>, không phải tăng MU hay thêm retry.</p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">2</span><span class="trap-title">"Streaming" nhưng đáp án dùng REST + polling</span></div>
+      <p>Đáp án có REST API + client-side polling mỗi X ms luôn SAI khi đề cần streaming thật.
+         <span class="fix">Đáp án đúng dùng WebSocket API + InvokeModelWithResponseStream/ConverseStream.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">3</span><span class="trap-title">Tăng temperature để giảm hallucination</span></div>
+      <p>Đây luôn là đáp án gây nhiễu (distractor). Temperature cao hơn làm tăng tính ngẫu nhiên → tăng nguy cơ hallucination.
+         <span class="fix">Đáp án đúng luôn liên quan tới RAG/grounding/verification, không phải tham số sampling.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">4</span><span class="trap-title">Nhiều guardrail nối chuỗi bằng Step Functions</span></div>
+      <p>Khi cần áp nhiều mức chính sách nội dung khác nhau, phương án "tạo N guardrail riêng rồi dùng Step Functions
+         chain lại" luôn là đáp án phức tạp/sai.
+         <span class="fix">Một guardrail có thể cấu hình nhiều loại filter/policy cùng lúc.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">5</span><span class="trap-title">Fixed-size chunking cắt đứt ngữ cảnh pháp lý/y khoa</span></div>
+      <p>Đáp án "tăng dimensionality embedding" hoặc "đổi datastore" không giải quyết gốc rễ.
+         <span class="fix">Gốc rễ là chiến lược chunking — chuyển sang semantic/hierarchical chunking rồi tạo lại embedding.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">6</span><span class="trap-title">SCP chặn nhầm inference profile hợp lệ dù đã bật model access</span></div>
+      <p>Lỗi "explicitly denies the action" dù model access đã bật thường do SCP chỉ cho phép một ARN cụ thể
+         (ví dụ <code>eu.amazon.nova-pro-v1:0</code>) nhưng ứng dụng gọi qua Region/ARN inference profile khác.
+         <span class="fix">Mở rộng điều kiện SCP đúng theo pattern ARN của inference profile + xác nhận IAM role có quyền invoke qua đúng profile.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">7</span><span class="trap-title">Payload giữa các Step Functions state vượt 256 KB</span></div>
+      <p>Đáp án "nén dữ liệu bằng Lambda trước khi truyền" là giải pháp vá tạm, không phải best practice.
+         <span class="fix">Lưu output lớn vào S3, truyền S3 URI/reference giữa các state bằng ResultPath/ResultSelector.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">8</span><span class="trap-title">Vector search bỏ sót thuật ngữ/mã viết tắt chính xác</span></div>
+      <p>Đáp án "tăng số chiều vector" hoặc "đổi sang Kendra hoàn toàn" thường không phải lựa chọn tối ưu nhất.
+         <span class="fix">Hybrid search (kết hợp vector + keyword matching) trên cùng engine hiện có thường là đáp án đúng và ít thay đổi kiến trúc nhất.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">9</span><span class="trap-title">Cần audit trail + đa Region nhưng chọn giải pháp chỉ log CloudWatch cơ bản</span></div>
+      <p>Khi đề nhấn mạnh "compliance", "regulatory review", "audit trail chi tiết" — đáp án chỉ dùng CloudWatch Logs
+         thông thường (không có AWS CloudTrail, không phân tách theo Region/tenant) thường thiếu ý.
+         <span class="fix">Ưu tiên đáp án có CloudTrail (Insights/Lake) + phân tách rõ theo Region/đơn vị nghiệp vụ.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">10</span><span class="trap-title">Dữ liệu nhạy cảm cần hiển thị khác nhau theo vai trò người dùng</span></div>
+      <p>Đáp án "tạo nhiều bản sao knowledge base đã redact sẵn cho từng vai trò" tốn vận hành và khó đồng bộ.
+         <span class="fix">Gọi <code>ApplyGuardrail</code> tương ứng với nhóm người dùng (ví dụ Cognito group) ngay tại thời điểm trả lời.</span></p>
+    </div>
+  </section>
+
+  <section class="section" id="domains">
+    <h2><span class="num">4</span>Chiến lược theo từng nhóm chủ đề</h2>
+    <h3>RAG & Vector search</h3>
+    <p>Luôn xác định: vấn đề nằm ở <b>bước truy xuất</b> (retrieval — sai chunking, thiếu hybrid search, thiếu rerank)
+       hay ở <b>bước sinh câu trả lời</b> (generation — cần grounding, cần citation)? Đề thường mô tả rất rõ triệu chứng
+       (ví dụ "trả về nhiều kết quả tương tự nhưng không liên quan" = vấn đề retrieval, không phải generation).</p>
+
+    <h3>Guardrails & Responsible AI</h3>
+    <p>Phân biệt rõ 3 câu hỏi: cần <b>chặn hoàn toàn</b> (block) hay chỉ <b>che thông tin</b> (mask)? Cần áp dụng cho
+       <b>input</b>, <b>output</b>, hay cả hai? Cần <b>một guardrail đa chính sách</b> hay thực sự cần tách nhiều guardrail
+       (chỉ khi có yêu cầu quản trị/audit tách biệt rõ ràng theo từng nhóm đối tượng)?</p>
+
+    <h3>Multi-Agent & Orchestration</h3>
+    <p>Khi có nhiều domain nghiệp vụ độc lập → nghĩ ngay tới mẫu <b>supervisor/collaborator agent</b> với knowledge base
+       tách biệt theo domain. Khi cần orchestration nhiều bước có thể chờ con người/callback dài hạn → Step Functions
+       <b>Standard</b> với <code>waitForTaskToken</code>. Khi cần agent "production-grade" tự có memory/identity/observability
+       → cân nhắc <b>AgentCore</b> thay vì tự ghép Step Functions + DynamoDB.</p>
+
+    <h3>Observability & Chi phí</h3>
+    <p>Ưu tiên tính năng <b>có sẵn</b> của Bedrock/CloudWatch (invocation logging, contextual grounding check, anomaly
+       detection alarm) trước khi nghĩ tới việc tự xây pipeline Glue/Athena/SageMaker Model Monitor riêng — trừ khi đề
+       yêu cầu rõ một loại phân tích mà tính năng có sẵn không đáp ứng được (ví dụ ước tính token TRƯỚC khi gửi request,
+       cần tokenizer tùy chỉnh).</p>
+
+    <h3>Bảo mật & Tuân thủ</h3>
+    <p>Luôn kiểm tra đủ 3 lớp: <b>kết nối mạng</b> (VPC endpoint/PrivateLink), <b>phân quyền dữ liệu</b> (IAM/Lake
+       Formation LF-Tags/condition keys), và <b>audit</b> (CloudTrail). Một đáp án chỉ giải quyết 2/3 lớp thường là
+       distractor được thiết kế để trông "gần đúng".</p>
+  </section>
+
+  <section class="section" id="time">
+    <h2><span class="num">5</span>Quản lý thời gian & tâm lý phòng thi</h2>
+    <ul>
+      <li>Câu hỏi AIP-C01 thường dài (nhiều ràng buộc trong một đoạn văn) — đọc <b>câu hỏi cuối cùng</b> trước
+          (thường bắt đầu bằng "Which solution...") để biết chính xác đang cần tối ưu tiêu chí nào (chi phí, độ trễ,
+          operational overhead, compliance...), sau đó mới đọc lại phần mô tả tình huống để lọc chi tiết liên quan.</li>
+      <li>Gạch chân (trong đầu hoặc trên giấy nháp) các con số ràng buộc cụ thể: số request/giây, độ trễ tối đa (ví dụ
+          "dưới 3 giây"), số ngôn ngữ, số Region — đây thường là yếu tố loại trừ đáp án nhanh nhất.</li>
+      <li>Với câu "Choose two/three": nếu bạn chỉ chắc chắn 1 trong số các lựa chọn đúng, hãy loại các đáp án rõ ràng
+          không phù hợp (dùng dịch vụ sai mục đích, thiếu một ràng buộc quan trọng) trước khi đoán phần còn lại.</li>
+      <li>Đừng dành quá nhiều thời gian cho một câu quá khó — đánh dấu để review sau (flag for review) và tiếp tục,
+          tránh hết giờ trước khi làm hết toàn bộ đề.</li>
+      <li>Nếu phân vân giữa 2 đáp án đều "hợp lý về mặt kỹ thuật" — chọn đáp án nào <b>đáp ứng đủ TẤT CẢ ràng buộc</b>
+          trong đề (kể cả các ràng buộc phụ như audit, đa Region, chi phí) thay vì đáp án chỉ tối ưu một tiêu chí.</li>
+    </ul>
+  </section>
+
+  <section class="section" id="checklist">
+    <h2><span class="num">6</span>Checklist trước khi thi</h2>
+    <ul class="checklist">
+      <li><svg class="icon"><use href="#i-check"/></svg>Đã luyện hết 97 câu trong bộ đề ít nhất 2 lần, dùng toggle "Xáo đáp án" ở lần thứ 2 trở đi.</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Hiểu rõ sự khác biệt: Guardrails vs Knowledge Bases vs Agents vs AgentCore vs Flows — dùng khi nào.</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Phân biệt được On-Demand vs Provisioned Throughput vs Cross-Region Inference, khi nào dùng cái nào.</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Nắm vững các API: InvokeModel, InvokeModelWithResponseStream, Converse/ConverseStream, Retrieve/RetrieveAndGenerate.</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Hiểu rõ 3 lớp bảo mật cần kiểm tra trong mọi câu hỏi liên quan compliance: network, IAM/data access, audit.</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Đã đọc lại phần <a href="theory.html">Bảng thuật ngữ</a> cho các dịch vụ còn mơ hồ.</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Đã ôn lại bảng "Từ khóa quyết định đáp án" ở mục 2 trang này ngay trước ngày thi.</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Ngủ đủ giấc, chuẩn bị giấy tờ hợp lệ và đến sớm nếu thi tại trung tâm — chứng chỉ Professional thường kéo dài 170-190 phút.</li>
+    </ul>
+    <div class="callout good">
+      <svg class="icon"><use href="#i-check-circle"/></svg>
+      <span>Chúc bạn thi tốt! Quay lại <a href="index.html">trang Trắc nghiệm</a> để luyện thêm hoặc xem lại
+      <a href="theory.html">Lý thuyết</a> bất cứ lúc nào.</span>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>AWS Certified Generative AI Developer — Professional (AIP-C01) · <a href="https://github.com/vinhnguyenthanhdn/aip">GitHub</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cơ sở lý thuyết & Thuật ngữ AWS — AIP-C01</title>
+<meta name="description" content="Tổng hợp lý thuyết và giải thích thuật ngữ AWS cho kỳ thi AWS Certified Generative AI Developer – Professional (AIP-C01).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0B0D13;
+    --bg-2:      #0F1117;
+    --surface:   #161925;
+    --surface-2: #1C2030;
+    --surface-3: #232838;
+    --border:    #272C3E;
+    --border-2:  #333A52;
+    --text:      #F2F4FA;
+    --muted:     #9AA3B7;
+    --muted-2:   #6B7488;
+
+    --accent:    #6366F1;
+    --accent-2:  #818CF8;
+    --accent-dim: rgba(99, 102, 241, 0.14);
+    --good:      #34D399;
+    --good-dim:  rgba(52, 211, 153, 0.14);
+    --bad:       #F87171;
+    --bad-dim:   rgba(248, 113, 113, 0.14);
+    --warn:      #FBBF24;
+    --warn-dim:  rgba(251, 191, 36, 0.14);
+
+    --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    --font-body: 'IBM Plex Sans', -apple-system, 'Segoe UI', system-ui, sans-serif;
+
+    --space-xs: 0.375rem;
+    --space-s:  0.75rem;
+    --space-m:  1.25rem;
+    --space-l:  2rem;
+    --space-xl: 3rem;
+
+    --radius:    10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+
+    --shadow:    0 8px 24px rgba(0,0,0,0.35);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+
+  body {
+    background:
+      radial-gradient(900px 500px at 12% -10%, rgba(99,102,241,0.10), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(52,211,153,0.06), transparent 55%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  ::selection { background: var(--accent-dim); color: var(--text); }
+  *:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; border-radius: 4px; }
+
+  .icon { width: 1.15em; height: 1.15em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+
+  code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-3); border: 1px solid var(--border); border-radius: 5px; padding: 0.05em 0.4em; color: var(--accent-2); }
+
+  a { color: var(--accent-2); }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-m);
+    padding: var(--space-s) var(--space-l);
+    background: rgba(11, 13, 19, 0.72);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { display: flex; align-items: center; gap: var(--space-s); text-decoration: none; color: var(--text); }
+  .nav-logo {
+    width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
+    box-shadow: 0 4px 14px rgba(99,102,241,0.45);
+  }
+  .nav-logo .icon { width: 19px; height: 19px; stroke-width: 2.25; }
+  .nav-title { display: flex; flex-direction: column; line-height: 1.15; }
+  .nav-title b { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; letter-spacing: -0.02em; }
+  .nav-title span { font-size: 0.68rem; color: var(--muted-2); letter-spacing: 0.02em; }
+
+  .nav-links { display: flex; align-items: center; gap: 4px; }
+  .navlink {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0.5rem 0.9rem; border-radius: var(--radius);
+    font-size: 0.85rem; font-weight: 500; color: var(--muted);
+    text-decoration: none; transition: color .2s var(--ease), background .2s var(--ease);
+  }
+  .navlink .icon { width: 15px; height: 15px; }
+  .navlink:hover { color: var(--text); background: var(--surface-2); }
+  .navlink.active { color: var(--accent-2); background: var(--accent-dim); font-weight: 600; }
+
+  /* ── LAYOUT ── */
+  main { max-width: 980px; margin: 0 auto; padding: var(--space-l) var(--space-l) var(--space-xl); }
+
+  .hero { margin-bottom: var(--space-l); }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
+    color: var(--accent-2); background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
+    padding: 3px 11px; border-radius: 999px; margin-bottom: var(--space-m);
+  }
+  .hero h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: var(--space-s); }
+  .hero p { color: var(--muted); font-size: 1rem; max-width: 68ch; }
+
+  /* ── TOC ── */
+  .toc {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: var(--space-l) 0; padding: var(--space-m);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  }
+  .toc a {
+    text-decoration: none; color: var(--muted); font-size: 0.82rem; font-weight: 500;
+    padding: 6px 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border);
+    transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .toc a:hover { color: var(--text); border-color: var(--border-2); background: var(--surface-3); }
+
+  /* ── SECTIONS ── */
+  .section {
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
+    border: 1px solid var(--border); border-radius: var(--radius-xl);
+    padding: var(--space-l); margin-bottom: var(--space-l);
+    scroll-margin-top: 130px;
+  }
+  .section h2 {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em;
+    margin-bottom: var(--space-m); color: var(--text);
+  }
+  .section h2 .num {
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+    color: var(--accent-2); background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
+    width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; flex: 0 0 auto;
+  }
+  .section h3 { font-size: 1rem; font-weight: 700; margin: var(--space-m) 0 var(--space-xs); color: #E7EAF3; }
+  .section p { color: #D3D7E4; margin-bottom: var(--space-s); }
+  .section ul, .section ol { color: #D3D7E4; margin: 0 0 var(--space-s) 1.3em; }
+  .section li { margin-bottom: 6px; }
+  .section li b, .section p b, .section li strong, .section p strong { color: var(--text); }
+
+  .callout {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
+    border-radius: var(--radius); padding: var(--space-s) var(--space-m); margin: var(--space-m) 0;
+    font-size: 0.9rem; color: #E7EAF3;
+  }
+  .callout .icon { color: var(--accent-2); margin-top: 2px; width: 17px; height: 17px; }
+  .callout.warn { background: var(--warn-dim); border-color: rgba(251,191,36,0.35); }
+  .callout.warn .icon { color: var(--warn); }
+  .callout.good { background: var(--good-dim); border-color: rgba(52,211,153,0.35); }
+  .callout.good .icon { color: var(--good); }
+
+  /* ── GLOSSARY ── */
+  .gloss-search {
+    width: 100%; padding: 0.7rem var(--space-m); margin-bottom: var(--space-m);
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius);
+    color: var(--text); font-family: var(--font-body); font-size: 0.92rem;
+  }
+  .gloss-search:focus { outline: none; border-color: var(--accent); }
+  .gloss-group { margin-bottom: var(--space-m); }
+  .gloss-group h3 {
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--muted-2); margin: var(--space-m) 0 var(--space-s); border-bottom: 1px solid var(--border); padding-bottom: 6px;
+  }
+  .term {
+    padding: var(--space-s) 0; border-bottom: 1px dashed var(--border);
+    display: grid; grid-template-columns: 240px 1fr; gap: var(--space-m);
+  }
+  .term:last-child { border-bottom: none; }
+  .term dt { font-family: var(--font-mono); font-weight: 700; color: var(--text); font-size: 0.88rem; }
+  .term dd { color: #D3D7E4; font-size: 0.9rem; }
+  .term[hidden] { display: none; }
+
+  footer { border-top: 1px solid var(--border); padding: var(--space-l); text-align: center; }
+  footer p { font-size: 0.76rem; color: var(--muted-2); font-family: var(--font-mono); }
+  footer a { text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 720px) {
+    nav { padding: var(--space-s) var(--space-m); flex-wrap: wrap; }
+    .nav-links { order: 3; width: 100%; justify-content: space-between; }
+    main { padding: var(--space-m); }
+    .section, .toc { padding: var(--space-m); }
+    .hero h1 { font-size: 1.5rem; }
+    .term { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.2L19 10l-5.1 1.8L12 17l-1.9-5.2L5 10l5.1-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/><path d="M10 6h10M10 12h10M10 18h10"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></symbol>
+  </defs>
+</svg>
+
+<nav>
+  <a href="index.html" class="nav-brand">
+    <span class="nav-logo"><svg class="icon"><use href="#i-spark"/></svg></span>
+    <span class="nav-title"><b>AIP-C01</b><span>AWS GenAI Developer Pro</span></span>
+  </a>
+  <div class="nav-links">
+    <a class="navlink" href="index.html"><svg class="icon"><use href="#i-list"/></svg>Trắc nghiệm</a>
+    <a class="navlink active" href="theory.html"><svg class="icon"><use href="#i-book"/></svg>Lý thuyết</a>
+    <a class="navlink" href="tips.html"><svg class="icon"><use href="#i-target"/></svg>Kinh nghiệm thi</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <span class="eyebrow"><svg class="icon"><use href="#i-book"/></svg>CƠ SỞ LÝ THUYẾT</span>
+    <h1>Lý thuyết & Thuật ngữ AWS cho AIP-C01</h1>
+    <p>Tổng hợp toàn bộ kiến thức nền tảng và thuật ngữ AWS xuất hiện trong 97 câu hỏi của bộ đề luyện thi
+       <b>AWS Certified Generative AI Developer – Professional (AIP-C01)</b>, được sắp xếp lại theo <b>chủ đề kỹ thuật</b>
+       (không theo thứ tự câu hỏi gốc) để dễ học và tra cứu.</p>
+  </div>
+
+  <nav class="toc" aria-label="Mục lục">
+    <a href="#bedrock">1. Amazon Bedrock & Foundation Model</a>
+    <a href="#prompt">2. Prompt Engineering & Prompt Management</a>
+    <a href="#rag">3. RAG & Vector Database</a>
+    <a href="#agents">4. Multi-Agent & Orchestration</a>
+    <a href="#guardrails">5. Guardrails & Responsible AI</a>
+    <a href="#eval">6. Model Evaluation & Observability</a>
+    <a href="#perf">7. Hiệu năng, Scaling & Chi phí</a>
+    <a href="#security">8. Bảo mật, Quản trị dữ liệu & Tuân thủ</a>
+    <a href="#devops">9. Triển khai, CI/CD & Kiến trúc đa Region</a>
+    <a href="#glossary">10. Bảng thuật ngữ (Glossary)</a>
+  </nav>
+
+  <section class="section" id="bedrock">
+    <h2><span class="num">1</span>Amazon Bedrock & Foundation Model (FM)</h2>
+    <p><b>Amazon Bedrock</b> là dịch vụ fully-managed cho phép truy cập nhiều <b>foundation model (FM)</b> — mô hình nền tảng
+       quy mô lớn — từ nhiều nhà cung cấp (Anthropic Claude, Amazon Nova, Amazon Titan...) thông qua một API thống nhất,
+       không cần tự quản lý hạ tầng GPU.</p>
+
+    <h3>Các API gọi mô hình chính</h3>
+    <ul>
+      <li><code>InvokeModel</code> — gọi mô hình đồng bộ, trả về toàn bộ kết quả một lần.</li>
+      <li><code>InvokeModelWithResponseStream</code> — trả kết quả dạng <b>stream</b> (từng phần), dùng để hiển thị phản hồi
+          "gõ chữ dần" theo thời gian thực, giảm độ trễ cảm nhận (perceived latency) cho ứng dụng chat.</li>
+      <li><code>Converse</code> / <code>ConverseStream</code> — API hội thoại thế hệ mới, chuẩn hóa format request/response
+          giữa các FM khác nhau (không cần định dạng payload riêng cho từng nhà cung cấp mô hình), hỗ trợ multi-turn
+          bằng cách truyền mảng <code>messages</code>.</li>
+    </ul>
+    <div class="callout">
+      <svg class="icon"><use href="#i-info"/></svg>
+      <span>Khi đề bài yêu cầu "streaming response" cho trải nghiệm người dùng real-time: đáp án đúng gần như luôn kết hợp
+      <code>InvokeModelWithResponseStream</code>/<code>ConverseStream</code> với <b>API Gateway WebSocket API</b> hoặc
+      Lambda response streaming — KHÔNG phải REST API + client-side polling.</span>
+    </div>
+
+    <h3>Model access & Inference profile</h3>
+    <ul>
+      <li><b>Model access</b> — mỗi tài khoản/Region phải được cấp quyền bật (enable) từng FM trước khi có thể invoke.</li>
+      <li><b>Cross-Region Inference (CRI) / Inference profile</b> — cho phép request được tự động định tuyến và xử lý ở
+          một tập Region khác (ví dụ profile <code>eu.anthropic.claude...</code>) để tăng khả năng chịu tải mà vẫn giữ dữ
+          liệu trong một châu lục/khu vực pháp lý cụ thể (ví dụ chỉ các Region thuộc EU).</li>
+      <li><b>Application inference profile</b> — cho phép gắn tag, theo dõi chi phí, và áp policy theo từng use case cụ
+          thể trên cùng một FM.</li>
+      <li><b>Prompt Router (Intelligent Prompt Routing)</b> — tự động phân tích độ phức tạp của prompt để định tuyến câu
+          hỏi đơn giản tới mô hình nhỏ/rẻ và câu hỏi phức tạp tới mô hình lớn/mạnh hơn, tối ưu chi phí mà không cần tự
+          viết logic phân loại.</li>
+    </ul>
+
+    <h3>On-Demand vs Provisioned Throughput</h3>
+    <ul>
+      <li><b>On-Demand</b> — trả tiền theo mỗi token, phù hợp tải không ổn định, có thể bị <b>throttle</b> khi vượt hạn mức.</li>
+      <li><b>Provisioned Throughput</b> — mua trước công suất cố định theo <b>Model Unit (MU)</b> để đảm bảo throughput ổn
+          định cho tải cao, liên tục (ví dụ 10.000 request/giờ trong giờ hành chính). Được cấu hình qua API
+          <code>CreateProvisionedModelThroughput</code>.</li>
+    </ul>
+    <div class="callout warn">
+      <svg class="icon"><use href="#i-alert"/></svg>
+      <span><b>Bẫy thường gặp:</b> đã mua Provisioned Throughput nhưng CloudWatch vẫn cho thấy capacity đó "unused" trong
+      khi request on-demand vẫn bị throttle → nguyên nhân kinh điển là code vẫn gọi <code>modelId</code> gốc (on-demand)
+      thay vì <b>ARN của provisioned model</b> mà <code>CreateProvisionedModelThroughput</code> trả về. Sửa bằng cách thay
+      tham số <code>modelId</code> bằng ARN đó, không phải bằng cách tăng MU hay thêm retry.</span>
+    </div>
+
+    <h3>Latency-optimized inference & Prompt caching</h3>
+    <p>Đặt tham số hiệu năng (<code>performanceConfig.latency = "optimized"</code>) giúp giảm độ trễ inference cho các use
+       case tương tác thời gian thực. <b>Prompt caching</b> lưu lại phần ngữ cảnh lặp lại (ví dụ system prompt, tài liệu
+       nền) giữa các lần gọi để giảm chi phí và độ trễ khi xử lý các câu hỏi có phần ngữ cảnh giống nhau lặp lại nhiều lần.</p>
+  </section>
+
+  <section class="section" id="prompt">
+    <h2><span class="num">2</span>Prompt Engineering & Prompt Management</h2>
+    <h3>Kỹ thuật viết prompt</h3>
+    <ul>
+      <li><b>Zero-shot</b> — yêu cầu mô hình thực hiện tác vụ mà không cung cấp ví dụ mẫu.</li>
+      <li><b>One-shot / Few-shot</b> — cung cấp một hoặc vài ví dụ mẫu trong prompt để định hướng định dạng/phong cách đầu ra.</li>
+      <li><b>Chain-of-Thought (CoT)</b> — yêu cầu mô hình "suy nghĩ từng bước" (step-by-step reasoning) trước khi đưa ra
+          kết luận, giúp tăng độ chính xác cho các tác vụ suy luận phức tạp và giảm hallucination khi kết hợp với việc
+          yêu cầu xác minh sự kiện (fact verification) trước khi tóm tắt.</li>
+      <li><b>Extended thinking</b> — cấu hình một "ngân sách suy nghĩ" (thinking budget, tính bằng token) để mô hình dành
+          thời gian suy luận nội bộ trước khi trả lời, hữu ích cho các bài toán cần giải thích rành mạch (explainability).</li>
+      <li><b>System prompt</b> — phần chỉ dẫn cố định định hình vai trò/giọng văn/ràng buộc của mô hình xuyên suốt phiên
+          hội thoại (ví dụ tùy biến tone theo từng business unit: legal, HR, finance).</li>
+    </ul>
+
+    <h3>Tham số suy luận (inference parameters)</h3>
+    <ul>
+      <li><b>Temperature</b> — điều chỉnh mức "ngẫu nhiên/sáng tạo" của đầu ra. Temperature càng cao → đầu ra càng đa dạng
+          nhưng cũng càng dễ hallucination. <b>Không</b> nên tăng temperature khi mục tiêu là giảm ảo giác/tăng độ chính xác.</li>
+      <li><b>Maximum token limit</b> — giới hạn độ dài đầu ra; cần validate trước khi gửi request để tránh bị cắt (truncate)
+          câu trả lời khi tài liệu đầu vào dài.</li>
+    </ul>
+
+    <h3>Amazon Bedrock Prompt Management, Flows & Agents so sánh nhanh</h3>
+    <ul>
+      <li><b>Prompt Management</b> — quản lý phiên bản (versioning), biến (variables), và các biến thể (variants) của
+          prompt tập trung; hỗ trợ workflow phê duyệt (approval) và audit trail, phù hợp khi cần quản trị hàng trăm
+          prompt template dùng chung giữa nhiều team.</li>
+      <li><b>Bedrock Flows</b> — công cụ kéo-thả (visual builder) để xây pipeline nhiều bước (input node → prompt node
+          → output node), có thể gắn guardrail, knowledge base, Lambda vào từng bước mà không cần code orchestration
+          thủ công.</li>
+      <li><b>Bedrock Agents</b> — cho phép FM tự lập kế hoạch, gọi công cụ bên ngoài (action groups gọi Lambda/API), và
+          tra cứu knowledge base để hoàn thành một nhiệm vụ nhiều bước (xem thêm mục 4).</li>
+    </ul>
+    <div class="callout">
+      <svg class="icon"><use href="#i-info"/></svg>
+      <span>Câu hỏi kiểu "quản lý hàng trăm prompt qua nhiều team, cần version control + approval workflow + audit trail,
+      ít chi phí vận hành nhất" → đáp án gần như luôn là <b>Bedrock Prompt Management</b>, không phải tự dựng bằng
+      S3 + Step Functions + EventBridge.</span>
+    </div>
+  </section>
+
+  <section class="section" id="rag">
+    <h2><span class="num">3</span>RAG (Retrieval Augmented Generation) & Vector Database</h2>
+    <p><b>RAG</b> là kỹ thuật truy xuất thông tin liên quan từ một kho dữ liệu ngoài (thường qua tìm kiếm ngữ nghĩa) rồi
+       đưa vào prompt để mô hình sinh câu trả lời có căn cứ (grounded), giúp giảm hallucination và cho phép trả lời dựa
+       trên dữ liệu riêng/mới mà mô hình chưa từng được huấn luyện.</p>
+
+    <h3>Amazon Bedrock Knowledge Bases</h3>
+    <ul>
+      <li>Dịch vụ fully-managed để xây RAG: tự động ingest tài liệu, chunk, tạo embedding, lưu vector, và cung cấp API
+          truy xuất.</li>
+      <li><code>Retrieve</code> — chỉ trả về các đoạn tài liệu liên quan (không sinh câu trả lời).</li>
+      <li><code>RetrieveAndGenerate</code> / <code>RetrieveAndGenerateStream</code> — truy xuất + sinh câu trả lời cuối
+          cùng trong một lệnh gọi, hỗ trợ <b>source attribution/citation</b> (trích dẫn nguồn) tự động.</li>
+      <li><b>Graph RAG</b> (tích hợp <b>Amazon Neptune Analytics</b>) — mô hình hóa dữ liệu dạng đồ thị để nắm bắt quan hệ
+          nhiều bước (multi-hop relationship) giữa các thực thể, phù hợp khi câu hỏi cần suy luận qua nhiều mối liên hệ
+          gián tiếp (ví dụ dữ liệu tài chính liên quan chéo nhiều thực thể).</li>
+    </ul>
+
+    <h3>Chunking strategy (chiến lược chia nhỏ tài liệu)</h3>
+    <ul>
+      <li><b>Fixed-size chunking</b> — chia theo số token cố định; đơn giản nhưng dễ cắt đứt các đoạn văn có liên kết ngữ
+          nghĩa (ví dụ một điều khoản pháp lý bị chia làm đôi).</li>
+      <li><b>Semantic chunking</b> — chia theo ranh giới ngữ nghĩa (breakpoint percentile threshold, buffer size theo số
+          câu) để giữ trọn vẹn ý nghĩa một đoạn lập luận/điều khoản.</li>
+      <li><b>Hierarchical chunking</b> — dùng chunk "cha" (ngữ cảnh rộng) và chunk "con" (chi tiết) để cân bằng giữa độ
+          chính xác truy xuất và ngữ cảnh đầy đủ.</li>
+    </ul>
+    <div class="callout warn">
+      <svg class="icon"><use href="#i-alert"/></svg>
+      <span><b>Bẫy thường gặp:</b> khi tài liệu bị cắt sai ranh giới ngữ nghĩa (ví dụ lập luận pháp lý bị chia rời) gây
+      thiếu ngữ cảnh/trích dẫn lỗi thời → đáp án đúng là đổi <b>chunking strategy sang semantic boundaries</b> rồi tạo
+      lại embedding, KHÔNG phải chỉ tăng số chiều (dimensionality) của vector hay đổi datastore.</span>
+    </div>
+
+    <h3>Tìm kiếm: Vector, Keyword & Hybrid</h3>
+    <ul>
+      <li><b>Vector/semantic search (k-NN)</b> — tìm theo độ tương đồng ngữ nghĩa của embedding; mạnh về "hiểu ý" nhưng
+          có thể bỏ sót các thuật ngữ/mã viết tắt chính xác (ví dụ thuật ngữ y khoa).</li>
+      <li><b>Keyword search</b> — tìm khớp từ khóa chính xác; mạnh với thuật ngữ/mã số nhưng yếu về ngữ nghĩa.</li>
+      <li><b>Hybrid search</b> — kết hợp cả hai, thường là lựa chọn tối ưu khi hệ thống báo cáo "bỏ sót thuật ngữ/mã viết
+          tắt chính xác" nhưng "trả về quá nhiều kết quả tương tự ngữ nghĩa nhưng không liên quan".</li>
+      <li><b>Reranking</b> — dùng một mô hình chuyên biệt (<b>Amazon Bedrock Rerank API</b>/reranker model) để sắp xếp lại
+          kết quả truy xuất ban đầu theo mức độ liên quan thực sự trước khi đưa vào FM sinh câu trả lời — cải thiện chất
+          lượng RAG với chi phí vận hành thấp hơn nhiều so với tự xây pipeline hai giai đoạn bằng SageMaker.</li>
+    </ul>
+
+    <h3>Lựa chọn Vector Database</h3>
+    <ul>
+      <li><b>Amazon OpenSearch Service / Serverless</b> — vector search + metadata filtering + hybrid search, phù hợp
+          dataset lớn (hàng chục triệu embedding), nhiều ngôn ngữ, cần độ trễ thấp và ít quản trị hạ tầng.</li>
+      <li><b>Amazon Aurora PostgreSQL + pgvector</b> — phù hợp khi đã có sẵn dữ liệu quan hệ trong PostgreSQL và muốn kết
+          hợp SQL truyền thống với similarity search trong cùng một database.</li>
+      <li><b>Amazon S3 Vectors</b> — lưu trữ vector-native trên S3, tích hợp trực tiếp với Bedrock Knowledge Bases, chi
+          phí thấp cho khối lượng lớn.</li>
+      <li><b>Amazon MemoryDB (Valkey/Redis OSS)</b> — vector search trong bộ nhớ, độ trễ cực thấp; dùng thuật toán
+          <b>HNSW</b> (Hierarchical Navigable Small World) khi index lớn cần approximate search nhanh, hoặc
+          <b>Flat</b>/<b>IVFFlat</b> khi dataset nhỏ và cần độ chính xác tối đa (exact/near-exact search).</li>
+      <li><b>Amazon Neptune Analytics</b> — khi bài toán cần truy vấn quan hệ đồ thị (Graph RAG) thay vì chỉ similarity search.</li>
+    </ul>
+  </section>
+
+  <section class="section" id="agents">
+    <h2><span class="num">4</span>Multi-Agent & Orchestration</h2>
+    <h3>Amazon Bedrock Agents</h3>
+    <ul>
+      <li><b>Action group</b> — định nghĩa các "công cụ" (thường là Lambda hoặc REST API) mà agent có thể gọi để thực
+          hiện hành động (ví dụ tra cứu đơn hàng, cập nhật hệ thống).</li>
+      <li>Agent có thể tích hợp trực tiếp với <b>Knowledge Base</b> để tra cứu tài liệu (RAG) và với action group để thực
+          thi nghiệp vụ, giúp giảm mạnh operational overhead so với tự dựng orchestration bằng Step Functions/Lambda thủ công.</li>
+      <li><b>Trace events</b> — bật để ghi lại từng bước suy luận/gọi công cụ của agent, phục vụ audit trail.</li>
+      <li><b>ReAct pattern</b> (Reasoning + Acting) — mô hình xen kẽ giữa "suy luận" và "hành động" (gọi công cụ), là nền
+          tảng cách Bedrock Agents vận hành nội bộ.</li>
+    </ul>
+
+    <h3>Kiến trúc multi-agent: Supervisor / Collaborator</h3>
+    <p>Khi cần agent phục vụ nhiều domain khác nhau (ví dụ bệnh viện: khám lâm sàng, bảo hiểm, lịch hẹn), mẫu kiến trúc
+       khuyến nghị là:</p>
+    <ul>
+      <li>Một <b>supervisor agent</b> làm nhiệm vụ phân loại ý định (intent classification) ngôn ngữ tự nhiên của câu hỏi.</li>
+      <li>Định tuyến câu hỏi tới các <b>collaborator agent</b> chuyên biệt theo từng domain, mỗi collaborator gắn với
+          knowledge base riêng (data isolation) và dùng IAM filtering để kiểm soát quyền truy cập dữ liệu.</li>
+      <li>Mẫu này scale tốt hơn nhiều so với việc dùng nhiều supervisor độc lập chạy song song hoặc một agent tổng quát
+          (general-purpose) với nhiều action group xử lý mọi domain.</li>
+    </ul>
+
+    <h3>Amazon Bedrock AgentCore</h3>
+    <p>Nền tảng runtime cho agent "production-grade": cung cấp sẵn <b>memory</b> (nhớ ngữ cảnh xuyên phiên),
+       <b>identity</b> (định danh/ủy quyền), <b>event handling</b>, và <b>observability</b> tích hợp sẵn — giúp agent hỗ
+       trợ cả invocation đồng bộ lẫn event-driven mà không cần tự xây state machine (Step Functions) + DynamoDB để lưu
+       state như cách làm thủ công truyền thống.</p>
+
+    <h3>Model Context Protocol (MCP)</h3>
+    <ul>
+      <li><b>MCP</b> là giao thức chuẩn hóa cách AI agent kết nối tới các "công cụ"/nguồn dữ liệu bên ngoài (MCP server),
+          giúp tách biệt logic công cụ khỏi logic agent.</li>
+      <li><b>STDIO transport</b> — giao tiếp qua input/output cục bộ, phù hợp chạy MCP server trên cùng máy/tiến trình
+          với client (không phù hợp khi cần expose ra ngoài cho nhiều consumer/đối tác thứ ba).</li>
+      <li><b>Streamable HTTP transport</b> — giao tiếp qua HTTP, phù hợp khi cần expose MCP server cho nhiều ứng dụng nội
+          bộ và đối tác bên ngoài; nên đặt sau <b>Amazon API Gateway</b> và bảo vệ bằng <b>OAuth 2.1</b> (qua Amazon
+          Cognito) khi cần strict authentication/authorization cho nhiều bên dùng chung.</li>
+      <li>MCP server có thể host bằng <b>AWS Lambda function URL</b> (bật SigV4 + IAM auth) khi chỉ cần nội bộ AWS gọi,
+          hoặc qua API Gateway khi cần expose rộng hơn ra ngoài AWS.</li>
+    </ul>
+
+    <h3>Orchestration hạ tầng: AWS Step Functions</h3>
+    <ul>
+      <li><b>Standard workflow</b> — hỗ trợ chạy dài (tới 1 năm), có <b>Wait for a Callback (waitForTaskToken)</b> để tạm
+          dừng chờ phê duyệt của con người rồi resume bằng <code>SendTaskSuccess</code> — mẫu chuẩn cho các luồng cần
+          <b>human-in-the-loop</b> review.</li>
+      <li><b>Express workflow</b> — tối ưu cho luồng ngắn, tần suất cao, chi phí thấp hơn nhưng không hỗ trợ callback dài hạn.</li>
+      <li><b>Parallel state</b> — chạy nhiều nhánh xử lý đồng thời (ví dụ nhiều loại phân tích trên cùng một báo cáo) để
+          giảm tổng thời gian xử lý so với xử lý tuần tự.</li>
+      <li><b>Giới hạn payload 256 KB</b> giữa các state — khi output vượt hạn mức này (ví dụ dữ liệu trung gian giữa các
+          agent), giải pháp chuẩn là lưu dữ liệu lớn vào <b>Amazon S3</b> và chỉ truyền <b>reference (S3 URI)</b> giữa
+          các state bằng <code>ResultPath</code>/<code>ResultSelector</code>, không phải nén dữ liệu bằng Lambda.</li>
+    </ul>
+  </section>
+
+  <section class="section" id="guardrails">
+    <h2><span class="num">5</span>Guardrails & Responsible AI</h2>
+    <h3>Amazon Bedrock Guardrails — các loại policy</h3>
+    <ul>
+      <li><b>Content filters</b> — chặn nội dung độc hại theo danh mục (hate, insults, violence...) với ngưỡng cấu hình
+          (low/medium/high).</li>
+      <li><b>Denied topics</b> — định nghĩa chủ đề bị cấm hoàn toàn (ví dụ tư vấn đầu tư cụ thể) kèm câu ví dụ mẫu để mô
+          hình nhận diện tốt hơn.</li>
+      <li><b>Word filters</b> — chặn theo danh sách từ/cụm từ tùy chỉnh (ví dụ tên đối thủ cạnh tranh).</li>
+      <li><b>Sensitive information filters</b> — phát hiện và xử lý PII (personally identifiable information) theo hai
+          chế độ: <b>mask</b> (che thông tin, vẫn giữ ngữ cảnh) hoặc <b>block</b> (chặn toàn bộ request/response).</li>
+      <li><b>Contextual grounding check</b> — so khớp câu trả lời với nguồn tài liệu tham chiếu để phát hiện
+          <b>hallucination</b> (nội dung không có căn cứ) và độ liên quan (relevance) của câu trả lời so với câu hỏi.</li>
+      <li><b>Automated Reasoning checks</b> — dùng suy luận hình thức (formal/logic-based) để xác minh tính đúng đắn của
+          câu trả lời theo một tập quy tắc định trước, giảm hallucination trong các domain có quy tắc rõ ràng.</li>
+    </ul>
+    <div class="callout good">
+      <svg class="icon"><use href="#i-check-circle"/></svg>
+      <span>Khi một use case cần <b>nhiều mức xử lý khác nhau cho nhiều loại nội dung nhạy cảm</b> (ví dụ: chặn nội dung
+      độc hại ở mức trung bình, che PII trong response nhưng chặn thông tin tài chính trong input, đồng thời log lại để
+      audit) → thường chỉ cần <b>MỘT guardrail cấu hình đa chính sách</b> (multiple filter/policy trong cùng một
+      guardrail), KHÔNG cần tạo nhiều guardrail rồi nối chuỗi bằng Step Functions — cách đó vừa tốn công vừa tăng
+      operational overhead không cần thiết.</span>
+    </div>
+
+    <h3>Guardrail vận hành & giám sát</h3>
+    <ul>
+      <li><b>Detect mode vs Block mode</b> — thường dùng "detect" (chỉ ghi nhận, không chặn) trong giai đoạn dev/test để
+          đánh giá tác động, rồi chuyển sang "block"/"mask" khi lên production.</li>
+      <li><b>Cross-Region guardrail (guardrail profile)</b> — cho phép guardrail được áp dụng nhất quán qua nhiều Region,
+          hỗ trợ failover.</li>
+      <li>Metric giám sát: <code>InvocationsIntervened</code> (số lần guardrail can thiệp), dimension
+          <code>GuardrailContentSource</code> — theo dõi qua Amazon CloudWatch alarms để phát hiện discrepancy (ví dụ
+          chênh lệch tỷ lệ can thiệp giữa các nhóm nhân khẩu học, phục vụ đánh giá <b>fairness</b>).</li>
+    </ul>
+
+    <h3>Trách nhiệm giải trình (Responsible AI) khác</h3>
+    <ul>
+      <li><b>Fairness & Bias detection</b> — dùng <b>Amazon SageMaker Clarify</b> để phân tích và tạo báo cáo về bias
+          trong kết quả mô hình (ví dụ chênh lệch gợi ý sản phẩm giữa các nhóm nhân khẩu học), publish metric vào
+          CloudWatch.</li>
+      <li><b>Human-in-the-loop</b> — <b>Amazon Augmented AI (A2I)</b> định tuyến các kết quả có độ tin cậy thấp (low
+          confidence) tới người review; kết hợp với <b>Amazon Textract</b> cho bài toán trích xuất dữ liệu từ tài liệu
+          scan.</li>
+      <li><b>LLM-as-a-judge</b> — dùng một FM khác (thường mạnh hơn, ví dụ Claude Sonnet) đóng vai "giám khảo" để tự động
+          chấm điểm câu trả lời theo tiêu chí (độ chính xác, mức phù hợp), kết hợp với review của con người cho các
+          trường hợp biên (edge case) — mô hình đánh giá lai (hybrid evaluation) này vừa tăng độ bao phủ vừa giảm chi phí
+          so với 100% con người chấm thủ công.</li>
+    </ul>
+  </section>
+
+  <section class="section" id="eval">
+    <h2><span class="num">6</span>Model Evaluation & Observability</h2>
+    <h3>Amazon Bedrock Evaluation</h3>
+    <ul>
+      <li><b>Automatic evaluation</b> — dùng metric có sẵn (built-in) như độ chính xác, độ hoàn chỉnh (completeness),
+          hoặc <b>LLM-as-a-judge</b> để so sánh nhiều FM/nhiều biến thể prompt trên cùng bộ dữ liệu chuẩn.</li>
+      <li><b>Human evaluation</b> — con người trực tiếp chấm điểm, dùng khi cần đánh giá chất lượng hội thoại phức tạp.</li>
+      <li><b>Retrieve-only evaluation</b> — chỉ đánh giá chất lượng bước truy xuất (context relevance, context coverage)
+          của một hệ RAG.</li>
+      <li><b>Retrieve-and-generate evaluation</b> — đánh giá toàn bộ pipeline RAG từ truy xuất tới câu trả lời cuối, dùng
+          các metric như precision@k, faithfulness, citation precision.</li>
+      <li>Khi cần so sánh nhiều chiến lược chunking + nhiều FM cùng lúc và enforce ngưỡng chất lượng trước khi deploy →
+          nên gộp thành các evaluation job chạy trên cùng dataset chuẩn với LLM-as-a-judge, tích hợp vào pipeline CI/CD
+          để tự động chặn (block) release không đạt ngưỡng.</li>
+    </ul>
+
+    <h3>Observability: theo dõi token, chi phí & bất thường</h3>
+    <ul>
+      <li><b>Model invocation logging</b> — ghi log input/output (text, image) của mọi lệnh gọi Bedrock vào Amazon S3/CloudWatch Logs, là nền tảng cho audit trail và phát hiện hallucination hậu kiểm.</li>
+      <li><b>InputTokenCount / OutputTokenCount</b> — metric CloudWatch theo dõi mức tiêu thụ token; kết hợp
+          <b>CloudWatch Logs Insights</b> để phân tích theo từng tool/tính năng cụ thể khi có nhiều tool integration
+          trong một ứng dụng.</li>
+      <li><b>CloudWatch anomaly detection alarm</b> — tự động điều chỉnh baseline theo pattern lưu lượng thay đổi theo
+          thời gian, ưu việt hơn alarm với ngưỡng cố định (static threshold) khi traffic pattern không ổn định.</li>
+      <li><b>Embedded Metric Format (EMF)</b> — cách phát custom metric hiệu quả trực tiếp từ log, dùng trong
+          <b>CloudWatch Application Insights</b> để theo dõi các metric nghiệp vụ tùy biến (chất lượng gợi ý, latency
+          theo loại request/user segment).</li>
+      <li><b>AWS X-Ray</b> — distributed tracing giúp xác định thành phần nào trong chuỗi service gây ra latency, nên
+          dùng khi cần "trace request qua nhiều service boundary" và tương quan hiệu năng với đặc điểm của từng FM.</li>
+      <li><b>Amazon Managed Grafana / Amazon QuickSight</b> — trực quan hóa dashboard cho nhiều nhóm người dùng (kỹ thuật
+          & business), có thể kết hợp metric kỹ thuật (CloudWatch) với metric nghiệp vụ (nguồn ngoài) trong cùng dashboard,
+          cấu hình composite alarm/anomaly detection để cảnh báo khi hai loại metric cùng lệch bất thường.</li>
+    </ul>
+    <div class="callout warn">
+      <svg class="icon"><use href="#i-alert"/></svg>
+      <span><b>Bẫy thường gặp:</b> đề bài yêu cầu giám sát "gần thời gian thực" + "ít công sức phát triển nhất" cho
+      hallucination/chi phí bất thường → ưu tiên bật <b>model invocation logging + contextual grounding check của
+      Guardrails + CloudWatch anomaly detection alarm</b> (toàn bộ đều là tính năng có sẵn), thay vì tự xây pipeline
+      Glue/Athena hoặc SageMaker Model Monitor riêng để phân tích log thủ công.</span>
+    </div>
+  </section>
+
+  <section class="section" id="perf">
+    <h2><span class="num">7</span>Hiệu năng, Khả năng mở rộng & Tối ưu chi phí</h2>
+    <ul>
+      <li><b>Caching</b> — dùng <b>Amazon ElastiCache</b>/<b>MemoryDB</b> hoặc <b>OpenSearch k-NN</b> để cache câu trả lời
+          cho các câu hỏi ngữ nghĩa tương đương (semantically equivalent) nhằm giảm số lần gọi FM trùng lặp; tìm kiếm
+          gần đúng bằng vector similarity hiệu quả hơn nhiều so với so khớp chuỗi (LIKE) hay chuẩn hóa từ khóa thủ công.</li>
+      <li><b>Retry strategy thích ứng</b> — <b>adaptive retry với exponential backoff + jitter</b> kết hợp
+          <b>circuit breaker</b> (tạm ngắt retry khi tỷ lệ lỗi vượt ngưỡng) là chuẩn để xử lý throttling khi traffic đạt
+          đỉnh, tốt hơn nhiều so với retry với delay cố định.</li>
+      <li><b>Response streaming resilience</b> — khi stream bị ngắt giữa chừng, nên buffer các chunk đã nhận và resume từ
+          điểm ngắt thay vì phải gọi lại toàn bộ request.</li>
+      <li><b>Cross-Region inference</b> để phân tán tải khi một Region đạt service quota, kết hợp failover tự động thay
+          vì chỉ tăng provisioned throughput tại một Region duy nhất.</li>
+      <li><b>Model routing theo độ phức tạp</b> — dùng <b>Bedrock Intelligent Prompt Routing</b> để tự động gửi câu hỏi
+          đơn giản tới mô hình nhỏ, câu hỏi phức tạp tới mô hình lớn, tối ưu chi phí mà vẫn giữ chất lượng, thay vì tự
+          viết logic keyword-based routing hoặc dùng một model duy nhất cho mọi loại câu hỏi.</li>
+      <li><b>Batch inference</b> — dùng cho khối lượng lớn không yêu cầu phản hồi tức thời (ví dụ xử lý hàng loạt tài
+          liệu) để tối ưu chi phí so với real-time endpoint.</li>
+      <li><b>SageMaker AI endpoint types</b> — real-time (độ trễ thấp, luôn sẵn sàng, phù hợp GPU chuyên dụng),
+          serverless (tự động scale-to-zero, phù hợp tải không đều), asynchronous (xử lý ngầm cho payload lớn/thời gian
+          xử lý dài).</li>
+    </ul>
+  </section>
+
+  <section class="section" id="security">
+    <h2><span class="num">8</span>Bảo mật, Quản trị dữ liệu & Tuân thủ</h2>
+    <h3>Kết nối private & kiểm soát truy cập</h3>
+    <ul>
+      <li><b>VPC endpoint (interface endpoint)</b> cho Amazon Bedrock — đảm bảo mọi lệnh gọi tới Bedrock đi qua đường
+          truyền private trong VPC của khách hàng, không qua internet công cộng; đây là lựa chọn chuẩn khi đề yêu cầu
+          "chỉ dùng private connectivity", thay vì NAT gateway (vẫn đi qua public endpoint) hoặc để public fallback.</li>
+      <li><b>AWS Lake Formation với LF-Tags</b> — kiểm soát truy cập dữ liệu ở mức <b>cột (column-level)</b> và
+          <b>hàng/bảng</b> xuyên nhiều tài khoản AWS bằng cách gắn tag cho database/table rồi cấp quyền theo tag — linh
+          hoạt và ít bảo trì hơn nhiều so với cấp quyền trực tiếp (direct grant) trên từng bảng.</li>
+      <li><b>IAM condition keys</b> — ràng buộc chi tiết (ví dụ chỉ cho phép invoke một <code>GuardrailIdentifier</code>
+          hoặc <code>ModelId</code> cụ thể) để đảm bảo mọi lệnh gọi Bedrock đều đi qua guardrail bắt buộc.</li>
+      <li><b>Attribute-based access control (ABAC)</b> — cấp quyền theo thuộc tính (ví dụ phòng ban) thay vì liệt kê từng
+          tài nguyên, giảm số lượng policy cần quản lý khi tổ chức có nhiều team/nhiều tài nguyên tương tự nhau.</li>
+    </ul>
+
+    <h3>Service Control Policy (SCP) & Data residency</h3>
+    <ul>
+      <li><b>SCP</b> (AWS Organizations) — giới hạn hành động ở mức tổ chức, ví dụ chỉ cho phép dùng một số FM/Region
+          nhất định để đảm bảo <b>data residency</b> (dữ liệu không rời khỏi khu vực pháp lý yêu cầu, ví dụ EU).</li>
+      <li>Khi SCP chặn nhầm một inference profile CRI hợp lệ (ví dụ lỗi "explicitly denies the action" dù đã enable model
+          access) → cần rà soát và <b>mở rộng điều kiện SCP để cho phép đúng ARN của inference profile theo khu vực</b>
+          (ví dụ pattern <code>eu.*</code>) kết hợp xác nhận IAM role có quyền invoke qua đúng profile đó — đây là lỗi
+          cấu hình SCP quá chặt, không phải lỗi thiếu model access.</li>
+      <li><b>Multi-Region/Multi-continent architecture</b> — khi dữ liệu độc quyền của khách hàng "không được rời khỏi
+          khu vực địa lý", nên triển khai riêng theo từng khu vực (regional deployment) thay vì một kiến trúc tập trung
+          toàn cầu.</li>
+    </ul>
+
+    <h3>Bảo vệ dữ liệu nhạy cảm (PII)</h3>
+    <ul>
+      <li><b>Amazon Macie</b> — tự động phát hiện và phân loại dữ liệu nhạy cảm (PII, dữ liệu tài chính) trong S3.</li>
+      <li><b>Amazon Comprehend / Comprehend Medical</b> — trích xuất thực thể (entity) và phát hiện PII trong văn bản,
+          hỗ trợ redact trước khi đưa dữ liệu vào FM.</li>
+      <li>Với hệ thống RAG cần phân quyền hiển thị PII khác nhau theo vai trò người dùng (ví dụ bác sĩ thấy đầy đủ, kỹ sư
+          bị redact) → giải pháp gọn nhất là gọi <b>ApplyGuardrail</b> tương ứng với nhóm người dùng (Cognito group) ngay
+          tại thời điểm hỏi đáp, thay vì duy trì nhiều bản sao knowledge base đã redact sẵn.</li>
+    </ul>
+
+    <h3>Audit trail</h3>
+    <ul>
+      <li><b>AWS CloudTrail</b> — ghi lại mọi API call (management & data event) để phục vụ audit; <b>CloudTrail Insights</b>
+          phát hiện pattern bất thường; <b>CloudTrail Lake</b> cho phép truy vấn log tập trung xuyên nhiều tài khoản.</li>
+      <li>Kết hợp <b>S3 server access logging</b> khi cần audit chi tiết ở mức file/object, và <b>SSE-KMS</b> để mã hóa
+          dữ liệu tại chỗ (encryption at rest) bằng khóa do khách hàng quản lý.</li>
+    </ul>
+  </section>
+
+  <section class="section" id="devops">
+    <h2><span class="num">9</span>Triển khai, CI/CD & Kiến trúc đa Region</h2>
+    <ul>
+      <li><b>AWS CDK cho Bedrock</b> — dùng <code>aws_bedrock.FoundationModel.fromFoundationModelId()</code> khi muốn dễ
+          dàng đổi FM giữa các môi trường (dev/prod) chỉ bằng tham số, thay vì
+          <code>aws_bedrock.ProvisionedModel.fromProvisionedModelArn()</code> vốn gắn cứng với một provisioned model ARN
+          cụ thể (chỉ phù hợp production ổn định).</li>
+      <li><b>Một CDK app + một CodePipeline nhiều deployment stage</b> (mỗi stage một environment, dùng CodeBuild deploy
+          action) là mẫu chuẩn để tránh trùng lặp hạ tầng khi cần "dễ dàng chuyển đổi FM để test giữa các environment".</li>
+      <li><b>Canary deployment cho model version</b> — dùng EventBridge + Step Functions để tự động dịch chuyển traffic
+          theo giai đoạn (staged traffic shifting), theo dõi CloudWatch metric ở mỗi giai đoạn, tự động tăng traffic nếu
+          đạt ngưỡng và <b>tự động rollback</b> nếu hiệu năng giảm — không cần can thiệp thủ công.</li>
+      <li><b>AWS AppConfig</b> — quản lý configuration động (model provider, feature flag, tham số như temperature/token
+          limit) với khả năng validate bằng JSON schema, rollout an toàn và rollback, phù hợp khi cần đổi model
+          provider/tham số "không cần deploy lại code" và có kiểm soát rủi ro.</li>
+      <li><b>AWS Service Catalog</b> — chuẩn hóa các pattern hạ tầng đã được duyệt (bảo mật, observability, RAG theo AWS
+          Well-Architected Generative AI Lens) thành portfolio/product tái sử dụng, versioned, cho nhiều business unit
+          cùng dùng mà vẫn đảm bảo governance nhất quán.</li>
+      <li><b>Multi-language / multi-runtime consistency</b> — khi một ứng dụng chạy trên nhiều SDK (ví dụ Lambda Python
+          + EKS JavaScript) nhưng cần cùng FM, cùng cơ chế xác thực (IAM role), và giữ ngữ cảnh hội thoại nhất quán →
+          nên dùng chung <b>Converse API</b> (chuẩn hóa qua các SDK ngôn ngữ khác nhau) và tự truyền lại lịch sử hội
+          thoại trong mảng <code>messages</code> của mỗi request.</li>
+    </ul>
+  </section>
+
+  <section class="section" id="glossary">
+    <h2><span class="num">10</span>Bảng thuật ngữ AWS (Glossary)</h2>
+    <p>Tra cứu nhanh toàn bộ dịch vụ/API/khái niệm AWS xuất hiện trong bộ đề. Gõ để lọc.</p>
+    <input type="text" class="gloss-search" id="glossSearch" placeholder="Tìm thuật ngữ, ví dụ: guardrail, chunking, VPC endpoint…">
+
+    <div class="gloss-group">
+      <h3>Generative AI / Bedrock</h3>
+      <dl id="glossList">
+        <div class="term"><dt>Amazon Bedrock</dt><dd>Dịch vụ fully-managed truy cập nhiều foundation model qua một API thống nhất, không cần tự vận hành hạ tầng GPU.</dd></div>
+        <div class="term"><dt>Foundation Model (FM)</dt><dd>Mô hình nền tảng quy mô lớn (LLM, mô hình đa phương thức...) được huấn luyện trước, dùng chung cho nhiều tác vụ.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Guardrails</dt><dd>Lớp kiểm soát an toàn nội dung: content filter, denied topics, PII filter, contextual grounding check, word filter.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Knowledge Bases</dt><dd>Dịch vụ RAG managed: tự ingest, chunk, tạo embedding, lưu vector và cung cấp API truy xuất/sinh câu trả lời.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Agents</dt><dd>Cho phép FM tự lập kế hoạch và gọi công cụ (action group) hoặc knowledge base để hoàn thành nhiệm vụ nhiều bước.</dd></div>
+        <div class="term"><dt>Amazon Bedrock AgentCore</dt><dd>Runtime cho agent production-grade với memory, identity, event handling, observability tích hợp sẵn.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Flows</dt><dd>Công cụ kéo-thả xây pipeline nhiều bước (input/prompt/output node) không cần code orchestration.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Prompt Management</dt><dd>Quản lý version, biến, biến thể của prompt template tập trung kèm workflow phê duyệt & audit trail.</dd></div>
+        <div class="term"><dt>Prompt Router / Intelligent Prompt Routing</dt><dd>Tự động định tuyến câu hỏi đơn giản tới mô hình nhỏ, câu hỏi phức tạp tới mô hình lớn để tối ưu chi phí.</dd></div>
+        <div class="term"><dt>Application Inference Profile</dt><dd>Định danh gắn tag/theo dõi chi phí và policy riêng cho một use case cụ thể trên cùng một FM.</dd></div>
+        <div class="term"><dt>Cross-Region Inference (CRI)</dt><dd>Định tuyến request tự động qua một tập Region khác để tăng khả năng chịu tải, vẫn giữ dữ liệu trong khu vực pháp lý cho phép.</dd></div>
+        <div class="term"><dt>Provisioned Throughput / Model Unit (MU)</dt><dd>Mua trước công suất cố định để đảm bảo throughput ổn định cho tải cao liên tục, tạo qua CreateProvisionedModelThroughput.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Model Evaluation</dt><dd>Tạo evaluation job so sánh FM/prompt bằng metric tự động (kể cả LLM-as-a-judge) hoặc đánh giá của con người.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Rerank API</dt><dd>Sắp xếp lại kết quả truy xuất RAG theo mức độ liên quan thực sự trước khi đưa vào FM.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Custom Model Import</dt><dd>Đưa một mô hình tùy chỉnh/tự huấn luyện (ví dụ từ SageMaker) vào chạy trong Amazon Bedrock.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Studio</dt><dd>Môi trường làm việc trực quan để thử nghiệm prompt và xây dựng ứng dụng GenAI trên Bedrock.</dd></div>
+        <div class="term"><dt>InvokeModel / InvokeModelWithResponseStream</dt><dd>API gọi FM đồng bộ (trả toàn bộ kết quả) hoặc dạng stream (trả từng phần theo thời gian thực).</dd></div>
+        <div class="term"><dt>Converse API / ConverseStream</dt><dd>API hội thoại chuẩn hóa format giữa nhiều FM, hỗ trợ multi-turn qua mảng messages.</dd></div>
+        <div class="term"><dt>Retrieve / RetrieveAndGenerate(Stream)</dt><dd>API của Knowledge Bases: chỉ truy xuất tài liệu, hoặc truy xuất + sinh câu trả lời kèm trích dẫn nguồn.</dd></div>
+        <div class="term"><dt>Amazon Titan</dt><dd>Dòng foundation model của AWS, bao gồm Titan Embeddings dùng để tạo vector embedding.</dd></div>
+        <div class="term"><dt>Amazon Nova</dt><dd>Dòng foundation model đa phương thức của AWS (ví dụ Amazon Nova Pro).</dd></div>
+        <div class="term"><dt>Anthropic Claude</dt><dd>Họ foundation model của Anthropic (Claude 3 Haiku, Sonnet...), khả dụng qua Amazon Bedrock.</dd></div>
+        <div class="term"><dt>Temperature</dt><dd>Tham số điều chỉnh mức ngẫu nhiên/sáng tạo của đầu ra mô hình; càng cao càng dễ hallucination.</dd></div>
+        <div class="term"><dt>Chain-of-Thought (CoT)</dt><dd>Kỹ thuật prompt yêu cầu mô hình suy luận từng bước trước khi kết luận để tăng độ chính xác.</dd></div>
+        <div class="term"><dt>Extended thinking</dt><dd>Cấu hình ngân sách token để mô hình suy luận nội bộ trước khi trả lời, hỗ trợ explainability.</dd></div>
+        <div class="term"><dt>Prompt caching</dt><dd>Lưu lại phần ngữ cảnh lặp lại giữa các lần gọi để giảm chi phí và độ trễ.</dd></div>
+        <div class="term"><dt>Hallucination</dt><dd>Hiện tượng mô hình sinh ra nội dung sai sự thật hoặc không có căn cứ trong nguồn dữ liệu.</dd></div>
+        <div class="term"><dt>Grounding / Contextual grounding check</dt><dd>Cơ chế đối chiếu câu trả lời với nguồn tham chiếu để phát hiện hallucination.</dd></div>
+        <div class="term"><dt>Automated Reasoning checks</dt><dd>Tính năng Guardrails dùng suy luận hình thức để xác minh tính đúng đắn theo bộ quy tắc định trước.</dd></div>
+        <div class="term"><dt>LLM-as-a-judge</dt><dd>Dùng một FM khác (thường mạnh hơn) để tự động chấm điểm chất lượng câu trả lời theo tiêu chí.</dd></div>
+        <div class="term"><dt>Model Context Protocol (MCP)</dt><dd>Giao thức chuẩn hóa cách AI agent kết nối tới công cụ/nguồn dữ liệu ngoài (MCP server).</dd></div>
+      </dl>
+    </div>
+
+    <div class="gloss-group">
+      <h3>RAG / Dữ liệu / Vector search</h3>
+      <dl>
+        <div class="term"><dt>Retrieval Augmented Generation (RAG)</dt><dd>Kỹ thuật truy xuất dữ liệu liên quan rồi đưa vào prompt để mô hình sinh câu trả lời có căn cứ.</dd></div>
+        <div class="term"><dt>Embedding</dt><dd>Biểu diễn vector số học của văn bản/dữ liệu, dùng để so sánh độ tương đồng ngữ nghĩa.</dd></div>
+        <div class="term"><dt>k-NN (k-nearest neighbor)</dt><dd>Thuật toán tìm k điểm dữ liệu gần nhất trong không gian vector — nền tảng của semantic search.</dd></div>
+        <div class="term"><dt>HNSW (Hierarchical Navigable Small World)</dt><dd>Thuật toán index vector cho approximate nearest neighbor search tốc độ cao trên tập dữ liệu lớn.</dd></div>
+        <div class="term"><dt>IVFFlat</dt><dd>Thuật toán index vector (Inverted File with Flat Compression), phù hợp dataset nhỏ cần độ chính xác cao.</dd></div>
+        <div class="term"><dt>Chunking</dt><dd>Chia nhỏ tài liệu thành các đoạn (fixed-size/semantic/hierarchical) trước khi tạo embedding cho RAG.</dd></div>
+        <div class="term"><dt>Hybrid search</dt><dd>Kết hợp vector search (ngữ nghĩa) và keyword search (khớp từ khóa chính xác) để tăng độ chính xác truy xuất.</dd></div>
+        <div class="term"><dt>Reranking</dt><dd>Sắp xếp lại kết quả truy xuất ban đầu theo mức độ liên quan thực sự bằng một mô hình chuyên biệt.</dd></div>
+        <div class="term"><dt>Graph RAG</dt><dd>RAG dựa trên dữ liệu dạng đồ thị để nắm bắt quan hệ nhiều bước (multi-hop) giữa các thực thể.</dd></div>
+        <div class="term"><dt>Amazon OpenSearch Service/Serverless</dt><dd>Dịch vụ tìm kiếm/phân tích hỗ trợ vector search (k-NN), hybrid search, metadata filtering.</dd></div>
+        <div class="term"><dt>Amazon Aurora + pgvector</dt><dd>Cơ sở dữ liệu quan hệ PostgreSQL với extension pgvector để lưu và tìm kiếm vector embedding.</dd></div>
+        <div class="term"><dt>Amazon S3 Vectors</dt><dd>Lưu trữ vector-native trên S3, tích hợp trực tiếp với Bedrock Knowledge Bases, chi phí thấp.</dd></div>
+        <div class="term"><dt>Amazon MemoryDB (Valkey/Redis OSS)</dt><dd>Cơ sở dữ liệu in-memory hỗ trợ vector search độ trễ cực thấp (HNSW/Flat index).</dd></div>
+        <div class="term"><dt>Amazon Neptune Analytics</dt><dd>Cơ sở dữ liệu đồ thị dùng cho Graph RAG và phân tích quan hệ nhiều bước.</dd></div>
+        <div class="term"><dt>Amazon Kendra</dt><dd>Dịch vụ tìm kiếm doanh nghiệp (enterprise search) hỗ trợ query expansion và semantic search.</dd></div>
+        <div class="term"><dt>Amazon DynamoDB Accelerator (DAX)</dt><dd>Lớp cache in-memory cho DynamoDB, tăng tốc đọc dữ liệu tần suất cao.</dd></div>
+      </dl>
+    </div>
+
+    <div class="gloss-group">
+      <h3>Orchestration / Compute</h3>
+      <dl>
+        <div class="term"><dt>AWS Lambda</dt><dd>Dịch vụ serverless compute, chạy code theo sự kiện mà không cần quản lý server.</dd></div>
+        <div class="term"><dt>Amazon API Gateway (REST/HTTP/WebSocket)</dt><dd>Dịch vụ quản lý API; WebSocket API dùng cho giao tiếp hai chiều/streaming thời gian thực.</dd></div>
+        <div class="term"><dt>AWS Step Functions</dt><dd>Dịch vụ orchestration dạng state machine; Standard hỗ trợ chạy dài + callback, Express tối ưu cho luồng ngắn tần suất cao.</dd></div>
+        <div class="term"><dt>Wait for a Callback (waitForTaskToken)</dt><dd>Mẫu Step Functions tạm dừng workflow chờ phản hồi ngoài (ví dụ con người duyệt) rồi resume bằng SendTaskSuccess.</dd></div>
+        <div class="term"><dt>Amazon EventBridge</dt><dd>Dịch vụ event bus, định tuyến sự kiện giữa các service theo rule tùy chỉnh.</dd></div>
+        <div class="term"><dt>Amazon SQS / SNS</dt><dd>Dịch vụ hàng đợi tin nhắn (SQS) và thông báo pub/sub (SNS) cho kiến trúc bất đồng bộ.</dd></div>
+        <div class="term"><dt>Amazon ECS / EC2 Auto Scaling</dt><dd>Dịch vụ chạy container/máy ảo với khả năng tự động mở rộng theo tải.</dd></div>
+        <div class="term"><dt>AWS AppConfig</dt><dd>Quản lý cấu hình động (feature flag, tham số) với validate schema, rollout an toàn và rollback.</dd></div>
+        <div class="term"><dt>AWS Systems Manager Parameter Store</dt><dd>Lưu trữ tham số/cấu hình tập trung, đơn giản hơn AppConfig nhưng ít tính năng rollout/validate hơn.</dd></div>
+      </dl>
+    </div>
+
+    <div class="gloss-group">
+      <h3>Bảo mật / Quản trị / Tuân thủ</h3>
+      <dl>
+        <div class="term"><dt>IAM (Identity and Access Management)</dt><dd>Dịch vụ quản lý danh tính, phân quyền qua role/policy/permissions boundary/condition key.</dd></div>
+        <div class="term"><dt>Attribute-based access control (ABAC)</dt><dd>Cấp quyền theo thuộc tính (ví dụ phòng ban) thay vì liệt kê từng tài nguyên.</dd></div>
+        <div class="term"><dt>AWS Organizations / SCP</dt><dd>Quản lý nhiều tài khoản AWS; Service Control Policy giới hạn hành động được phép ở mức tổ chức.</dd></div>
+        <div class="term"><dt>AWS IAM Identity Center</dt><dd>Quản lý tập trung quyền truy cập của người dùng/nhóm xuyên nhiều tài khoản AWS.</dd></div>
+        <div class="term"><dt>VPC Endpoint (Interface/Gateway)</dt><dd>Cho phép truy cập dịch vụ AWS qua đường truyền private trong VPC, không qua internet công cộng.</dd></div>
+        <div class="term"><dt>AWS Lake Formation / LF-Tags</dt><dd>Quản trị data lake với kiểm soát truy cập cột/bảng dựa trên tag, xuyên nhiều tài khoản.</dd></div>
+        <div class="term"><dt>AWS KMS / SSE-KMS</dt><dd>Dịch vụ quản lý khóa mã hóa; SSE-KMS là mã hóa phía server dùng khóa KMS cho dữ liệu tại chỗ.</dd></div>
+        <div class="term"><dt>Amazon Cognito</dt><dd>Dịch vụ xác thực người dùng (user pool), hỗ trợ OAuth cho ứng dụng và API.</dd></div>
+        <div class="term"><dt>AWS CloudTrail (Insights/Lake)</dt><dd>Ghi log mọi API call phục vụ audit; Insights phát hiện bất thường, Lake cho phép truy vấn log tập trung.</dd></div>
+        <div class="term"><dt>Amazon Macie</dt><dd>Tự động phát hiện và phân loại dữ liệu nhạy cảm (PII) trong Amazon S3.</dd></div>
+        <div class="term"><dt>Personally Identifiable Information (PII)</dt><dd>Thông tin định danh cá nhân cần được bảo vệ/redact trong dữ liệu và phản hồi của AI.</dd></div>
+        <div class="term"><dt>Data residency</dt><dd>Yêu cầu dữ liệu chỉ được lưu trữ/xử lý trong một khu vực địa lý/pháp lý nhất định.</dd></div>
+      </dl>
+    </div>
+
+    <div class="gloss-group">
+      <h3>Observability / ML Ops</h3>
+      <dl>
+        <div class="term"><dt>Amazon CloudWatch</dt><dd>Dịch vụ giám sát: Logs, Logs Insights, Alarms, composite alarm, anomaly detection, dashboard.</dd></div>
+        <div class="term"><dt>Embedded Metric Format (EMF)</dt><dd>Định dạng log đặc biệt để CloudWatch tự trích xuất custom metric hiệu quả từ log.</dd></div>
+        <div class="term"><dt>AWS X-Ray</dt><dd>Dịch vụ distributed tracing giúp xác định thành phần gây latency qua nhiều service.</dd></div>
+        <div class="term"><dt>Amazon Managed Grafana</dt><dd>Dịch vụ Grafana managed để trực quan hóa dashboard đa nguồn dữ liệu.</dd></div>
+        <div class="term"><dt>Amazon QuickSight</dt><dd>Dịch vụ business intelligence/dashboard trực quan hóa dữ liệu.</dd></div>
+        <div class="term"><dt>Amazon SageMaker AI</dt><dd>Nền tảng ML end-to-end: huấn luyện, triển khai endpoint (real-time/serverless/async), Pipelines, Clarify, Model Monitor.</dd></div>
+        <div class="term"><dt>Amazon SageMaker Clarify</dt><dd>Công cụ phân tích và báo cáo fairness/bias trong dữ liệu và kết quả mô hình.</dd></div>
+        <div class="term"><dt>Amazon Comprehend / Comprehend Medical</dt><dd>Dịch vụ NLP trích xuất thực thể, phát hiện PII, phân tích sentiment; bản Medical chuyên biệt cho văn bản y tế.</dd></div>
+        <div class="term"><dt>Amazon Textract</dt><dd>Dịch vụ trích xuất văn bản/dữ liệu có cấu trúc từ tài liệu scan/ảnh.</dd></div>
+        <div class="term"><dt>Amazon Transcribe</dt><dd>Dịch vụ chuyển giọng nói thành văn bản, hỗ trợ streaming với partial results.</dd></div>
+        <div class="term"><dt>Amazon Rekognition</dt><dd>Dịch vụ phân tích hình ảnh/video, bao gồm kiểm duyệt nội dung (content moderation).</dd></div>
+        <div class="term"><dt>Amazon Augmented AI (A2I)</dt><dd>Dịch vụ định tuyến kết quả AI có độ tin cậy thấp tới con người review.</dd></div>
+        <div class="term"><dt>Amazon Q Business</dt><dd>AI assistant doanh nghiệp truy vấn dữ liệu nội bộ theo ngôn ngữ tự nhiên, tôn trọng phân quyền nguồn dữ liệu gốc.</dd></div>
+        <div class="term"><dt>Amazon Q Developer</dt><dd>AI assistant hỗ trợ lập trình, có thể tùy biến (customization) theo thư viện/coding convention nội bộ công ty.</dd></div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>AWS Certified Generative AI Developer — Professional (AIP-C01) · <a href="https://github.com/vinhnguyenthanhdn/aip">GitHub</a></p>
+</footer>
+
+<script>
+document.getElementById('glossSearch').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  document.querySelectorAll('.term').forEach(t => {
+    const text = t.textContent.toLowerCase();
+    t.hidden = q.length > 0 && !text.includes(q);
+  });
+});
+</script>
+
+</body>
+</html>
