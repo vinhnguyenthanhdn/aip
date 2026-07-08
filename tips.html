@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kinh nghiệm & Lưu ý làm bài — AIP-C01</title>
+<link rel="icon" type="image/png" href="v-icon.png">
 <meta name="description" content="Chiến lược làm bài, từ khóa bẫy đề, và kinh nghiệm thi AWS Certified Generative AI Developer – Professional (AIP-C01).">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -263,7 +264,8 @@
     <a href="#traps">3. 10 bẫy thường gặp</a>
     <a href="#domains">4. Chiến lược theo từng nhóm chủ đề</a>
     <a href="#time">5. Quản lý thời gian & tâm lý phòng thi</a>
-    <a href="#checklist">6. Checklist trước khi thi</a>
+    <a href="#community">6. Kinh nghiệm & lộ trình ôn tập từ cộng đồng</a>
+    <a href="#checklist">7. Checklist trước khi thi</a>
   </div>
 
   <section class="section" id="format">
@@ -287,6 +289,11 @@
           Domain 5 — Testing, Validation, and Troubleshooting (11%).
           Domain 1 và 2 chiếm hơn nửa số câu — nên ưu tiên thời gian ôn RAG, vector store, prompt engineering, agentic
           AI, và tích hợp FM trước.</li>
+      <li><b>Thông tin hậu cần chính thức</b> (theo trang chứng chỉ của AWS): thời lượng <b>180 phút</b>, tổng
+          <b>75 câu hỏi</b> (65 tính điểm + 10 thử nghiệm), lệ phí <b>300 USD</b>, thi tại trung tâm Pearson VUE hoặc
+          hình thức online proctored, hỗ trợ tiếng Anh/Nhật/Hàn/Trung giản thể, hiệu lực chứng chỉ 3 năm. Trung bình
+          khoảng <b>2,4 phút/câu</b> — đây là kỳ thi Professional nên câu hỏi dài, nhiều ràng buộc lồng nhau, cần đọc
+          kỹ chứ không thể lướt nhanh như đề Associate.</li>
     </ul>
     <p style="font-size:0.85rem; color:var(--muted-2);">Nguồn: <a href="official-exam-guide.html">official-exam-guide.html</a>
        — bản tổng hợp đầy đủ Exam Guide chính thức của AWS (task statement, skill, dịch vụ in-scope/out-of-scope).</p>
@@ -333,6 +340,13 @@
       <span>Nguyên tắc chung: AIP-C01 là chứng chỉ <b>Professional</b>, luôn thiên về giải pháp <b>fully-managed, ít
       code tùy chỉnh nhất, nhưng vẫn đáp ứng đúng và đủ mọi ràng buộc nêu trong đề</b>. Một đáp án "nghe managed" nhưng
       bỏ sót một ràng buộc nhỏ (ví dụ thiếu audit trail, thiếu multi-Region, thiếu đúng loại filter) vẫn là đáp án SAI.</span>
+    </div>
+    <div class="callout good">
+      <svg class="icon"><use href="#i-check-circle"/></svg>
+      <span><b>"Bộ ba quyền lực" (Holy Trinity):</b> cộng đồng ôn thi AIP-C01 nhận xét <b>Bedrock Agents, Knowledge
+      Bases, và Guardrails</b> là 3 tính năng xuất hiện cùng nhau rất thường xuyên trong các tình huống — hầu hết đề
+      bài mặc định kỳ vọng bạn dùng Bedrock làm nền tảng trước, chỉ "thoát" sang SageMaker/EC2/dịch vụ khác khi Bedrock
+      thực sự không đáp ứng được yêu cầu (ví dụ cần host một custom model không có trên Bedrock).</span>
     </div>
   </section>
 
@@ -450,8 +464,48 @@
     </ul>
   </section>
 
+  <section class="section" id="community">
+    <h2><span class="num">6</span>Kinh nghiệm & lộ trình ôn tập từ cộng đồng</h2>
+    <p>Tổng hợp từ các bài chia sẻ kinh nghiệm thi thật và tài liệu ôn thi bên thứ ba (Pluralsight, KodeKloud và
+       tương tự) — vì AIP-C01 là chứng chỉ còn khá mới nên lượng thảo luận cộng đồng chưa nhiều, cần đối chiếu thận
+       trọng với Exam Guide chính thức.</p>
+
+    <h3>Không thể pass chỉ bằng xem video</h3>
+    <p>Điểm chung được nhấn mạnh nhiều nhất: đây là kỳ thi <b>Professional thiên về thực hành</b>, khác hẳn các chứng
+       chỉ Practitioner/Associate. Cần thực sự "đã từng dựng" các thành phần sau, không chỉ đọc lý thuyết:</p>
+    <ul>
+      <li>Cách <b>Bedrock Agent gọi Lambda function qua action group</b> (luồng request/response thực tế, không chỉ khái niệm).</li>
+      <li>Cách một <b>RAG ingestion pipeline</b> xử lý và chunk tài liệu từ đầu đến cuối.</li>
+      <li>Cách <b>streaming API</b> trả phản hồi theo thời gian thực (khác biệt giữa InvokeModelWithResponseStream, WebSocket, polling).</li>
+      <li>Cách <b>IAM policy</b> kiểm soát quyền truy cập tới từng model/tính năng cụ thể trong Bedrock (không chỉ IAM tổng quát).</li>
+    </ul>
+
+    <h3>Lộ trình ôn tập gợi ý (6–8 tuần)</h3>
+    <table class="kw-table">
+      <thead><tr><th>Giai đoạn</th><th>Trọng tâm</th></tr></thead>
+      <tbody>
+        <tr><td>Tuần 1–2</td><td>Đào sâu Domain 1 (31%) kết hợp thực hành dựng một RAG pipeline hoàn chỉnh bằng Bedrock Knowledge Bases.</td></tr>
+        <tr><td>Tuần 3–4</td><td>Phát triển Agent và triển khai workflow nhiều bước (Bedrock Agents, action group, Step Functions).</td></tr>
+        <tr><td>Tuần 5–6</td><td>Cấu hình bảo mật (Guardrails, IAM, VPC endpoint, KMS), mẫu tối ưu chi phí, và xử lý sự cố RAG.</td></tr>
+        <tr><td>Tuần 7–8</td><td>Luyện đề đầy đủ (bộ 97 câu ở trang <a href="index.html">Trắc nghiệm</a>), nhắm mục tiêu đạt trên 85% trước khi đăng ký thi thật.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Chiến thuật khi làm bài</h3>
+    <ul>
+      <li>Tiếp cận mỗi câu như một <b>bài toán đánh đổi thiết kế (trade-off)</b> chứ không phải câu hỏi lý thuyết đơn
+          thuần — thường có 2 đáp án cùng "khả thi về mặt kỹ thuật", điểm khác biệt nằm ở operational overhead hoặc
+          managed vs. tự xây dựng.</li>
+      <li><b>Đọc toàn bộ các lựa chọn trước khi chọn</b> — đừng chỉ lướt tìm từ khóa quen thuộc rồi chọn ngay, vì các
+          đáp án nhiễu thường được viết rất gần với đáp án đúng.</li>
+      <li>Đừng nản nếu gặp câu hỏi thấy lạ/khó bất thường — có thể đó là 1 trong 10 câu <b>thử nghiệm không tính
+          điểm</b>; cứ làm hết khả năng rồi tiếp tục, không để ảnh hưởng tâm lý các câu sau.</li>
+      <li><b>Đăng ký lịch thi trước</b> để tạo áp lực deadline cho việc ôn tập có kế hoạch, tránh trì hoãn vô thời hạn.</li>
+    </ul>
+  </section>
+
   <section class="section" id="checklist">
-    <h2><span class="num">6</span>Checklist trước khi thi</h2>
+    <h2><span class="num">7</span>Checklist trước khi thi</h2>
     <ul class="checklist">
       <li><svg class="icon"><use href="#i-check"/></svg>Đã luyện hết 97 câu trong bộ đề ít nhất 2 lần, dùng toggle "Xáo đáp án" ở lần thứ 2 trở đi.</li>
       <li><svg class="icon"><use href="#i-check"/></svg>Hiểu rõ sự khác biệt: Guardrails vs Knowledge Bases vs Agents vs AgentCore vs Flows — dùng khi nào.</li>
