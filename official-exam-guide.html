@@ -1,0 +1,738 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Guide chính thức — AIP-C01</title>
+<meta name="description" content="Tổng hợp bằng tiếng Việt nội dung Exam Guide chính thức của AWS cho kỳ thi AWS Certified Generative AI Developer – Professional (AIP-C01).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0B0D13;
+    --bg-2:      #0F1117;
+    --surface:   #161925;
+    --surface-2: #1C2030;
+    --surface-3: #232838;
+    --border:    #272C3E;
+    --border-2:  #333A52;
+    --text:      #F2F4FA;
+    --muted:     #9AA3B7;
+    --muted-2:   #6B7488;
+
+    --accent:    #6366F1;
+    --accent-2:  #818CF8;
+    --accent-dim: rgba(99, 102, 241, 0.14);
+    --good:      #34D399;
+    --good-dim:  rgba(52, 211, 153, 0.14);
+    --bad:       #F87171;
+    --bad-dim:   rgba(248, 113, 113, 0.14);
+    --warn:      #FBBF24;
+    --warn-dim:  rgba(251, 191, 36, 0.14);
+
+    --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    --font-body: 'IBM Plex Sans', -apple-system, 'Segoe UI', system-ui, sans-serif;
+
+    --space-xs: 0.375rem;
+    --space-s:  0.75rem;
+    --space-m:  1.25rem;
+    --space-l:  2rem;
+    --space-xl: 3rem;
+
+    --radius:    10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+
+  body {
+    background:
+      radial-gradient(900px 500px at 12% -10%, rgba(99,102,241,0.10), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(52,211,153,0.06), transparent 55%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  ::selection { background: var(--accent-dim); color: var(--text); }
+  *:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; border-radius: 4px; }
+  a { color: var(--accent-2); }
+  code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-3); border: 1px solid var(--border); border-radius: 5px; padding: 0.05em 0.4em; color: var(--accent-2); }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-m);
+    padding: var(--space-s) var(--space-l);
+    background: rgba(11, 13, 19, 0.72);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { display: flex; align-items: center; gap: var(--space-s); text-decoration: none; color: var(--text); }
+  .nav-logo {
+    width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
+  }
+  .nav-logo svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
+  .nav-title { display: flex; flex-direction: column; line-height: 1.15; }
+  .nav-title b { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; letter-spacing: -0.02em; }
+  .nav-title span { font-size: 0.68rem; color: var(--muted-2); letter-spacing: 0.02em; }
+  .navlink {
+    display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 0.9rem; border-radius: var(--radius);
+    font-size: 0.85rem; font-weight: 500; color: var(--muted); text-decoration: none;
+    background: var(--surface-2); border: 1px solid var(--border);
+  }
+  .navlink:hover { color: var(--text); border-color: var(--border-2); }
+
+  main { max-width: 980px; margin: 0 auto; padding: var(--space-l) var(--space-l) var(--space-xl); }
+
+  .hero { margin-bottom: var(--space-l); }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
+    color: var(--warn); background: var(--warn-dim); border: 1px solid rgba(251,191,36,0.35);
+    padding: 3px 11px; border-radius: 999px; margin-bottom: var(--space-m);
+  }
+  .hero h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: var(--space-s); }
+  .hero p { color: var(--muted); font-size: 1rem; max-width: 70ch; }
+  .hero .src { font-size: 0.82rem; margin-top: var(--space-s); color: var(--muted-2); }
+
+  .toc {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: var(--space-l) 0; padding: var(--space-m);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  }
+  .toc a {
+    text-decoration: none; color: var(--muted); font-size: 0.8rem; font-weight: 500;
+    padding: 6px 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border);
+  }
+  .toc a:hover { color: var(--text); border-color: var(--border-2); background: var(--surface-3); }
+
+  .section {
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
+    border: 1px solid var(--border); border-radius: var(--radius-xl);
+    padding: var(--space-l); margin-bottom: var(--space-l);
+    scroll-margin-top: 90px;
+  }
+  .section h2 {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-size: 1.2rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: var(--space-s); color: var(--text);
+  }
+  .weight {
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+    color: var(--good); background: var(--good-dim); border: 1px solid rgba(52,211,153,0.35);
+    padding: 2px 10px; border-radius: 999px;
+  }
+  .section > p.desc { color: var(--muted); margin-bottom: var(--space-m); font-size: 0.92rem; }
+  .task { margin-top: var(--space-m); }
+  .task h3 {
+    font-size: 0.98rem; font-weight: 700; color: #E7EAF3; margin-bottom: 8px;
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .task h3 .tid { font-family: var(--font-mono); font-size: 0.74rem; color: var(--accent-2); font-weight: 700; }
+  .task ul { color: #D3D7E4; margin: 0 0 var(--space-s) 1.3em; font-size: 0.9rem; }
+  .task li { margin-bottom: 6px; }
+  .task li .sid { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted-2); margin-right: 4px; }
+
+  .weight-table { width: 100%; border-collapse: collapse; margin: var(--space-s) 0 0; font-size: 0.9rem; }
+  .weight-table td { padding: 10px 8px; border-bottom: 1px dashed var(--border); color: #D3D7E4; }
+  .weight-table tr:last-child td { border-bottom: none; }
+  .weight-table td:last-child { text-align: right; font-family: var(--font-mono); color: var(--good); font-weight: 700; white-space: nowrap; }
+  .weight-table td a { color: var(--text); text-decoration: none; font-weight: 600; }
+  .weight-table td a:hover { color: var(--accent-2); }
+
+  .callout {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
+    border-radius: var(--radius); padding: var(--space-s) var(--space-m); margin: var(--space-m) 0;
+    font-size: 0.88rem; color: #E7EAF3;
+  }
+
+  .svc-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--space-m); margin-top: var(--space-s); }
+  .svc-group h4 {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--accent-2); margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px;
+  }
+  .svc-group.out h4 { color: var(--bad); }
+  .svc-group ul { list-style: none; margin: 0; font-size: 0.86rem; color: #D3D7E4; }
+  .svc-group li { padding: 2px 0; }
+  .svc-group.out li { color: var(--muted); }
+
+  .badge-new {
+    display: inline-block; font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+    color: var(--warn); background: var(--warn-dim); border: 1px solid rgba(251,191,36,0.35);
+    padding: 0 6px; border-radius: 999px; margin-left: 6px; vertical-align: middle;
+  }
+
+  .concept-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--space-s); }
+  .concept-grid span {
+    font-size: 0.84rem; color: #D3D7E4; background: var(--surface-2); border: 1px solid var(--border);
+    padding: 5px 12px; border-radius: 999px;
+  }
+
+  footer { border-top: 1px solid var(--border); padding: var(--space-l); text-align: center; }
+  footer p { font-size: 0.76rem; color: var(--muted-2); font-family: var(--font-mono); }
+  footer a { text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 720px) {
+    nav { padding: var(--space-s) var(--space-m); }
+    main { padding: var(--space-m); }
+    .section, .toc { padding: var(--space-m); }
+    .hero h1 { font-size: 1.5rem; }
+    .svc-groups { grid-template-columns: 1fr 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-brand">
+    <span class="nav-logo"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.2L19 10l-5.1 1.8L12 17l-1.9-5.2L5 10l5.1-1.8z"/></svg></span>
+    <span class="nav-title"><b>AIP-C01</b><span>AWS GenAI Developer Pro</span></span>
+  </a>
+  <a class="navlink" href="index.html">← Về trang Trắc nghiệm</a>
+</nav>
+
+<main>
+  <div class="hero">
+    <span class="eyebrow">NGUỒN CHÍNH THỨC — AWS CERTIFICATION</span>
+    <h1>Exam Guide chính thức AIP-C01 (bản tổng hợp tiếng Việt)</h1>
+    <p>Toàn bộ nội dung được dịch và tổng hợp lại từ Exam Guide chính thức của AWS cho kỳ thi
+       <b>AWS Certified Generative AI Developer – Professional (AIP-C01)</b>, gồm trang tổng quan và 9 trang con
+       (5 content domain, technologies & concepts, service mentions, in-scope/out-of-scope services).
+       Tên dịch vụ/thuật ngữ AWS được giữ nguyên tiếng Anh.</p>
+    <p class="src">Nguồn: <a href="https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html" target="_blank" rel="noopener">docs.aws.amazon.com/aws-certification/.../ai-professional-01.html</a></p>
+  </div>
+
+  <div class="toc" role="navigation" aria-label="Mục lục">
+    <a href="#overview">Tổng quan</a>
+    <a href="#format">Định dạng & thang điểm</a>
+    <a href="#outline">Cấu trúc nội dung (5 domain)</a>
+    <a href="#domain1">Domain 1</a>
+    <a href="#domain2">Domain 2</a>
+    <a href="#domain3">Domain 3</a>
+    <a href="#domain4">Domain 4</a>
+    <a href="#domain5">Domain 5</a>
+    <a href="#concepts">Công nghệ & khái niệm</a>
+    <a href="#in-scope">Dịch vụ In-Scope</a>
+    <a href="#out-of-scope">Dịch vụ Out-of-Scope</a>
+  </div>
+
+  <section class="section" id="overview">
+    <h2>Tổng quan kỳ thi</h2>
+    <p>Kỳ thi <b>AWS Certified Generative AI Developer – Professional (AIP-C01)</b> dành cho người đảm nhiệm vai trò
+       <b>GenAI developer</b>. Kỳ thi xác thực khả năng tích hợp hiệu quả <b>foundation model (FM)</b> vào ứng dụng và
+       quy trình nghiệp vụ, chứng minh kiến thức thực tế về cách triển khai giải pháp GenAI vào môi trường production
+       bằng công nghệ AWS.</p>
+
+    <p>Kỳ thi xác thực khả năng thực hiện các nhiệm vụ sau:</p>
+    <ul>
+      <li>Thiết kế và triển khai giải pháp dùng vector store, Retrieval Augmented Generation (RAG), knowledge base, và các kiến trúc GenAI khác.</li>
+      <li>Tích hợp FM vào ứng dụng và quy trình nghiệp vụ.</li>
+      <li>Áp dụng kỹ thuật prompt engineering và quản lý prompt.</li>
+      <li>Triển khai giải pháp agentic AI.</li>
+      <li>Tối ưu ứng dụng GenAI về chi phí, hiệu năng, và giá trị kinh doanh.</li>
+      <li>Triển khai bảo mật, quản trị, và thực hành Responsible AI.</li>
+      <li>Xử lý sự cố, giám sát, và tối ưu ứng dụng GenAI.</li>
+      <li>Đánh giá FM về chất lượng và trách nhiệm (responsibility).</li>
+    </ul>
+
+    <h3 style="margin-top:1.25rem; font-size:1rem; font-weight:700; color:#E7EAF3;">Đối tượng dự thi mục tiêu</h3>
+    <p>Ứng viên mục tiêu nên có <b>từ 2 năm kinh nghiệm trở lên</b> xây dựng ứng dụng production-grade trên AWS hoặc với
+       công nghệ mã nguồn mở, kinh nghiệm AI/ML hoặc data engineering nói chung, và <b>1 năm kinh nghiệm thực hành</b>
+       triển khai giải pháp GenAI.</p>
+    <p><b>Kiến thức AWS được khuyến nghị:</b></p>
+    <ul>
+      <li>Kinh nghiệm với các dịch vụ compute, storage, và networking của AWS.</li>
+      <li>Hiểu biết về best practice bảo mật AWS và quản lý identity.</li>
+      <li>Kinh nghiệm với công cụ triển khai và Infrastructure as Code (IaC) của AWS.</li>
+      <li>Quen thuộc với dịch vụ giám sát và observability của AWS.</li>
+      <li>Hiểu biết về nguyên tắc tối ưu chi phí AWS.</li>
+    </ul>
+    <p><b>Nhiệm vụ nằm ngoài phạm vi</b> đối với ứng viên mục tiêu (danh sách không đầy đủ):</p>
+    <ul>
+      <li>Phát triển và huấn luyện model (model development and training).</li>
+      <li>Kỹ thuật ML nâng cao (advanced ML techniques).</li>
+      <li>Data engineering và feature engineering.</li>
+    </ul>
+  </section>
+
+  <section class="section" id="format">
+    <h2>Định dạng đề thi & Thang điểm</h2>
+    <h3 style="font-size:1rem; font-weight:700; color:#E7EAF3; margin-bottom:8px;">Loại câu hỏi</h3>
+    <ul>
+      <li><b>Multiple choice</b> — có 1 đáp án đúng và 3 đáp án nhiễu (distractor).</li>
+      <li><b>Multiple response</b> — có 2 đáp án đúng trở lên trong số 5 lựa chọn trở lên; phải chọn <b>đúng tất cả</b> đáp án đúng mới được tính điểm cho câu đó.</li>
+    </ul>
+    <p>Câu không trả lời được tính là sai. <b>Không bị trừ điểm khi đoán.</b> Kỳ thi gồm <b>65 câu tính điểm</b>.</p>
+
+    <h3 style="font-size:1rem; font-weight:700; color:#E7EAF3; margin:1rem 0 8px;">Nội dung không tính điểm</h3>
+    <p>Kỳ thi gồm thêm <b>10 câu không tính điểm</b>, không ảnh hưởng đến kết quả. AWS thu thập dữ liệu hiệu năng của
+       các câu này để đánh giá đưa vào làm câu tính điểm trong tương lai. Các câu không tính điểm <b>không được đánh
+       dấu riêng</b> trong bài thi — thí sinh không thể phân biệt được.</p>
+
+    <h3 style="font-size:1rem; font-weight:700; color:#E7EAF3; margin:1rem 0 8px;">Kết quả thi</h3>
+    <p>Kỳ thi có kết quả <b>đạt/không đạt</b>, được chấm dựa trên tiêu chuẩn tối thiểu do các chuyên gia AWS thiết lập
+       theo best practice và hướng dẫn ngành chứng chỉ.</p>
+    <p>Kết quả được báo cáo dưới dạng <b>điểm quy đổi (scaled score) từ 100–1.000</b>. <b>Điểm đạt tối thiểu là 750.</b>
+       Điểm số thể hiện năng lực tổng thể và việc đạt/không đạt. Mô hình scaled scoring giúp cân bằng điểm số giữa
+       nhiều đề thi có độ khó hơi khác nhau.</p>
+    <p>Báo cáo điểm có thể chứa bảng phân loại hiệu năng theo từng phần (section). Kỳ thi dùng
+       <b>mô hình chấm điểm bù trừ (compensatory scoring model)</b> — nghĩa là <b>không cần đạt điểm ở từng section
+       riêng lẻ</b>, chỉ cần đạt điểm tổng thể của toàn bài thi.</p>
+    <div class="callout">
+      <span>Mỗi content domain có trọng số riêng nên số câu hỏi khác nhau giữa các domain. Bảng phân loại điểm theo
+      section chỉ mang tính tham khảo tổng quát về điểm mạnh/điểm yếu — nên thận trọng khi diễn giải phản hồi ở cấp
+      độ từng section.</span>
+    </div>
+  </section>
+
+  <section class="section" id="outline">
+    <h2>Cấu trúc nội dung — 5 Content Domain</h2>
+    <p class="desc">Exam Guide không liệt kê đầy đủ 100% nội dung có thể xuất hiện trong đề thi thật, nhưng cung cấp
+       trọng số (weighting), domain, task statement và skill để định hướng ôn tập.</p>
+    <table class="weight-table">
+      <tbody>
+        <tr><td><a href="#domain1">Domain 1: Foundation Model Integration, Data Management, and Compliance</a></td><td>31%</td></tr>
+        <tr><td><a href="#domain2">Domain 2: Implementation and Integration</a></td><td>26%</td></tr>
+        <tr><td><a href="#domain3">Domain 3: AI Safety, Security, and Governance</a></td><td>20%</td></tr>
+        <tr><td><a href="#domain4">Domain 4: Operational Efficiency and Optimization for GenAI Applications</a></td><td>12%</td></tr>
+        <tr><td><a href="#domain5">Domain 5: Testing, Validation, and Troubleshooting</a></td><td>11%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="section" id="domain1">
+    <h2>Domain 1: Foundation Model Integration, Data Management, and Compliance <span class="weight">31%</span></h2>
+
+    <div class="task">
+      <h3><span class="tid">Task 1.1</span>Phân tích yêu cầu và thiết kế giải pháp GenAI</h3>
+      <ul>
+        <li><span class="sid">1.1.1</span>Xây dựng thiết kế kiến trúc toàn diện, phù hợp với nhu cầu nghiệp vụ cụ thể và ràng buộc kỹ thuật (ví dụ: lựa chọn FM phù hợp, mẫu tích hợp, chiến lược triển khai).</li>
+        <li><span class="sid">1.1.2</span>Xây dựng bản proof-of-concept kỹ thuật để xác thực tính khả thi, đặc tính hiệu năng và giá trị kinh doanh trước khi triển khai quy mô lớn (ví dụ: dùng Amazon Bedrock).</li>
+        <li><span class="sid">1.1.3</span>Xây dựng các thành phần kỹ thuật chuẩn hóa để đảm bảo triển khai nhất quán qua nhiều kịch bản (ví dụ: dùng AWS Well-Architected Framework, AWS WA Tool Generative AI Lens).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 1.2</span>Lựa chọn và cấu hình FM</h3>
+      <ul>
+        <li><span class="sid">1.2.1</span>Đánh giá và lựa chọn FM phù hợp nhất với use case và yêu cầu kỹ thuật cụ thể (ví dụ: dùng performance benchmark, phân tích năng lực, đánh giá giới hạn).</li>
+        <li><span class="sid">1.2.2</span>Xây dựng mẫu kiến trúc linh hoạt cho phép chọn model động và chuyển đổi nhà cung cấp mà không cần sửa code (ví dụ: dùng AWS Lambda, Amazon API Gateway, AWS AppConfig).</li>
+        <li><span class="sid">1.2.3</span>Thiết kế hệ thống AI có khả năng phục hồi để đảm bảo hoạt động liên tục khi có gián đoạn dịch vụ (ví dụ: dùng AWS Step Functions circuit breaker pattern, Amazon Bedrock Cross-Region Inference cho model có phạm vi Region hạn chế, triển khai model đa Region, chiến lược graceful degradation).</li>
+        <li><span class="sid">1.2.4</span>Triển khai và quản lý vòng đời cho việc tùy biến FM (ví dụ: dùng Amazon SageMaker AI để triển khai model fine-tune theo domain, kỹ thuật parameter-efficient như LoRA và adapter, SageMaker Model Registry để version hóa và triển khai model tùy biến, pipeline triển khai tự động để cập nhật model, chiến lược rollback khi triển khai thất bại, quản lý vòng đời để retire/thay thế model).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 1.3</span>Triển khai pipeline kiểm tra và xử lý dữ liệu để FM tiêu thụ</h3>
+      <ul>
+        <li><span class="sid">1.3.1</span>Xây dựng quy trình kiểm tra chất lượng dữ liệu toàn diện để đảm bảo dữ liệu đạt chuẩn cho FM sử dụng (ví dụ: dùng AWS Glue Data Quality, SageMaker Data Wrangler, Lambda function tùy chỉnh, CloudWatch metrics).</li>
+        <li><span class="sid">1.3.2</span>Xây dựng quy trình xử lý dữ liệu để xử lý các loại dữ liệu phức tạp gồm văn bản, hình ảnh, âm thanh, dữ liệu dạng bảng với yêu cầu xử lý chuyên biệt cho FM (ví dụ: dùng Amazon Bedrock multimodal model, SageMaker Processing, Amazon Transcribe, kiến trúc pipeline multimodal nâng cao).</li>
+        <li><span class="sid">1.3.3</span>Định dạng dữ liệu đầu vào cho FM inference theo đúng yêu cầu riêng của từng model (ví dụ: định dạng JSON cho Bedrock API request, chuẩn bị dữ liệu có cấu trúc cho SageMaker AI endpoint, định dạng hội thoại cho ứng dụng dialog).</li>
+        <li><span class="sid">1.3.4</span>Nâng cao chất lượng dữ liệu đầu vào để cải thiện chất lượng và độ nhất quán phản hồi của FM (ví dụ: dùng Bedrock để định dạng lại văn bản, Amazon Comprehend để trích xuất thực thể, Lambda function để chuẩn hóa dữ liệu).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 1.4</span>Thiết kế và triển khai giải pháp vector store</h3>
+      <ul>
+        <li><span class="sid">1.4.1</span>Xây dựng kiến trúc vector database nâng cao chuyên biệt cho việc bổ sung ngữ cảnh FM nhằm truy xuất ngữ nghĩa hiệu quả vượt ngoài khả năng tìm kiếm truyền thống (ví dụ: dùng Amazon Bedrock Knowledge Bases để tổ chức phân cấp, Amazon OpenSearch Service với Neural plugin tích hợp Bedrock để phân đoạn theo chủ đề, Amazon RDS kết hợp kho tài liệu Amazon S3, Amazon DynamoDB kết hợp vector database cho metadata và embedding).</li>
+        <li><span class="sid">1.4.2</span>Xây dựng khung metadata toàn diện để cải thiện độ chính xác tìm kiếm và nhận biết ngữ cảnh cho tương tác FM (ví dụ: dùng S3 object metadata cho timestamp tài liệu, thuộc tính tùy chỉnh cho thông tin tác giả, hệ thống gắn tag để phân loại domain).</li>
+        <li><span class="sid">1.4.3</span>Xây dựng kiến trúc vector database hiệu năng cao để tối ưu tốc độ tìm kiếm ngữ nghĩa ở quy mô lớn cho việc truy xuất FM (ví dụ: dùng chiến lược sharding của OpenSearch, phương pháp multi-index cho các domain chuyên biệt, kỹ thuật index phân cấp).</li>
+        <li><span class="sid">1.4.4</span>Dùng các dịch vụ AWS để xây thành phần tích hợp kết nối với tài nguyên (ví dụ: hệ thống quản lý tài liệu, knowledge base, wiki nội bộ) nhằm tích hợp dữ liệu toàn diện cho ứng dụng GenAI.</li>
+        <li><span class="sid">1.4.5</span>Thiết kế và triển khai hệ thống bảo trì dữ liệu để đảm bảo vector store luôn chứa thông tin hiện hành và chính xác cho việc bổ sung ngữ cảnh FM (ví dụ: dùng cơ chế cập nhật tăng dần, hệ thống phát hiện thay đổi real-time, quy trình đồng bộ tự động, pipeline làm mới theo lịch).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 1.5</span>Thiết kế cơ chế truy xuất để bổ sung ngữ cảnh cho FM</h3>
+      <ul>
+        <li><span class="sid">1.5.1</span>Xây dựng phương pháp phân đoạn tài liệu (document segmentation) hiệu quả để tối ưu hiệu năng truy xuất cho việc bổ sung ngữ cảnh FM (ví dụ: dùng khả năng chunking của Bedrock, Lambda function để triển khai fixed-size chunking, xử lý tùy chỉnh cho hierarchical chunking dựa trên cấu trúc nội dung).</li>
+        <li><span class="sid">1.5.2</span>Lựa chọn và cấu hình giải pháp embedding tối ưu để tạo biểu diễn vector hiệu quả cho tìm kiếm ngữ nghĩa (ví dụ: dùng Amazon Titan embeddings dựa trên số chiều và mức độ phù hợp domain, đánh giá đặc tính hiệu năng của các embedding model trên Bedrock, dùng Lambda function để tạo embedding hàng loạt).</li>
+        <li><span class="sid">1.5.3</span>Triển khai và cấu hình giải pháp vector search để kích hoạt khả năng tìm kiếm ngữ nghĩa cho việc bổ sung ngữ cảnh FM (ví dụ: dùng OpenSearch Service với khả năng vector search, Amazon Aurora với extension pgvector, Amazon Bedrock Knowledge Bases với vector store được quản lý sẵn).</li>
+        <li><span class="sid">1.5.4</span>Xây dựng kiến trúc tìm kiếm nâng cao để cải thiện độ liên quan và độ chính xác của thông tin truy xuất cho ngữ cảnh FM (ví dụ: dùng OpenSearch cho semantic search, hybrid search kết hợp từ khóa và vector, Amazon Bedrock reranker model).</li>
+        <li><span class="sid">1.5.5</span>Xây dựng hệ thống xử lý truy vấn tinh vi để cải thiện hiệu quả truy xuất và chất lượng kết quả cho việc bổ sung ngữ cảnh FM (ví dụ: dùng Bedrock để mở rộng truy vấn — query expansion, Lambda function để phân rã truy vấn — query decomposition, Step Functions để biến đổi truy vấn — query transformation).</li>
+        <li><span class="sid">1.5.6</span>Xây dựng cơ chế truy cập nhất quán để tích hợp liền mạch với FM (ví dụ: dùng function calling interface cho vector search, Model Context Protocol (MCP) client cho truy vấn vector, mẫu API chuẩn hóa cho retrieval augmentation).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 1.6</span>Triển khai chiến lược prompt engineering và quản trị (governance) cho tương tác với FM</h3>
+      <ul>
+        <li><span class="sid">1.6.1</span>Xây dựng khung chỉ dẫn model hiệu quả để kiểm soát hành vi và đầu ra của FM (ví dụ: dùng Amazon Bedrock Prompt Management để áp đặt định nghĩa vai trò, Amazon Bedrock Guardrails để thực thi nguyên tắc responsible AI, cấu hình template để định dạng phản hồi).</li>
+        <li><span class="sid">1.6.2</span>Xây dựng hệ thống AI tương tác để duy trì ngữ cảnh và cải thiện trải nghiệm người dùng với FM (ví dụ: dùng Step Functions cho workflow làm rõ — clarification, Amazon Comprehend để nhận diện ý định, DynamoDB để lưu lịch sử hội thoại).</li>
+        <li><span class="sid">1.6.3</span>Triển khai hệ thống quản lý và quản trị prompt toàn diện để đảm bảo tính nhất quán và giám sát hoạt động của FM (ví dụ: dùng Amazon Bedrock Prompt Management để tạo template tham số hóa và workflow phê duyệt, Amazon S3 để lưu kho template, AWS CloudTrail để theo dõi sử dụng, CloudWatch Logs để ghi log truy cập).</li>
+        <li><span class="sid">1.6.4</span>Xây dựng hệ thống đảm bảo chất lượng để đảm bảo hiệu quả và độ tin cậy của prompt cho FM (ví dụ: dùng Lambda function để xác minh đầu ra mong đợi, Step Functions để kiểm thử edge case, CloudWatch để kiểm thử hồi quy của prompt).</li>
+        <li><span class="sid">1.6.5</span>Nâng cao hiệu năng FM bằng cách tinh chỉnh prompt lặp lại, cải thiện chất lượng phản hồi vượt ngoài kỹ thuật prompting cơ bản (ví dụ: dùng thành phần đầu vào có cấu trúc, đặc tả định dạng đầu ra, mẫu chỉ dẫn chain-of-thought, vòng lặp phản hồi).</li>
+        <li><span class="sid">1.6.6</span>Thiết kế hệ thống prompt phức tạp để xử lý tác vụ tinh vi với FM (ví dụ: dùng Amazon Bedrock Prompt Flows cho chuỗi prompt tuần tự, phân nhánh có điều kiện dựa trên phản hồi model, thành phần prompt có thể tái sử dụng, bước tiền xử lý/hậu xử lý tích hợp).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="domain2">
+    <h2>Domain 2: Implementation and Integration <span class="weight">26%</span></h2>
+
+    <div class="task">
+      <h3><span class="tid">Task 2.1</span>Triển khai giải pháp agentic AI và tích hợp công cụ</h3>
+      <ul>
+        <li><span class="sid">2.1.1</span>Xây dựng hệ thống tự hành thông minh (autonomous system) với khả năng quản lý memory và state phù hợp (ví dụ: dùng Strands Agents và AWS Agent Squad cho hệ thống multi-agent, MCP cho tương tác agent–công cụ).</li>
+        <li><span class="sid">2.1.2</span>Xây dựng hệ thống giải quyết vấn đề nâng cao để FM có khả năng phân rã và giải quyết vấn đề phức tạp theo các bước suy luận có cấu trúc (ví dụ: dùng Step Functions để triển khai mẫu ReAct và cách tiếp cận suy luận chain-of-thought).</li>
+        <li><span class="sid">2.1.3</span>Xây dựng luồng công việc AI có biện pháp bảo vệ để đảm bảo hành vi FM được kiểm soát (ví dụ: dùng Step Functions để triển khai điều kiện dừng, Lambda function để triển khai cơ chế timeout, IAM policy để thực thi giới hạn tài nguyên, circuit breaker để giảm thiểu lỗi).</li>
+        <li><span class="sid">2.1.4</span>Xây dựng hệ thống điều phối model tinh vi để tối ưu hiệu năng trên nhiều năng lực khác nhau (ví dụ: dùng FM chuyên biệt để thực hiện tác vụ phức tạp, logic tổng hợp tùy chỉnh cho model ensemble, khung lựa chọn model).</li>
+        <li><span class="sid">2.1.5</span>Xây dựng hệ thống AI cộng tác để tăng cường năng lực FM bằng chuyên môn con người (ví dụ: dùng Step Functions để điều phối quy trình review/phê duyệt, API Gateway để triển khai cơ chế thu thập phản hồi, mẫu tăng cường con người — human augmentation).</li>
+        <li><span class="sid">2.1.6</span>Triển khai tích hợp công cụ thông minh để mở rộng năng lực FM và đảm bảo hoạt động công cụ tin cậy (ví dụ: dùng Strands API để triển khai hành vi tùy chỉnh, định nghĩa hàm chuẩn hóa, Lambda function để xử lý lỗi và validate tham số).</li>
+        <li><span class="sid">2.1.7</span>Xây dựng khung mở rộng model để tăng cường năng lực FM (ví dụ: dùng Lambda function để triển khai MCP server không trạng thái cung cấp truy cập công cụ nhẹ, Amazon ECS để triển khai MCP server cho công cụ phức tạp, thư viện MCP client để đảm bảo mẫu truy cập nhất quán).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 2.2</span>Triển khai chiến lược deploy model</h3>
+      <ul>
+        <li><span class="sid">2.2.1</span>Triển khai FM dựa trên nhu cầu ứng dụng cụ thể và yêu cầu hiệu năng (ví dụ: dùng Lambda function để gọi theo yêu cầu — on-demand, cấu hình Amazon Bedrock provisioned throughput, SageMaker AI endpoint để triển khai giải pháp hybrid).</li>
+        <li><span class="sid">2.2.2</span>Triển khai giải pháp FM bằng cách giải quyết các thách thức riêng của large language model (LLM) khác với triển khai ML truyền thống (ví dụ: triển khai mẫu container được tối ưu cho yêu cầu bộ nhớ, sử dụng GPU và năng lực xử lý token, tuân theo chiến lược load model chuyên biệt).</li>
+        <li><span class="sid">2.2.3</span>Xây dựng phương pháp triển khai FM tối ưu để cân bằng giữa hiệu năng và yêu cầu tài nguyên cho khối lượng công việc GenAI (ví dụ: chọn model phù hợp, dùng model nhỏ đã huấn luyện sẵn cho tác vụ cụ thể, model cascading dựa trên API để xử lý truy vấn thường quy).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 2.3</span>Thiết kế và triển khai kiến trúc tích hợp doanh nghiệp</h3>
+      <ul>
+        <li><span class="sid">2.3.1</span>Xây dựng giải pháp kết nối doanh nghiệp để tích hợp liền mạch năng lực FM vào môi trường doanh nghiệp hiện có (ví dụ: dùng tích hợp dựa trên API với hệ thống legacy, kiến trúc event-driven để tạo sự tách rời lỏng lẻo, mẫu đồng bộ dữ liệu).</li>
+        <li><span class="sid">2.3.2</span>Xây dựng năng lực AI tích hợp để tăng cường ứng dụng hiện có với chức năng GenAI (ví dụ: dùng API Gateway để tích hợp microservice, Lambda function cho webhook handler, Amazon EventBridge để tích hợp event-driven).</li>
+        <li><span class="sid">2.3.3</span>Xây dựng khung truy cập an toàn để đảm bảo kiểm soát bảo mật phù hợp (ví dụ: dùng identity federation giữa dịch vụ FM và hệ thống doanh nghiệp, role-based access control cho truy cập model và dữ liệu, truy cập API tới FM theo nguyên tắc least privilege).</li>
+        <li><span class="sid">2.3.4</span>Xây dựng giải pháp AI đa môi trường để đảm bảo tuân thủ dữ liệu xuyên các khu vực pháp lý trong khi vẫn cho phép truy cập FM (ví dụ: dùng AWS Outposts để tích hợp dữ liệu on-premises, AWS Wavelength để triển khai edge, định tuyến an toàn giữa tài nguyên cloud và on-premises).</li>
+        <li><span class="sid">2.3.5</span>Triển khai pipeline CI/CD và kiến trúc GenAI gateway để triển khai mẫu tiêu thụ an toàn, tuân thủ trong môi trường doanh nghiệp (ví dụ: dùng AWS CodePipeline, AWS CodeBuild, khung kiểm thử tự động cho việc triển khai/kiểm thử liên tục thành phần GenAI kèm quét bảo mật và hỗ trợ rollback, lớp trừu tượng hóa tập trung, cơ chế quan sát và kiểm soát).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 2.4</span>Triển khai tích hợp API cho FM</h3>
+      <ul>
+        <li><span class="sid">2.4.1</span>Xây dựng hệ thống tương tác model linh hoạt (ví dụ: dùng Amazon Bedrock API để quản lý request đồng bộ từ nhiều môi trường compute, AWS SDK theo từng ngôn ngữ và Amazon SQS cho xử lý bất đồng bộ, API Gateway để cung cấp API client tùy chỉnh với request validation).</li>
+        <li><span class="sid">2.4.2</span>Xây dựng hệ thống tương tác AI thời gian thực để cung cấp phản hồi tức thì từ FM (ví dụ: dùng Bedrock streaming API để gửi phản hồi từng phần, WebSocket hoặc server-sent event để sinh văn bản theo thời gian thực, API Gateway để triển khai chunked transfer encoding).</li>
+        <li><span class="sid">2.4.3</span>Xây dựng hệ thống FM có khả năng phục hồi để đảm bảo hoạt động tin cậy (ví dụ: dùng AWS SDK cho exponential backoff, API Gateway để quản lý rate limiting, cơ chế fallback cho graceful degradation, AWS X-Ray để quan sát xuyên suốt ranh giới dịch vụ).</li>
+        <li><span class="sid">2.4.4</span>Xây dựng hệ thống định tuyến model thông minh để tối ưu việc lựa chọn model (ví dụ: dùng code ứng dụng để triển khai cấu hình định tuyến tĩnh, Step Functions cho định tuyến động dựa trên nội dung tới FM chuyên biệt, định tuyến model thông minh dựa trên metric, API Gateway với request transformation cho logic định tuyến).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 2.5</span>Triển khai mẫu tích hợp ứng dụng và công cụ phát triển</h3>
+      <ul>
+        <li><span class="sid">2.5.1</span>Xây dựng giao diện API cho FM để đáp ứng yêu cầu riêng của khối lượng công việc GenAI (ví dụ: dùng API Gateway để xử lý phản hồi streaming, quản lý giới hạn token, chiến lược retry để xử lý model timeout).</li>
+        <li><span class="sid">2.5.2</span>Xây dựng giao diện AI dễ tiếp cận để đẩy nhanh việc áp dụng và tích hợp FM (ví dụ: dùng AWS Amplify để phát triển thành phần UI khai báo, đặc tả OpenAPI cho cách tiếp cận API-first, Amazon Bedrock Prompt Flows cho trình xây dựng workflow no-code).</li>
+        <li><span class="sid">2.5.3</span>Xây dựng cải tiến hệ thống nghiệp vụ (ví dụ: dùng Lambda function để cải tiến CRM, Step Functions để điều phối hệ thống xử lý tài liệu, Amazon Bedrock Data Automation để quản lý quy trình xử lý dữ liệu tự động).</li>
+        <li><span class="sid">2.5.4</span>Tăng năng suất developer để đẩy nhanh workflow phát triển ứng dụng GenAI (ví dụ: dùng Amazon Q Developer để sinh và tái cấu trúc code, gợi ý code để hỗ trợ API, kiểm thử thành phần AI, tối ưu hiệu năng).</li>
+        <li><span class="sid">2.5.5</span>Xây dựng ứng dụng GenAI nâng cao để triển khai năng lực AI tinh vi (ví dụ: dùng Strands Agents và AWS Agent Squad cho điều phối gốc AWS, Step Functions để điều phối mẫu thiết kế agent, Amazon Bedrock để quản lý mẫu chuỗi prompt).</li>
+        <li><span class="sid">2.5.6</span>Cải thiện hiệu quả troubleshooting cho ứng dụng FM (ví dụ: dùng CloudWatch Logs Insights để phân tích prompt và phản hồi, X-Ray để trace lệnh gọi API FM, Amazon Q Developer để nhận diện mẫu lỗi đặc thù GenAI).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="domain3">
+    <h2>Domain 3: AI Safety, Security, and Governance <span class="weight">20%</span></h2>
+
+    <div class="task">
+      <h3><span class="tid">Task 3.1</span>Triển khai kiểm soát an toàn cho đầu vào và đầu ra</h3>
+      <ul>
+        <li><span class="sid">3.1.1</span>Xây dựng hệ thống an toàn nội dung toàn diện để bảo vệ khỏi đầu vào độc hại từ người dùng tới FM (ví dụ: dùng Amazon Bedrock guardrail để lọc nội dung, Step Functions và Lambda function để triển khai workflow kiểm duyệt tùy chỉnh, cơ chế validate theo thời gian thực).</li>
+        <li><span class="sid">3.1.2</span>Xây dựng khung an toàn nội dung để ngăn chặn đầu ra độc hại (ví dụ: dùng Bedrock guardrail để lọc phản hồi, đánh giá FM chuyên biệt cho kiểm duyệt nội dung và phát hiện toxicity, biến đổi text-to-SQL để đảm bảo kết quả tất định).</li>
+        <li><span class="sid">3.1.3</span>Xây dựng hệ thống xác minh độ chính xác để giảm hallucination trong phản hồi FM (ví dụ: dùng Amazon Bedrock Knowledge Base để căn cứ hóa (ground) phản hồi và kiểm tra sự thật, chấm điểm độ tin cậy và tìm kiếm tương đồng ngữ nghĩa để xác minh, JSON Schema để ép buộc đầu ra có cấu trúc).</li>
+        <li><span class="sid">3.1.4</span>Xây dựng hệ thống an toàn phòng thủ theo chiều sâu (defense-in-depth) để bảo vệ toàn diện khỏi việc lạm dụng FM (ví dụ: dùng Amazon Comprehend để xây bộ lọc tiền xử lý, Bedrock để triển khai guardrail dựa trên model, Lambda function để validate hậu xử lý, API Gateway để lọc phản hồi API).</li>
+        <li><span class="sid">3.1.5</span>Triển khai phát hiện mối đe dọa nâng cao để bảo vệ khỏi đầu vào đối kháng (adversarial) và lỗ hổng bảo mật (ví dụ: dùng cơ chế phát hiện prompt injection và jailbreak, làm sạch đầu vào và bộ lọc nội dung, bộ phân loại an toàn, quy trình kiểm thử đối kháng tự động).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 3.2</span>Triển khai kiểm soát bảo mật và quyền riêng tư dữ liệu</h3>
+      <ul>
+        <li><span class="sid">3.2.1</span>Xây dựng môi trường AI được bảo vệ để đảm bảo bảo mật toàn diện cho việc triển khai FM (ví dụ: dùng VPC endpoint để cô lập mạng, IAM policy để thực thi mẫu truy cập dữ liệu an toàn, AWS Lake Formation để cấp quyền dữ liệu chi tiết, CloudWatch để giám sát truy cập dữ liệu).</li>
+        <li><span class="sid">3.2.2</span>Xây dựng hệ thống bảo vệ quyền riêng tư để bảo vệ thông tin nhạy cảm trong tương tác FM (ví dụ: dùng Amazon Comprehend và Amazon Macie để phát hiện PII, tính năng bảo mật dữ liệu gốc của Bedrock, Bedrock guardrail để lọc đầu ra, cấu hình S3 Lifecycle để thực thi chính sách lưu trữ dữ liệu).</li>
+        <li><span class="sid">3.2.3</span>Xây dựng hệ thống AI hướng quyền riêng tư để bảo vệ quyền riêng tư người dùng trong khi vẫn giữ tính hữu dụng và hiệu quả của FM (ví dụ: dùng kỹ thuật che dữ liệu — data masking, phát hiện PII của Comprehend, chiến lược ẩn danh cho thông tin nhạy cảm, Bedrock guardrail).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 3.3</span>Triển khai cơ chế quản trị và tuân thủ AI</h3>
+      <ul>
+        <li><span class="sid">3.3.1</span>Xây dựng khung tuân thủ để đảm bảo tuân thủ quy định cho việc triển khai FM (ví dụ: dùng SageMaker AI để xây model card theo chương trình, AWS Glue để tự động theo dõi phả hệ dữ liệu — data lineage, gắn tag metadata để phân bổ nguồn dữ liệu có hệ thống, CloudWatch Logs để thu thập log quyết định toàn diện).</li>
+        <li><span class="sid">3.3.2</span>Triển khai theo dõi nguồn dữ liệu để duy trì khả năng truy vết trong ứng dụng GenAI (ví dụ: dùng AWS Glue Data Catalog để đăng ký nguồn dữ liệu, gắn tag metadata để phân bổ nguồn cho nội dung do FM sinh ra, CloudTrail để ghi log audit).</li>
+        <li><span class="sid">3.3.3</span>Xây dựng hệ thống quản trị tổ chức để đảm bảo giám sát nhất quán cho việc triển khai FM (ví dụ: dùng khung toàn diện phù hợp với chính sách tổ chức, yêu cầu quy định, và nguyên tắc responsible AI).</li>
+        <li><span class="sid">3.3.4</span>Triển khai giám sát liên tục và kiểm soát quản trị nâng cao để hỗ trợ audit an toàn và sẵn sàng cho quy định (ví dụ: dùng phát hiện tự động cho lạm dụng, drift, và vi phạm chính sách, giám sát bias drift, quy trình cảnh báo và khắc phục tự động, ẩn thông tin ở cấp token — token-level redaction, ghi log phản hồi, bộ lọc chính sách đầu ra AI).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 3.4</span>Triển khai nguyên tắc Responsible AI</h3>
+      <ul>
+        <li><span class="sid">3.4.1</span>Xây dựng hệ thống AI minh bạch trong đầu ra FM (ví dụ: dùng hiển thị suy luận để cung cấp giải thích cho người dùng, CloudWatch để thu thập metric độ tin cậy và định lượng độ không chắc chắn, trình bày bằng chứng để phân bổ nguồn, Bedrock agent tracing để cung cấp dấu vết suy luận).</li>
+        <li><span class="sid">3.4.2</span>Áp dụng đánh giá công bằng (fairness) để đảm bảo đầu ra FM không thiên vị (ví dụ: dùng metric công bằng định trước trong CloudWatch, Bedrock Prompt Management và Prompt Flows để thực hiện A/B testing có hệ thống, Bedrock với giải pháp LLM-as-a-judge để đánh giá model tự động).</li>
+        <li><span class="sid">3.4.3</span>Xây dựng hệ thống AI tuân thủ chính sách để đảm bảo tuân theo thực hành responsible AI (ví dụ: dùng Bedrock guardrail dựa trên yêu cầu chính sách, model card để ghi lại giới hạn của FM, Lambda function để kiểm tra tuân thủ tự động).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="domain4">
+    <h2>Domain 4: Operational Efficiency and Optimization for GenAI Applications <span class="weight">12%</span></h2>
+
+    <div class="task">
+      <h3><span class="tid">Task 4.1</span>Triển khai chiến lược tối ưu chi phí và hiệu quả tài nguyên</h3>
+      <ul>
+        <li><span class="sid">4.1.1</span>Xây dựng hệ thống tối ưu token để giảm chi phí FM trong khi vẫn giữ hiệu quả (ví dụ: dùng ước tính và theo dõi token, tối ưu context window, kiểm soát kích thước phản hồi, nén prompt, cắt tỉa ngữ cảnh, giới hạn phản hồi).</li>
+        <li><span class="sid">4.1.2</span>Xây dựng khung lựa chọn model tiết kiệm chi phí (ví dụ: dùng đánh giá đánh đổi chi phí-năng lực, phân tầng sử dụng FM theo độ phức tạp truy vấn, cân bằng chi phí inference với chất lượng phản hồi, đo tỷ lệ giá/hiệu năng, mẫu inference hiệu quả).</li>
+        <li><span class="sid">4.1.3</span>Xây dựng hệ thống FM hiệu năng cao để tối đa hóa sử dụng tài nguyên và throughput cho khối lượng công việc GenAI (ví dụ: dùng chiến lược batching, lập kế hoạch capacity, giám sát mức sử dụng, cấu hình auto-scaling, tối ưu provisioned throughput).</li>
+        <li><span class="sid">4.1.4</span>Xây dựng hệ thống caching thông minh để giảm chi phí và cải thiện thời gian phản hồi bằng cách tránh gọi FM không cần thiết (ví dụ: dùng semantic caching, result fingerprinting, edge caching, băm request tất định, prompt caching).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 4.2</span>Tối ưu hiệu năng ứng dụng</h3>
+      <ul>
+        <li><span class="sid">4.2.1</span>Xây dựng hệ thống AI phản hồi nhanh để giải quyết đánh đổi độ trễ-chi phí và cải thiện trải nghiệm người dùng với FM (ví dụ: dùng pre-computation cho truy vấn có thể dự đoán, model Bedrock tối ưu độ trễ cho ứng dụng nhạy cảm thời gian, request song song cho workflow phức tạp, response streaming, benchmark hiệu năng).</li>
+        <li><span class="sid">4.2.2</span>Nâng cao hiệu năng truy xuất để cải thiện độ liên quan và tốc độ của thông tin truy xuất cho ngữ cảnh FM (ví dụ: dùng tối ưu index, tiền xử lý truy vấn, triển khai hybrid search với chấm điểm tùy chỉnh).</li>
+        <li><span class="sid">4.2.3</span>Triển khai tối ưu throughput cho FM để giải quyết thách thức throughput riêng của khối lượng công việc GenAI (ví dụ: dùng tối ưu xử lý token, chiến lược batch inference, quản lý gọi model đồng thời).</li>
+        <li><span class="sid">4.2.4</span>Nâng cao hiệu năng FM để đạt kết quả tối ưu cho use case GenAI cụ thể (ví dụ: dùng cấu hình tham số riêng theo model, A/B testing để đánh giá cải tiến, lựa chọn temperature và top-k/top-p phù hợp theo yêu cầu).</li>
+        <li><span class="sid">4.2.5</span>Xây dựng hệ thống phân bổ tài nguyên hiệu quả chuyên biệt cho khối lượng công việc FM (ví dụ: dùng lập kế hoạch capacity cho yêu cầu xử lý token, giám sát sử dụng cho mẫu prompt và completion, cấu hình auto-scaling được tối ưu cho mẫu traffic GenAI).</li>
+        <li><span class="sid">4.2.6</span>Tối ưu hiệu năng hệ thống FM cho luồng công việc GenAI (ví dụ: dùng profiling lệnh gọi API cho mẫu prompt-completion, tối ưu truy vấn vector database cho retrieval augmentation, kỹ thuật giảm độ trễ riêng cho LLM inference, mẫu giao tiếp dịch vụ hiệu quả).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 4.3</span>Triển khai hệ thống giám sát cho ứng dụng GenAI</h3>
+      <ul>
+        <li><span class="sid">4.3.1</span>Xây dựng hệ thống quan sát toàn diện (holistic observability) để cung cấp tầm nhìn đầy đủ vào hiệu năng ứng dụng FM (ví dụ: dùng metric vận hành, tracing hiệu năng, tracing tương tác FM, metric tác động kinh doanh với dashboard tùy chỉnh).</li>
+        <li><span class="sid">4.3.2</span>Triển khai hệ thống giám sát GenAI toàn diện để chủ động phát hiện vấn đề và đánh giá KPI riêng cho việc triển khai FM (ví dụ: dùng CloudWatch để theo dõi mức sử dụng token, hiệu quả prompt, tỷ lệ hallucination, chất lượng phản hồi, phát hiện bất thường cho mẫu bùng nổ token và drift phản hồi, Amazon Bedrock Model Invocation Logs để phân tích chi tiết request/response, benchmark hiệu năng, phát hiện bất thường chi phí).</li>
+        <li><span class="sid">4.3.3</span>Xây dựng giải pháp quan sát tích hợp để cung cấp thông tin có thể hành động cho ứng dụng FM (ví dụ: dùng dashboard metric vận hành, trực quan hóa tác động kinh doanh, giám sát tuân thủ, khả năng truy vết pháp lý và audit logging, theo dõi tương tác người dùng, theo dõi mẫu hành vi model).</li>
+        <li><span class="sid">4.3.4</span>Xây dựng khung hiệu năng công cụ để đảm bảo hoạt động và sử dụng công cụ tối ưu cho FM (ví dụ: dùng theo dõi mẫu gọi, thu thập metric hiệu năng, quan sát tool calling và theo dõi điều phối multi-agent, baseline sử dụng để phát hiện bất thường).</li>
+        <li><span class="sid">4.3.5</span>Xây dựng hệ thống quản lý vận hành vector store để đảm bảo hoạt động và độ tin cậy tối ưu cho việc bổ sung ngữ cảnh FM (ví dụ: dùng giám sát hiệu năng cho vector database, quy trình tối ưu index tự động, quy trình validate chất lượng dữ liệu).</li>
+        <li><span class="sid">4.3.6</span>Xây dựng khung troubleshooting riêng cho FM để nhận diện các dạng lỗi GenAI đặc thù không có trong hệ thống ML truyền thống (ví dụ: dùng golden dataset để phát hiện hallucination, kỹ thuật output diffing để phân tích tính nhất quán phản hồi, reasoning path tracing để nhận diện lỗi logic, pipeline quan sát chuyên biệt).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="domain5">
+    <h2>Domain 5: Testing, Validation, and Troubleshooting <span class="weight">11%</span></h2>
+
+    <div class="task">
+      <h3><span class="tid">Task 5.1</span>Triển khai hệ thống đánh giá cho GenAI</h3>
+      <ul>
+        <li><span class="sid">5.1.1</span>Xây dựng khung đánh giá toàn diện để đánh giá chất lượng và hiệu quả đầu ra FM vượt ngoài phương pháp đánh giá ML truyền thống (ví dụ: dùng metric cho độ liên quan, độ chính xác thực tế, tính nhất quán, và độ trôi chảy).</li>
+        <li><span class="sid">5.1.2</span>Xây dựng hệ thống đánh giá model có hệ thống để xác định cấu hình tối ưu (ví dụ: dùng Amazon Bedrock Model Evaluations, A/B testing và canary testing cho FM, đánh giá đa model, phân tích chi phí-hiệu năng để đo hiệu quả token, tỷ lệ độ trễ/chất lượng, và kết quả kinh doanh).</li>
+        <li><span class="sid">5.1.3</span>Xây dựng cơ chế đánh giá lấy người dùng làm trung tâm để liên tục cải thiện hiệu năng FM dựa trên trải nghiệm người dùng (ví dụ: dùng giao diện phản hồi, hệ thống chấm điểm cho đầu ra model, quy trình gán nhãn để đánh giá chất lượng phản hồi).</li>
+        <li><span class="sid">5.1.4</span>Xây dựng quy trình đảm bảo chất lượng có hệ thống để duy trì tiêu chuẩn hiệu năng nhất quán cho FM (ví dụ: dùng workflow đánh giá liên tục, kiểm thử hồi quy cho đầu ra model, cổng chất lượng tự động cho việc triển khai).</li>
+        <li><span class="sid">5.1.5</span>Xây dựng hệ thống đánh giá toàn diện để đảm bảo đánh giá kỹ lưỡng từ nhiều góc độ cho đầu ra FM (ví dụ: dùng đánh giá RAG, đánh giá chất lượng tự động với kỹ thuật LLM-as-a-Judge, giao diện thu thập phản hồi con người).</li>
+        <li><span class="sid">5.1.6</span>Triển khai kiểm thử chất lượng truy xuất để đánh giá và tối ưu thành phần truy xuất thông tin cho việc bổ sung ngữ cảnh FM (ví dụ: dùng chấm điểm độ liên quan, xác minh khớp ngữ cảnh, đo độ trễ truy xuất).</li>
+        <li><span class="sid">5.1.7</span>Xây dựng khung đánh giá hiệu năng agent để đảm bảo agent thực hiện tác vụ chính xác và hiệu quả (ví dụ: dùng đo tỷ lệ hoàn thành tác vụ, đánh giá hiệu quả sử dụng công cụ, đánh giá Amazon Bedrock Agent, đánh giá chất lượng suy luận trong workflow nhiều bước).</li>
+        <li><span class="sid">5.1.8</span>Xây dựng hệ thống báo cáo toàn diện để truyền đạt metric hiệu năng và thông tin chi tiết hiệu quả tới các bên liên quan cho việc triển khai FM (ví dụ: dùng công cụ trực quan hóa, cơ chế báo cáo tự động, trực quan hóa so sánh model).</li>
+        <li><span class="sid">5.1.9</span>Xây dựng hệ thống validate triển khai để duy trì độ tin cậy trong quá trình cập nhật FM (ví dụ: dùng luồng công việc người dùng mô phỏng — synthetic, validate đầu ra riêng cho AI đối với tỷ lệ hallucination và semantic drift, kiểm tra chất lượng tự động để đảm bảo tính nhất quán phản hồi).</li>
+      </ul>
+    </div>
+
+    <div class="task">
+      <h3><span class="tid">Task 5.2</span>Xử lý sự cố (troubleshoot) ứng dụng GenAI</h3>
+      <ul>
+        <li><span class="sid">5.2.1</span>Giải quyết vấn đề xử lý nội dung để đảm bảo thông tin cần thiết được xử lý đầy đủ trong tương tác FM (ví dụ: dùng chẩn đoán tràn context window, chiến lược chunking động, tối ưu thiết kế prompt, phân tích lỗi liên quan đến truncation).</li>
+        <li><span class="sid">5.2.2</span>Chẩn đoán và giải quyết vấn đề tích hợp FM để nhận diện và sửa lỗi tích hợp API riêng cho dịch vụ GenAI (ví dụ: dùng ghi log lỗi, validate request, phân tích phản hồi).</li>
+        <li><span class="sid">5.2.3</span>Xử lý sự cố prompt engineering để cải thiện chất lượng và tính nhất quán phản hồi FM vượt ngoài điều chỉnh prompt cơ bản (ví dụ: dùng khung kiểm thử prompt, so sánh phiên bản, tinh chỉnh có hệ thống).</li>
+        <li><span class="sid">5.2.4</span>Xử lý sự cố hệ thống truy xuất để nhận diện và giải quyết vấn đề ảnh hưởng đến hiệu quả truy xuất thông tin cho việc bổ sung ngữ cảnh FM (ví dụ: dùng phân tích độ liên quan phản hồi model, chẩn đoán chất lượng embedding, giám sát drift, giải quyết vấn đề vector hóa, khắc phục chunking và tiền xử lý, tối ưu hiệu năng vector search).</li>
+        <li><span class="sid">5.2.5</span>Xử lý sự cố bảo trì prompt để liên tục cải thiện hiệu năng tương tác FM (ví dụ: dùng kiểm thử template và CloudWatch Logs để chẩn đoán prompt gây nhầm lẫn, X-Ray để triển khai pipeline quan sát prompt, validate schema để phát hiện lỗi không nhất quán định dạng, quy trình tinh chỉnh prompt có hệ thống).</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="concepts">
+    <h2>Công nghệ & Khái niệm có thể xuất hiện trong đề thi</h2>
+    <p class="desc">Danh sách không đầy đủ, không theo thứ tự trọng số/mức độ quan trọng — trích nguyên văn từ Exam Guide.</p>
+    <div class="concept-grid">
+      <span>Retrieval Augmented Generation (RAG)</span>
+      <span>Vector database và embedding</span>
+      <span>Prompt engineering và quản lý prompt</span>
+      <span>Tích hợp foundation model (FM)</span>
+      <span>Hệ thống agentic AI</span>
+      <span>Thực hành Responsible AI</span>
+      <span>An toàn và kiểm duyệt nội dung</span>
+      <span>Đánh giá và validate model</span>
+      <span>Tối ưu chi phí cho khối lượng công việc AI</span>
+      <span>Tinh chỉnh hiệu năng cho ứng dụng AI</span>
+      <span>Giám sát và observability cho hệ thống AI</span>
+      <span>Bảo mật và quản trị cho ứng dụng AI</span>
+      <span>Thiết kế API và mẫu tích hợp</span>
+      <span>Kiến trúc event-driven</span>
+      <span>Serverless computing</span>
+      <span>Container orchestration</span>
+      <span>Infrastructure as code (IaC)</span>
+      <span>CI/CD cho ứng dụng AI</span>
+      <span>Kiến trúc hybrid cloud</span>
+      <span>Tích hợp hệ thống doanh nghiệp</span>
+    </div>
+  </section>
+
+  <section class="section" id="in-scope">
+    <h2>Danh sách dịch vụ AWS In-Scope</h2>
+    <p class="desc">Danh sách không đầy đủ, có thể thay đổi. Nhóm theo danh mục chức năng chính như AWS công bố. Tên dịch vụ
+       giữ nguyên tiếng Anh.</p>
+    <div class="svc-groups">
+      <div class="svc-group"><h4>Analytics</h4><ul>
+        <li>Amazon Athena</li><li>Amazon EMR</li><li>AWS Glue</li><li>Amazon Kinesis</li>
+        <li>Amazon OpenSearch Service</li><li>Amazon QuickSight</li><li>Amazon MSK</li>
+      </ul></div>
+      <div class="svc-group"><h4>Application Integration</h4><ul>
+        <li>Amazon AppFlow</li><li>AWS AppConfig</li><li>Amazon EventBridge</li>
+        <li>Amazon SNS</li><li>Amazon SQS</li><li>AWS Step Functions</li>
+      </ul></div>
+      <div class="svc-group"><h4>Compute</h4><ul>
+        <li>AWS App Runner</li><li>Amazon EC2</li><li>AWS Lambda</li>
+        <li>AWS Lambda@Edge</li><li>AWS Outposts</li><li>AWS Wavelength</li>
+      </ul></div>
+      <div class="svc-group"><h4>Containers</h4><ul>
+        <li>Amazon ECR</li><li>Amazon ECS</li><li>Amazon EKS</li><li>AWS Fargate</li>
+      </ul></div>
+      <div class="svc-group"><h4>Customer Engagement</h4><ul>
+        <li>Amazon Connect</li>
+      </ul></div>
+      <div class="svc-group"><h4>Database</h4><ul>
+        <li>Amazon Aurora</li><li>Amazon DocumentDB</li><li>Amazon DynamoDB</li>
+        <li>Amazon DynamoDB Streams</li><li>Amazon ElastiCache</li><li>Amazon Neptune</li><li>Amazon RDS</li>
+      </ul></div>
+      <div class="svc-group"><h4>Developer Tools</h4><ul>
+        <li>AWS Amplify</li><li>AWS CDK</li><li>AWS CLI</li><li>AWS CloudFormation</li>
+        <li>AWS CodeArtifact</li><li>AWS CodeBuild</li><li>AWS CodeDeploy</li><li>AWS CodePipeline</li>
+        <li>Kiro</li><li>AWS Tools and SDKs</li><li>AWS X-Ray</li>
+      </ul></div>
+      <div class="svc-group"><h4>Machine Learning</h4><ul>
+        <li>Amazon Augmented AI</li><li>Amazon Bedrock</li><li>Amazon Bedrock AgentCore</li>
+        <li>Amazon Bedrock Knowledge Bases</li><li>Amazon Bedrock Prompt Management</li>
+        <li>Amazon Bedrock Prompt Flows</li><li>Amazon Comprehend</li><li>Amazon Kendra</li>
+        <li>Amazon Lex</li><li>Amazon Q Business</li><li>Amazon Q Business Apps</li>
+        <li>Amazon Q Developer</li><li>Amazon Rekognition</li><li>Amazon SageMaker AI</li>
+        <li>Amazon SageMaker Clarify</li><li>Amazon SageMaker Data Wrangler</li>
+        <li>Amazon SageMaker Ground Truth</li><li>Amazon SageMaker JumpStart</li>
+        <li>Amazon SageMaker Model Monitor</li><li>Amazon SageMaker Model Registry</li>
+        <li>Amazon SageMaker Neo</li><li>Amazon SageMaker Processing</li>
+        <li>Amazon SageMaker Unified Studio</li><li>Amazon Textract</li><li>Amazon Titan</li>
+        <li>Amazon Transcribe</li>
+      </ul></div>
+      <div class="svc-group"><h4>Management and Governance</h4><ul>
+        <li>AWS Auto Scaling</li><li>AWS Chatbot</li><li>AWS CloudTrail</li>
+        <li>Amazon CloudWatch</li><li>Amazon CloudWatch Logs</li><li>Amazon CloudWatch Synthetics</li>
+        <li>AWS Cost Anomaly Detection</li><li>AWS Cost Explorer</li><li>Amazon Managed Grafana</li>
+        <li>AWS Service Catalog</li><li>AWS Systems Manager</li><li>AWS Well-Architected Tool</li>
+      </ul></div>
+      <div class="svc-group"><h4>Migration and Transfer</h4><ul>
+        <li>AWS DataSync</li><li>AWS Transfer Family</li>
+      </ul></div>
+      <div class="svc-group"><h4>Networking and Content Delivery</h4><ul>
+        <li>Amazon API Gateway</li><li>AWS AppSync</li><li>Amazon CloudFront</li>
+        <li>Elastic Load Balancing (ELB)</li><li>AWS Global Accelerator</li>
+        <li>AWS PrivateLink</li><li>Amazon Route 53</li><li>Amazon VPC</li>
+      </ul></div>
+      <div class="svc-group"><h4>Security, Identity, and Compliance</h4><ul>
+        <li>Amazon Cognito</li><li>AWS Encryption SDK</li><li>IAM</li>
+        <li>IAM Access Analyzer</li><li>IAM Identity Center</li><li>AWS KMS</li>
+        <li>Amazon Macie</li><li>AWS Secrets Manager</li><li>AWS WAF</li>
+      </ul></div>
+      <div class="svc-group"><h4>Storage</h4><ul>
+        <li>Amazon EBS</li><li>Amazon EFS</li><li>Amazon S3</li>
+        <li>Amazon S3 Intelligent-Tiering</li><li>Amazon S3 Lifecycle policies</li>
+        <li>Amazon S3 Cross-Region Replication</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section class="section" id="out-of-scope">
+    <h2>Danh sách dịch vụ AWS Out-of-Scope</h2>
+    <p class="desc">Các dịch vụ hoàn toàn không liên quan tới vai trò GenAI developer sẽ không xuất hiện trong đề thi.
+       Danh sách không đầy đủ, có thể thay đổi.</p>
+    <div class="svc-groups">
+      <div class="svc-group out"><h4>Application Integration</h4><ul><li>Amazon MQ</li></ul></div>
+      <div class="svc-group out"><h4>Analytics</h4><ul>
+        <li>AWS Clean Rooms</li><li>AWS Data Exchange</li><li>Amazon DataZone</li><li>Amazon FinSpace</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Blockchain</h4><ul><li>Amazon Managed Blockchain (AMB)</li></ul></div>
+      <div class="svc-group out"><h4>Business Applications</h4><ul>
+        <li>Alexa for Business</li><li>Amazon Chime</li><li>AWS Wickr</li>
+        <li>Amazon WorkDocs</li><li>Amazon WorkMail</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Cloud Financial Management</h4><ul>
+        <li>AWS Budgets</li><li>AWS Cost and Usage Report</li>
+        <li>Reserved Instance reports</li><li>AWS Savings Plans</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Compute</h4><ul>
+        <li>AWS Batch</li><li>Amazon EC2 Image Builder</li><li>Amazon ECS Anywhere</li>
+        <li>Amazon EKS Anywhere</li><li>AWS Elastic Beanstalk</li><li>Amazon Lightsail</li>
+        <li>AWS Local Zones</li><li>AWS Serverless Application Repository</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Containers</h4><ul>
+        <li>AWS App2Container</li><li>AWS Copilot</li><li>Red Hat OpenShift Service on AWS (ROSA)</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Customer Engagement</h4><ul><li>Amazon SES</li></ul></div>
+      <div class="svc-group out"><h4>Database</h4><ul>
+        <li>Amazon Keyspaces</li><li>Amazon QLDB</li><li>Amazon Redshift</li><li>Amazon Timestream</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Developer Tools</h4><ul>
+        <li>AWS Cloud9</li><li>AWS CloudShell</li><li>Amazon CodeGuru</li>
+        <li>AWS CodeStar</li><li>Amazon Corretto</li>
+      </ul></div>
+      <div class="svc-group out"><h4>End User Computing</h4><ul>
+        <li>Amazon AppStream 2.0</li><li>Amazon WorkLink</li><li>Amazon WorkSpaces</li><li>Amazon WorkSpaces Web</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Frontend Web and Mobile</h4><ul>
+        <li>AWS Device Farm</li><li>Amazon Location Service</li><li>Amazon Pinpoint</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Game Development</h4><ul>
+        <li>Amazon GameLift</li><li>Amazon Lumberyard</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Internet of Things (IoT)</h4><ul>
+        <li>AWS IoT 1-Click</li><li>AWS IoT Analytics</li><li>AWS IoT Button</li><li>AWS IoT Core</li>
+        <li>AWS IoT Device Defender</li><li>AWS IoT Device Management</li><li>AWS IoT Events</li>
+        <li>AWS IoT FleetWise</li><li>AWS IoT Greengrass</li><li>AWS IoT SiteWise</li><li>AWS IoT TwinMaker</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Management and Governance</h4><ul>
+        <li>AWS Console Mobile Application</li><li>AWS Health Dashboard</li>
+        <li>AWS License Manager</li><li>AWS Proton</li><li>AWS Trusted Advisor</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Machine Learning</h4><ul>
+        <li>AWS DeepComposer</li><li>AWS DeepRacer</li><li>Amazon DevOps Guru</li>
+        <li>Amazon Forecast</li><li>Amazon Fraud Detector</li><li>Amazon HealthLake</li>
+        <li>Amazon Lookout for Equipment</li><li>Amazon Lookout for Metrics</li>
+        <li>Amazon Lookout for Vision</li><li>Amazon Monitron</li><li>AWS Panorama</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Media Services</h4><ul>
+        <li>Amazon Elastic Transcoder</li><li>AWS Elemental MediaConnect</li><li>AWS Elemental MediaConvert</li>
+        <li>AWS Elemental MediaLive</li><li>AWS Elemental MediaPackage</li><li>AWS Elemental MediaStore</li>
+        <li>AWS Elemental MediaTailor</li><li>Amazon Interactive Video Service</li>
+        <li>Amazon Kinesis Video Streams</li><li>Amazon Nimble Studio</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Migration and Transfer</h4><ul>
+        <li>AWS Application Discovery Service</li><li>AWS Application Migration Service</li>
+        <li>CloudEndure Migration</li><li>AWS Migration Hub</li><li>AWS Snow Family</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Networking and Content Delivery</h4><ul>
+        <li>AWS App Mesh</li><li>AWS Cloud Map</li><li>AWS Direct Connect</li>
+        <li>AWS Private 5G</li><li>AWS Transit Gateway</li><li>AWS VPN</li>
+      </ul></div>
+      <div class="svc-group out"><h4>Quantum Technologies</h4><ul><li>Amazon Braket</li></ul></div>
+      <div class="svc-group out"><h4>Robotics</h4><ul><li>AWS RoboMaker</li></ul></div>
+      <div class="svc-group out"><h4>Satellite</h4><ul><li>AWS Ground Station</li></ul></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Tổng hợp từ <a href="https://docs.aws.amazon.com/aws-certification/latest/ai-professional-01/ai-professional-01.html" target="_blank" rel="noopener">AWS Certification — AIP-C01 Exam Guide</a> · AWS Certified Generative AI Developer - Professional (AIP-C01)</p>
+</footer>
+
+</body>
+</html>

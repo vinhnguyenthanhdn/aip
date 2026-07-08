@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cơ sở lý thuyết & Thuật ngữ AWS — AIP-C01</title>
-<meta name="description" content="Tổng hợp lý thuyết và giải thích thuật ngữ AWS cho kỳ thi AWS Certified Generative AI Developer – Professional (AIP-C01).">
+<meta name="description" content="Tổng hợp lý thuyết và giải thích thuật ngữ AWS cho kỳ thi AWS Certified Generative AI Developer – Professional (AIP-C01), tổ chức theo 5 Content Domain chính thức.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -116,7 +116,8 @@
     padding: 3px 11px; border-radius: 999px; margin-bottom: var(--space-m);
   }
   .hero h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: var(--space-s); }
-  .hero p { color: var(--muted); font-size: 1rem; max-width: 68ch; }
+  .hero p { color: var(--muted); font-size: 1rem; max-width: 70ch; }
+  .hero .src { font-size: 0.8rem; margin-top: var(--space-s); color: var(--muted-2); }
 
   /* ── TOC ── */
   .toc {
@@ -139,16 +140,23 @@
     scroll-margin-top: 130px;
   }
   .section h2 {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em;
-    margin-bottom: var(--space-m); color: var(--text);
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-size: 1.22rem; font-weight: 800; letter-spacing: -0.01em;
+    margin-bottom: var(--space-s); color: var(--text);
   }
   .section h2 .num {
     font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
     color: var(--accent-2); background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
     width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; flex: 0 0 auto;
   }
+  .weight {
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+    color: var(--good); background: var(--good-dim); border: 1px solid rgba(52,211,153,0.35);
+    padding: 2px 10px; border-radius: 999px;
+  }
+  .section > p.lede { color: var(--muted); margin-bottom: var(--space-m); font-size: 0.92rem; }
   .section h3 { font-size: 1rem; font-weight: 700; margin: var(--space-m) 0 var(--space-xs); color: #E7EAF3; }
+  .section h3 .tid { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-2); font-weight: 700; margin-right: 6px; }
   .section p { color: #D3D7E4; margin-bottom: var(--space-s); }
   .section ul, .section ol { color: #D3D7E4; margin: 0 0 var(--space-s) 1.3em; }
   .section li { margin-bottom: 6px; }
@@ -165,6 +173,20 @@
   .callout.warn .icon { color: var(--warn); }
   .callout.good { background: var(--good-dim); border-color: rgba(52,211,153,0.35); }
   .callout.good .icon { color: var(--good); }
+
+  /* ── SERVICES APPENDIX ── */
+  .svc-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--space-m); margin-top: var(--space-s); }
+  .svc-group h4 {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase;
+    color: var(--accent-2); margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px;
+  }
+  .svc-group ul { list-style: none; margin: 0; font-size: 0.86rem; color: #D3D7E4; }
+  .svc-group li { padding: 2px 0; }
+  .badge-gap {
+    display: inline-block; font-family: var(--font-mono); font-size: 0.6rem; font-weight: 700;
+    color: var(--warn); background: var(--warn-dim); border: 1px solid rgba(251,191,36,0.35);
+    padding: 0 6px; border-radius: 999px; margin-left: 6px; vertical-align: middle; white-space: nowrap;
+  }
 
   /* ── GLOSSARY ── */
   .gloss-search {
@@ -199,6 +221,7 @@
     .section, .toc { padding: var(--space-m); }
     .hero h1 { font-size: 1.5rem; }
     .term { grid-template-columns: 1fr; gap: 4px; }
+    .svc-groups { grid-template-columns: 1fr 1fr; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -237,434 +260,409 @@
   <div class="hero">
     <span class="eyebrow"><svg class="icon"><use href="#i-book"/></svg>CƠ SỞ LÝ THUYẾT</span>
     <h1>Lý thuyết & Thuật ngữ AWS cho AIP-C01</h1>
-    <p>Tổng hợp toàn bộ kiến thức nền tảng và thuật ngữ AWS xuất hiện trong 97 câu hỏi của bộ đề luyện thi
-       <b>AWS Certified Generative AI Developer – Professional (AIP-C01)</b>, được sắp xếp lại theo <b>chủ đề kỹ thuật</b>
-       (không theo thứ tự câu hỏi gốc) để dễ học và tra cứu.</p>
+    <p>Nội dung được tổ chức theo đúng <b>5 Content Domain và trọng số chính thức</b> trong Exam Guide của AWS
+       (Domain 1 → Domain 5), kết hợp giải thích khái niệm/thuật ngữ AWS xuất hiện trong bộ 97 câu hỏi luyện tập lẫn
+       các kỹ năng (skill) mà Exam Guide liệt kê nhưng chưa có trong bộ đề hiện tại.</p>
+    <p class="src">Đối chiếu với: <a href="official-exam-guide.html">official-exam-guide.html</a> — bản tổng hợp đầy đủ
+       Exam Guide chính thức của AWS.</p>
   </div>
 
   <div class="toc" role="navigation" aria-label="Mục lục">
-    <a href="#bedrock">1. Amazon Bedrock & Foundation Model</a>
-    <a href="#prompt">2. Prompt Engineering & Prompt Management</a>
-    <a href="#rag">3. RAG & Vector Database</a>
-    <a href="#agents">4. Multi-Agent & Orchestration</a>
-    <a href="#guardrails">5. Guardrails & Responsible AI</a>
-    <a href="#eval">6. Model Evaluation & Observability</a>
-    <a href="#perf">7. Hiệu năng, Scaling & Chi phí</a>
-    <a href="#security">8. Bảo mật, Quản trị dữ liệu & Tuân thủ</a>
-    <a href="#devops">9. Triển khai, CI/CD & Kiến trúc đa Region</a>
-    <a href="#glossary">10. Bảng thuật ngữ (Glossary)</a>
+    <a href="#domain1">Domain 1 · 31%</a>
+    <a href="#domain2">Domain 2 · 26%</a>
+    <a href="#domain3">Domain 3 · 20%</a>
+    <a href="#domain4">Domain 4 · 12%</a>
+    <a href="#domain5">Domain 5 · 11%</a>
+    <a href="#services">Dịch vụ In-Scope/Out-of-Scope</a>
+    <a href="#glossary">Bảng thuật ngữ (Glossary)</a>
   </div>
 
-  <section class="section" id="bedrock">
-    <h2><span class="num">1</span>Amazon Bedrock & Foundation Model (FM)</h2>
-    <p><b>Amazon Bedrock</b> là dịch vụ fully-managed cho phép truy cập nhiều <b>foundation model (FM)</b> — mô hình nền tảng
-       quy mô lớn — từ nhiều nhà cung cấp (Anthropic Claude, Amazon Nova, Amazon Titan...) thông qua một API thống nhất,
-       không cần tự quản lý hạ tầng GPU.</p>
+  <section class="section" id="domain1">
+    <h2><span class="num">1</span>Foundation Model Integration, Data Management, and Compliance <span class="weight">31%</span></h2>
+    <p class="lede">Domain nặng ký nhất: thiết kế giải pháp, chọn/cấu hình FM, xử lý dữ liệu cho FM, vector store, retrieval, và prompt engineering/governance.</p>
 
-    <h3>Các API gọi mô hình chính</h3>
-    <ul>
-      <li><code>InvokeModel</code> — gọi mô hình đồng bộ, trả về toàn bộ kết quả một lần.</li>
-      <li><code>InvokeModelWithResponseStream</code> — trả kết quả dạng <b>stream</b> (từng phần), dùng để hiển thị phản hồi
-          "gõ chữ dần" theo thời gian thực, giảm độ trễ cảm nhận (perceived latency) cho ứng dụng chat.</li>
-      <li><code>Converse</code> / <code>ConverseStream</code> — API hội thoại thế hệ mới, chuẩn hóa format request/response
-          giữa các FM khác nhau (không cần định dạng payload riêng cho từng nhà cung cấp mô hình), hỗ trợ multi-turn
-          bằng cách truyền mảng <code>messages</code>.</li>
-    </ul>
-    <div class="callout">
-      <svg class="icon"><use href="#i-info"/></svg>
-      <span>Khi đề bài yêu cầu "streaming response" cho trải nghiệm người dùng real-time: đáp án đúng gần như luôn kết hợp
-      <code>InvokeModelWithResponseStream</code>/<code>ConverseStream</code> với <b>API Gateway WebSocket API</b> hoặc
-      Lambda response streaming — KHÔNG phải REST API + client-side polling.</span>
-    </div>
+    <h3><span class="tid">Task 1.1</span>Phân tích yêu cầu và thiết kế giải pháp GenAI</h3>
+    <p>Trước khi chọn công nghệ cụ thể, cần xây <b>thiết kế kiến trúc</b> phù hợp với ràng buộc nghiệp vụ/kỹ thuật, và
+       xác thực bằng <b>proof-of-concept (PoC)</b> trên Amazon Bedrock trước khi triển khai quy mô lớn. AWS khuyến nghị
+       dùng <b>AWS Well-Architected Framework</b> và riêng <b>AWS WA Tool Generative AI Lens</b> để chuẩn hóa các
+       thành phần kỹ thuật (bảo mật, RAG, observability) tái sử dụng nhất quán qua nhiều dự án — đây cũng là căn cứ hay
+       gặp trong các câu hỏi về "chuẩn hóa triển khai xuyên nhiều business unit".</p>
 
-    <h3>Model access & Inference profile</h3>
+    <h3><span class="tid">Task 1.2</span>Lựa chọn và cấu hình FM</h3>
+    <p><b>Amazon Bedrock</b> là dịch vụ fully-managed cho phép truy cập nhiều <b>foundation model (FM)</b> từ nhiều nhà
+       cung cấp (Anthropic Claude, Amazon Nova, Amazon Titan...) qua một API thống nhất. Việc chọn FM cần dựa trên
+       performance benchmark, phân tích năng lực, và đánh giá giới hạn của từng model.</p>
     <ul>
-      <li><b>Model access</b> — mỗi tài khoản/Region phải được cấp quyền bật (enable) từng FM trước khi có thể invoke.</li>
-      <li><b>Cross-Region Inference (CRI) / Inference profile</b> — cho phép request được tự động định tuyến và xử lý ở
-          một tập Region khác (ví dụ profile <code>eu.anthropic.claude...</code>) để tăng khả năng chịu tải mà vẫn giữ dữ
-          liệu trong một châu lục/khu vực pháp lý cụ thể (ví dụ chỉ các Region thuộc EU).</li>
-      <li><b>Application inference profile</b> — cho phép gắn tag, theo dõi chi phí, và áp policy theo từng use case cụ
-          thể trên cùng một FM.</li>
-      <li><b>Prompt Router (Intelligent Prompt Routing)</b> — tự động phân tích độ phức tạp của prompt để định tuyến câu
-          hỏi đơn giản tới mô hình nhỏ/rẻ và câu hỏi phức tạp tới mô hình lớn/mạnh hơn, tối ưu chi phí mà không cần tự
-          viết logic phân loại.</li>
+      <li><b>Kiến trúc chuyển đổi model động</b> — dùng Lambda + API Gateway + <b>AWS AppConfig</b> để đổi FM/nhà cung
+          cấp mà không cần sửa/deploy lại code.</li>
+      <li><b>Khả năng phục hồi (resilience)</b> — dùng mẫu <b>circuit breaker</b> trong Step Functions, <b>Cross-Region
+          Inference (CRI)</b> cho model có phạm vi Region hạn chế, triển khai đa Region, và chiến lược
+          <b>graceful degradation</b> (giảm cấp độ dịch vụ có kiểm soát thay vì sập hoàn toàn) khi có gián đoạn.</li>
+      <li><b>Tùy biến & vòng đời model</b> — dùng <b>Amazon SageMaker AI</b> để triển khai model fine-tune theo domain;
+          kỹ thuật <b>parameter-efficient fine-tuning</b> như <b>LoRA (Low-Rank Adaptation)</b> và <b>adapter</b> giúp
+          tùy biến model với chi phí huấn luyện thấp hơn nhiều so với fine-tune toàn bộ tham số; dùng
+          <b>SageMaker Model Registry</b> để version hóa và triển khai model tùy biến; có pipeline triển khai tự động,
+          chiến lược rollback khi thất bại, và quy trình quản lý vòng đời để retire/thay thế model cũ.</li>
     </ul>
 
-    <h3>On-Demand vs Provisioned Throughput</h3>
+    <h3><span class="tid">Task 1.3</span>Triển khai pipeline kiểm tra và xử lý dữ liệu để FM tiêu thụ</h3>
+    <p>Trước khi dữ liệu tới được FM, cần một pipeline xử lý riêng biệt:</p>
     <ul>
-      <li><b>On-Demand</b> — trả tiền theo mỗi token, phù hợp tải không ổn định, có thể bị <b>throttle</b> khi vượt hạn mức.</li>
-      <li><b>Provisioned Throughput</b> — mua trước công suất cố định theo <b>Model Unit (MU)</b> để đảm bảo throughput ổn
-          định cho tải cao, liên tục (ví dụ 10.000 request/giờ trong giờ hành chính). Được cấu hình qua API
-          <code>CreateProvisionedModelThroughput</code>.</li>
-    </ul>
-    <div class="callout warn">
-      <svg class="icon"><use href="#i-alert"/></svg>
-      <span><b>Bẫy thường gặp:</b> đã mua Provisioned Throughput nhưng CloudWatch vẫn cho thấy capacity đó "unused" trong
-      khi request on-demand vẫn bị throttle → nguyên nhân kinh điển là code vẫn gọi <code>modelId</code> gốc (on-demand)
-      thay vì <b>ARN của provisioned model</b> mà <code>CreateProvisionedModelThroughput</code> trả về. Sửa bằng cách thay
-      tham số <code>modelId</code> bằng ARN đó, không phải bằng cách tăng MU hay thêm retry.</span>
-    </div>
-
-    <h3>Latency-optimized inference & Prompt caching</h3>
-    <p>Đặt tham số hiệu năng (<code>performanceConfig.latency = "optimized"</code>) giúp giảm độ trễ inference cho các use
-       case tương tác thời gian thực. <b>Prompt caching</b> lưu lại phần ngữ cảnh lặp lại (ví dụ system prompt, tài liệu
-       nền) giữa các lần gọi để giảm chi phí và độ trễ khi xử lý các câu hỏi có phần ngữ cảnh giống nhau lặp lại nhiều lần.</p>
-  </section>
-
-  <section class="section" id="prompt">
-    <h2><span class="num">2</span>Prompt Engineering & Prompt Management</h2>
-    <h3>Kỹ thuật viết prompt</h3>
-    <ul>
-      <li><b>Zero-shot</b> — yêu cầu mô hình thực hiện tác vụ mà không cung cấp ví dụ mẫu.</li>
-      <li><b>One-shot / Few-shot</b> — cung cấp một hoặc vài ví dụ mẫu trong prompt để định hướng định dạng/phong cách đầu ra.</li>
-      <li><b>Chain-of-Thought (CoT)</b> — yêu cầu mô hình "suy nghĩ từng bước" (step-by-step reasoning) trước khi đưa ra
-          kết luận, giúp tăng độ chính xác cho các tác vụ suy luận phức tạp và giảm hallucination khi kết hợp với việc
-          yêu cầu xác minh sự kiện (fact verification) trước khi tóm tắt.</li>
-      <li><b>Extended thinking</b> — cấu hình một "ngân sách suy nghĩ" (thinking budget, tính bằng token) để mô hình dành
-          thời gian suy luận nội bộ trước khi trả lời, hữu ích cho các bài toán cần giải thích rành mạch (explainability).</li>
-      <li><b>System prompt</b> — phần chỉ dẫn cố định định hình vai trò/giọng văn/ràng buộc của mô hình xuyên suốt phiên
-          hội thoại (ví dụ tùy biến tone theo từng business unit: legal, HR, finance).</li>
+      <li><b>Kiểm tra chất lượng dữ liệu</b> — dùng <b>AWS Glue Data Quality</b> hoặc <b>SageMaker Data Wrangler</b> để
+          validate dữ liệu trước khi đưa vào FM, kết hợp CloudWatch metrics để giám sát.</li>
+      <li><b>Xử lý dữ liệu đa phương thức (multimodal)</b> — văn bản, hình ảnh, âm thanh, dữ liệu dạng bảng đều cần xử
+          lý chuyên biệt: Bedrock multimodal model, <b>SageMaker Processing</b>, <b>Amazon Transcribe</b> (audio →
+          text) là các thành phần thường gặp.</li>
+      <li><b>Định dạng đầu vào theo đúng yêu cầu model</b> — format JSON cho Bedrock API request, chuẩn bị dữ liệu có
+          cấu trúc cho SageMaker AI endpoint, định dạng hội thoại (message array) cho ứng dụng dialog.</li>
+      <li><b>Nâng cao chất lượng dữ liệu đầu vào</b> — dùng Bedrock để định dạng lại văn bản, <b>Amazon Comprehend</b>
+          để trích xuất thực thể, Lambda function để chuẩn hóa dữ liệu — nhằm cải thiện chất lượng và tính nhất quán
+          của phản hồi FM ngay từ đầu vào, thay vì chỉ xử lý ở đầu ra.</li>
     </ul>
 
-    <h3>Tham số suy luận (inference parameters)</h3>
+    <h3><span class="tid">Task 1.4 & 1.5</span>Vector store & Cơ chế truy xuất (RAG)</h3>
+    <p><b>RAG (Retrieval Augmented Generation)</b> là kỹ thuật truy xuất thông tin liên quan từ kho dữ liệu ngoài rồi
+       đưa vào prompt để FM sinh câu trả lời có căn cứ (grounded), giảm hallucination và cho phép trả lời dựa trên dữ
+       liệu riêng/mới.</p>
     <ul>
-      <li><b>Temperature</b> — điều chỉnh mức "ngẫu nhiên/sáng tạo" của đầu ra. Temperature càng cao → đầu ra càng đa dạng
-          nhưng cũng càng dễ hallucination. <b>Không</b> nên tăng temperature khi mục tiêu là giảm ảo giác/tăng độ chính xác.</li>
-      <li><b>Maximum token limit</b> — giới hạn độ dài đầu ra; cần validate trước khi gửi request để tránh bị cắt (truncate)
-          câu trả lời khi tài liệu đầu vào dài.</li>
-    </ul>
-
-    <h3>Amazon Bedrock Prompt Management, Flows & Agents so sánh nhanh</h3>
-    <ul>
-      <li><b>Prompt Management</b> — quản lý phiên bản (versioning), biến (variables), và các biến thể (variants) của
-          prompt tập trung; hỗ trợ workflow phê duyệt (approval) và audit trail, phù hợp khi cần quản trị hàng trăm
-          prompt template dùng chung giữa nhiều team.</li>
-      <li><b>Bedrock Flows</b> — công cụ kéo-thả (visual builder) để xây pipeline nhiều bước (input node → prompt node
-          → output node), có thể gắn guardrail, knowledge base, Lambda vào từng bước mà không cần code orchestration
-          thủ công.</li>
-      <li><b>Bedrock Agents</b> — cho phép FM tự lập kế hoạch, gọi công cụ bên ngoài (action groups gọi Lambda/API), và
-          tra cứu knowledge base để hoàn thành một nhiệm vụ nhiều bước (xem thêm mục 4).</li>
-    </ul>
-    <div class="callout">
-      <svg class="icon"><use href="#i-info"/></svg>
-      <span>Câu hỏi kiểu "quản lý hàng trăm prompt qua nhiều team, cần version control + approval workflow + audit trail,
-      ít chi phí vận hành nhất" → đáp án gần như luôn là <b>Bedrock Prompt Management</b>, không phải tự dựng bằng
-      S3 + Step Functions + EventBridge.</span>
-    </div>
-  </section>
-
-  <section class="section" id="rag">
-    <h2><span class="num">3</span>RAG (Retrieval Augmented Generation) & Vector Database</h2>
-    <p><b>RAG</b> là kỹ thuật truy xuất thông tin liên quan từ một kho dữ liệu ngoài (thường qua tìm kiếm ngữ nghĩa) rồi
-       đưa vào prompt để mô hình sinh câu trả lời có căn cứ (grounded), giúp giảm hallucination và cho phép trả lời dựa
-       trên dữ liệu riêng/mới mà mô hình chưa từng được huấn luyện.</p>
-
-    <h3>Amazon Bedrock Knowledge Bases</h3>
-    <ul>
-      <li>Dịch vụ fully-managed để xây RAG: tự động ingest tài liệu, chunk, tạo embedding, lưu vector, và cung cấp API
-          truy xuất.</li>
-      <li><code>Retrieve</code> — chỉ trả về các đoạn tài liệu liên quan (không sinh câu trả lời).</li>
-      <li><code>RetrieveAndGenerate</code> / <code>RetrieveAndGenerateStream</code> — truy xuất + sinh câu trả lời cuối
-          cùng trong một lệnh gọi, hỗ trợ <b>source attribution/citation</b> (trích dẫn nguồn) tự động.</li>
-      <li><b>Graph RAG</b> (tích hợp <b>Amazon Neptune Analytics</b>) — mô hình hóa dữ liệu dạng đồ thị để nắm bắt quan hệ
-          nhiều bước (multi-hop relationship) giữa các thực thể, phù hợp khi câu hỏi cần suy luận qua nhiều mối liên hệ
-          gián tiếp (ví dụ dữ liệu tài chính liên quan chéo nhiều thực thể).</li>
-    </ul>
-
-    <h3>Chunking strategy (chiến lược chia nhỏ tài liệu)</h3>
-    <ul>
-      <li><b>Fixed-size chunking</b> — chia theo số token cố định; đơn giản nhưng dễ cắt đứt các đoạn văn có liên kết ngữ
-          nghĩa (ví dụ một điều khoản pháp lý bị chia làm đôi).</li>
-      <li><b>Semantic chunking</b> — chia theo ranh giới ngữ nghĩa (breakpoint percentile threshold, buffer size theo số
-          câu) để giữ trọn vẹn ý nghĩa một đoạn lập luận/điều khoản.</li>
-      <li><b>Hierarchical chunking</b> — dùng chunk "cha" (ngữ cảnh rộng) và chunk "con" (chi tiết) để cân bằng giữa độ
-          chính xác truy xuất và ngữ cảnh đầy đủ.</li>
+      <li><b>Amazon Bedrock Knowledge Bases</b> — dịch vụ managed để xây RAG: tự ingest tài liệu, chunk, tạo embedding,
+          lưu vector, cung cấp API <code>Retrieve</code>/<code>RetrieveAndGenerate(Stream)</code> kèm source
+          attribution/citation tự động. Hỗ trợ tổ chức phân cấp (hierarchical) cho tài liệu lớn.</li>
+      <li><b>Lựa chọn vector database</b> — <b>Amazon OpenSearch Service</b> (Neural plugin tích hợp Bedrock, sharding
+          để scale), <b>Amazon Aurora PostgreSQL + pgvector</b> (khi đã có sẵn dữ liệu quan hệ), <b>Amazon RDS + S3</b>
+          (kho tài liệu), <b>Amazon DynamoDB</b> kết hợp vector database cho metadata/embedding.</li>
+      <li><b>Metadata framework</b> — S3 object metadata cho timestamp, thuộc tính tùy chỉnh cho tác giả, tagging để
+          phân loại domain — cải thiện độ chính xác tìm kiếm mà không cần đọc toàn bộ nội dung tài liệu.</li>
+      <li><b>Chunking strategy</b> — <b>fixed-size chunking</b> (đơn giản, dễ cắt đứt ngữ cảnh), <b>semantic chunking</b>
+          (theo ranh giới ngữ nghĩa), <b>hierarchical chunking</b> (chunk cha/con, dựa trên cấu trúc nội dung).</li>
+      <li><b>Embedding</b> — <b>Amazon Titan Embeddings</b> hoặc các embedding model khác trên Bedrock, chọn theo số
+          chiều (dimensionality) và mức phù hợp domain; dùng Lambda để tạo embedding hàng loạt (batch).</li>
+      <li><b>Nâng cao độ liên quan truy xuất</b> — <b>hybrid search</b> (kết hợp vector + từ khóa), <b>reranking</b>
+          (Amazon Bedrock reranker model sắp xếp lại kết quả theo độ liên quan thực sự), <b>query expansion</b> (mở
+          rộng truy vấn), <b>query decomposition</b> (phân rã truy vấn phức tạp thành nhiều truy vấn nhỏ qua Lambda),
+          <b>query transformation</b> (biến đổi truy vấn qua Step Functions).</li>
+      <li><b>Truy cập nhất quán cho FM</b> — function calling interface cho vector search, <b>Model Context Protocol
+          (MCP) client</b> cho truy vấn vector, mẫu API chuẩn hóa cho retrieval augmentation.</li>
+      <li><b>Bảo trì vector store</b> — cơ chế cập nhật tăng dần, phát hiện thay đổi real-time, đồng bộ tự động, pipeline
+          làm mới theo lịch để đảm bảo dữ liệu trong vector store luôn hiện hành.</li>
     </ul>
     <div class="callout warn">
       <svg class="icon"><use href="#i-alert"/></svg>
-      <span><b>Bẫy thường gặp:</b> khi tài liệu bị cắt sai ranh giới ngữ nghĩa (ví dụ lập luận pháp lý bị chia rời) gây
-      thiếu ngữ cảnh/trích dẫn lỗi thời → đáp án đúng là đổi <b>chunking strategy sang semantic boundaries</b> rồi tạo
-      lại embedding, KHÔNG phải chỉ tăng số chiều (dimensionality) của vector hay đổi datastore.</span>
+      <span><b>Bẫy thường gặp:</b> tài liệu bị cắt sai ranh giới ngữ nghĩa (ví dụ lập luận pháp lý bị chia rời) →
+      đáp án đúng là đổi <b>chunking strategy sang semantic/hierarchical</b> rồi tạo lại embedding — KHÔNG phải chỉ
+      tăng số chiều vector hay đổi datastore. Khi vector search bỏ sót thuật ngữ/mã viết tắt chính xác → ưu tiên
+      <b>hybrid search</b>, không phải tăng dimensionality.</span>
     </div>
 
-    <h3>Tìm kiếm: Vector, Keyword & Hybrid</h3>
+    <h3><span class="tid">Task 1.6</span>Prompt Engineering & Governance</h3>
     <ul>
-      <li><b>Vector/semantic search (k-NN)</b> — tìm theo độ tương đồng ngữ nghĩa của embedding; mạnh về "hiểu ý" nhưng
-          có thể bỏ sót các thuật ngữ/mã viết tắt chính xác (ví dụ thuật ngữ y khoa).</li>
-      <li><b>Keyword search</b> — tìm khớp từ khóa chính xác; mạnh với thuật ngữ/mã số nhưng yếu về ngữ nghĩa.</li>
-      <li><b>Hybrid search</b> — kết hợp cả hai, thường là lựa chọn tối ưu khi hệ thống báo cáo "bỏ sót thuật ngữ/mã viết
-          tắt chính xác" nhưng "trả về quá nhiều kết quả tương tự ngữ nghĩa nhưng không liên quan".</li>
-      <li><b>Reranking</b> — dùng một mô hình chuyên biệt (<b>Amazon Bedrock Rerank API</b>/reranker model) để sắp xếp lại
-          kết quả truy xuất ban đầu theo mức độ liên quan thực sự trước khi đưa vào FM sinh câu trả lời — cải thiện chất
-          lượng RAG với chi phí vận hành thấp hơn nhiều so với tự xây pipeline hai giai đoạn bằng SageMaker.</li>
+      <li><b>Kỹ thuật viết prompt</b> — zero-shot, one-shot/few-shot, <b>chain-of-thought (CoT)</b> (yêu cầu suy luận
+          từng bước để tăng độ chính xác), <b>system prompt</b> để định hình vai trò/giọng văn xuyên suốt hội thoại.</li>
+      <li><b>Amazon Bedrock Prompt Management</b> — quản lý version, biến (variables), biến thể (variants) của prompt
+          template tập trung; hỗ trợ workflow phê duyệt và audit trail (CloudTrail để theo dõi sử dụng, CloudWatch Logs
+          để ghi log truy cập) — phù hợp khi cần quản trị hàng trăm prompt dùng chung nhiều team.</li>
+      <li><b>Amazon Bedrock Prompt Flows</b> — công cụ kéo-thả xây pipeline nhiều bước (input → prompt → output node),
+          hỗ trợ phân nhánh có điều kiện dựa trên phản hồi model, thành phần prompt tái sử dụng, và bước tiền/hậu xử lý
+          tích hợp — không cần code orchestration thủ công.</li>
+      <li><b>Hệ thống AI tương tác đa lượt (multi-turn)</b> — Step Functions cho workflow làm rõ (clarification) khi câu
+          hỏi người dùng mơ hồ, Amazon Comprehend để nhận diện ý định, DynamoDB để lưu lịch sử hội thoại.</li>
+      <li><b>QA cho prompt</b> — Lambda function để xác minh đầu ra mong đợi, Step Functions để test edge case, CloudWatch
+          để test hồi quy (regression) khi thay đổi prompt.</li>
+    </ul>
+    <div class="callout">
+      <svg class="icon"><use href="#i-info"/></svg>
+      <span>Câu hỏi kiểu "quản lý hàng trăm prompt qua nhiều team, cần version control + approval workflow + audit
+      trail, ít chi phí vận hành nhất" → đáp án gần như luôn là <b>Bedrock Prompt Management</b>, không phải tự dựng
+      bằng S3 + Step Functions + EventBridge.</span>
+    </div>
+  </section>
+
+  <section class="section" id="domain2">
+    <h2><span class="num">2</span>Implementation and Integration <span class="weight">26%</span></h2>
+    <p class="lede">Agentic AI, chiến lược deploy model, kiến trúc tích hợp doanh nghiệp, tích hợp API FM, và công cụ phát triển.</p>
+
+    <h3><span class="tid">Task 2.1</span>Agentic AI & Tích hợp công cụ</h3>
+    <ul>
+      <li><b>Amazon Bedrock Agents</b> — FM tự lập kế hoạch, gọi <b>action group</b> (Lambda/API) và tra cứu knowledge
+          base để hoàn thành nhiệm vụ nhiều bước; bật <b>trace events</b> để ghi lại từng bước suy luận phục vụ audit.</li>
+      <li><b>ReAct pattern</b> (Reasoning + Acting) và <b>chain-of-thought</b> — Step Functions triển khai các bước suy
+          luận có cấu trúc để FM phân rã và giải quyết vấn đề phức tạp.</li>
+      <li><b>Strands Agents</b> và <b>AWS Agent Squad</b> — framework mã nguồn mở do AWS phát triển để xây hệ thống
+          multi-agent với quản lý memory/state, dùng <b>MCP</b> cho tương tác agent–công cụ; Strands API cho phép định
+          nghĩa hành vi tùy chỉnh và hàm chuẩn hóa cho tool integration.</li>
+      <li><b>An toàn cho agent (safeguarded workflow)</b> — Step Functions để định nghĩa điều kiện dừng, Lambda để
+          triển khai timeout, IAM policy để giới hạn tài nguyên agent được phép truy cập, <b>circuit breaker</b> để
+          giảm thiểu lỗi lan truyền khi một bước trong chuỗi agent thất bại liên tục.</li>
+      <li><b>Model Context Protocol (MCP)</b> — giao thức chuẩn hóa cách agent kết nối tới công cụ/nguồn dữ liệu ngoài.
+          Có thể host MCP server bằng <b>Lambda</b> (stateless, nhẹ) hoặc <b>Amazon ECS</b> (cho công cụ phức tạp,
+          cần trạng thái); dùng <b>Streamable HTTP transport</b> sau API Gateway + OAuth 2.1 khi cần expose cho đối
+          tác ngoài, hoặc <b>STDIO transport</b> khi chỉ chạy nội bộ.</li>
+      <li><b>Human-in-the-loop</b> — Step Functions điều phối quy trình review/phê duyệt (<code>waitForTaskToken</code>
+          / <code>SendTaskSuccess</code>), API Gateway để thu thập phản hồi con người bổ sung cho năng lực FM.</li>
     </ul>
 
-    <h3>Lựa chọn Vector Database</h3>
+    <h3><span class="tid">Task 2.2</span>Chiến lược deploy model</h3>
     <ul>
-      <li><b>Amazon OpenSearch Service / Serverless</b> — vector search + metadata filtering + hybrid search, phù hợp
-          dataset lớn (hàng chục triệu embedding), nhiều ngôn ngữ, cần độ trễ thấp và ít quản trị hạ tầng.</li>
-      <li><b>Amazon Aurora PostgreSQL + pgvector</b> — phù hợp khi đã có sẵn dữ liệu quan hệ trong PostgreSQL và muốn kết
-          hợp SQL truyền thống với similarity search trong cùng một database.</li>
-      <li><b>Amazon S3 Vectors</b> — lưu trữ vector-native trên S3, tích hợp trực tiếp với Bedrock Knowledge Bases, chi
-          phí thấp cho khối lượng lớn.</li>
-      <li><b>Amazon MemoryDB (Valkey/Redis OSS)</b> — vector search trong bộ nhớ, độ trễ cực thấp; dùng thuật toán
-          <b>HNSW</b> (Hierarchical Navigable Small World) khi index lớn cần approximate search nhanh, hoặc
-          <b>Flat</b>/<b>IVFFlat</b> khi dataset nhỏ và cần độ chính xác tối đa (exact/near-exact search).</li>
-      <li><b>Amazon Neptune Analytics</b> — khi bài toán cần truy vấn quan hệ đồ thị (Graph RAG) thay vì chỉ similarity search.</li>
+      <li><b>On-Demand vs Provisioned Throughput</b> — On-Demand trả theo token, dễ bị throttle khi vượt hạn mức;
+          <b>Provisioned Throughput</b> (đo bằng <b>Model Unit — MU</b>) mua trước công suất cố định cho tải cao ổn
+          định, tạo qua <code>CreateProvisionedModelThroughput</code>.</li>
+      <li><b>Thách thức triển khai LLM khác ML truyền thống</b> — mẫu container cần tối ưu riêng cho yêu cầu bộ nhớ,
+          sử dụng GPU, và năng lực xử lý token; cần chiến lược load model chuyên biệt (model lớn, thời gian khởi động
+          lâu hơn nhiều so với model ML cổ điển).</li>
+      <li><b>Tối ưu triển khai theo tải</b> — chọn model nhỏ/pre-trained cho tác vụ đơn giản, dùng
+          <b>model cascading</b> dựa trên API (định tuyến câu hỏi đơn giản tới model nhỏ, phức tạp tới model lớn) để
+          cân bằng hiệu năng và chi phí.</li>
+      <li><b>SageMaker AI endpoint</b> — real-time (độ trễ thấp, GPU chuyên dụng), serverless (scale-to-zero, tải
+          không đều), asynchronous (payload lớn/xử lý lâu) — dùng để triển khai giải pháp hybrid cùng Bedrock.</li>
+    </ul>
+
+    <h3><span class="tid">Task 2.3</span>Kiến trúc tích hợp doanh nghiệp</h3>
+    <ul>
+      <li><b>Kết nối doanh nghiệp</b> — tích hợp dựa trên API với hệ thống legacy, kiến trúc <b>event-driven</b>
+          (EventBridge) để tách rời lỏng lẻo (loose coupling), mẫu đồng bộ dữ liệu giữa các hệ thống.</li>
+      <li><b>Truy cập an toàn</b> — identity federation giữa dịch vụ FM và hệ thống doanh nghiệp, role-based access
+          control, nguyên tắc <b>least privilege</b> cho mọi API access tới FM.</li>
+      <li><b>Giải pháp đa môi trường / hybrid</b> — <b>AWS Outposts</b> để tích hợp dữ liệu on-premises,
+          <b>AWS Wavelength</b> để triển khai edge, định tuyến an toàn giữa cloud và on-premises — dùng khi dữ liệu
+          phải tuân thủ theo từng khu vực pháp lý (data residency) mà vẫn cần truy cập FM.</li>
+      <li><b>CI/CD & GenAI gateway</b> — <b>AWS CodePipeline</b>, <b>AWS CodeBuild</b>, khung kiểm thử tự động cho việc
+          triển khai/kiểm thử liên tục thành phần GenAI kèm quét bảo mật và hỗ trợ rollback; lớp trừu tượng hóa tập
+          trung (gateway) cùng cơ chế quan sát/kiểm soát cho việc tiêu thụ GenAI trong tổ chức.</li>
+    </ul>
+
+    <h3><span class="tid">Task 2.4</span>Tích hợp API cho FM</h3>
+    <ul>
+      <li><b>Đồng bộ vs bất đồng bộ</b> — Bedrock API cho request đồng bộ từ nhiều môi trường compute; AWS SDK theo
+          từng ngôn ngữ + <b>Amazon SQS</b> cho xử lý bất đồng bộ.</li>
+      <li><b>Streaming thời gian thực</b> — <code>InvokeModelWithResponseStream</code>/<code>ConverseStream</code>,
+          WebSocket hoặc server-sent event để sinh văn bản theo thời gian thực; API Gateway hỗ trợ chunked transfer
+          encoding.</li>
+      <li><b>Khả năng phục hồi</b> — AWS SDK với <b>exponential backoff</b>, API Gateway để quản lý rate limiting, cơ
+          chế <b>fallback</b> cho graceful degradation, <b>AWS X-Ray</b> để quan sát xuyên suốt ranh giới dịch vụ (đâu
+          là điểm gây latency khi request đi qua nhiều service).</li>
+      <li><b>Định tuyến model thông minh</b> — định tuyến tĩnh trong code, Step Functions cho định tuyến động dựa trên
+          nội dung, hoặc <b>Bedrock Intelligent Prompt Routing</b> để tự động chọn model theo độ phức tạp câu hỏi.</li>
+    </ul>
+
+    <h3><span class="tid">Task 2.5</span>Mẫu tích hợp ứng dụng & công cụ phát triển</h3>
+    <ul>
+      <li><b>Giao diện dễ tiếp cận</b> — <b>AWS Amplify</b> để xây UI khai báo (declarative), đặc tả <b>OpenAPI</b> cho
+          cách tiếp cận API-first, Bedrock Prompt Flows cho workflow builder no-code.</li>
+      <li><b>Tăng năng suất developer</b> — <b>Amazon Q Developer</b> để sinh/tái cấu trúc code, gợi ý code hỗ trợ API,
+          kiểm thử thành phần AI, tối ưu hiệu năng, và nhận diện mẫu lỗi đặc thù GenAI.</li>
+      <li><b>Cải tiến hệ thống nghiệp vụ</b> — Lambda cho CRM, Step Functions điều phối xử lý tài liệu,
+          <b>Amazon Bedrock Data Automation</b> để tự động hóa quy trình xử lý dữ liệu.</li>
+      <li><b>Troubleshooting</b> — CloudWatch Logs Insights để phân tích prompt/phản hồi, X-Ray để trace lệnh gọi API FM.</li>
     </ul>
   </section>
 
-  <section class="section" id="agents">
-    <h2><span class="num">4</span>Multi-Agent & Orchestration</h2>
-    <h3>Amazon Bedrock Agents</h3>
+  <section class="section" id="domain3">
+    <h2><span class="num">3</span>AI Safety, Security, and Governance <span class="weight">20%</span></h2>
+    <p class="lede">Kiểm soát an toàn đầu vào/đầu ra, bảo mật & quyền riêng tư dữ liệu, quản trị/tuân thủ, và nguyên tắc Responsible AI.</p>
+
+    <h3><span class="tid">Task 3.1</span>Kiểm soát an toàn đầu vào/đầu ra</h3>
     <ul>
-      <li><b>Action group</b> — định nghĩa các "công cụ" (thường là Lambda hoặc REST API) mà agent có thể gọi để thực
-          hiện hành động (ví dụ tra cứu đơn hàng, cập nhật hệ thống).</li>
-      <li>Agent có thể tích hợp trực tiếp với <b>Knowledge Base</b> để tra cứu tài liệu (RAG) và với action group để thực
-          thi nghiệp vụ, giúp giảm mạnh operational overhead so với tự dựng orchestration bằng Step Functions/Lambda thủ công.</li>
-      <li><b>Trace events</b> — bật để ghi lại từng bước suy luận/gọi công cụ của agent, phục vụ audit trail.</li>
-      <li><b>ReAct pattern</b> (Reasoning + Acting) — mô hình xen kẽ giữa "suy luận" và "hành động" (gọi công cụ), là nền
-          tảng cách Bedrock Agents vận hành nội bộ.</li>
+      <li><b>Amazon Bedrock Guardrails</b> — <b>content filter</b> (chặn nội dung độc hại theo danh mục, ngưỡng
+          low/medium/high), <b>denied topics</b> (chủ đề bị cấm hoàn toàn kèm câu ví dụ mẫu), <b>word filter</b> (danh
+          sách từ/cụm từ tùy chỉnh), <b>sensitive information filter</b> (PII: mask hoặc block).</li>
+      <li><b>Giảm hallucination</b> — Bedrock Knowledge Base để "ground" câu trả lời và fact-checking; chấm điểm độ tin
+          cậy (confidence scoring) và tìm kiếm tương đồng ngữ nghĩa để xác minh; <b>JSON Schema</b> để ép buộc đầu ra
+          có cấu trúc, giảm khả năng model "bịa" định dạng tự do.</li>
+      <li><b>Phòng thủ theo chiều sâu (defense-in-depth)</b> — Amazon Comprehend cho bộ lọc tiền xử lý, Bedrock guardrail
+          dựa trên model, Lambda validate hậu xử lý, API Gateway lọc phản hồi API — nhiều lớp bảo vệ độc lập.</li>
+      <li><b>Phát hiện mối đe dọa nâng cao</b> — cơ chế phát hiện <b>prompt injection</b> và <b>jailbreak</b>, làm sạch
+          đầu vào, bộ phân loại an toàn (safety classifier), quy trình kiểm thử đối kháng (adversarial testing) tự động.</li>
     </ul>
 
-    <h3>Kiến trúc multi-agent: Supervisor / Collaborator</h3>
-    <p>Khi cần agent phục vụ nhiều domain khác nhau (ví dụ bệnh viện: khám lâm sàng, bảo hiểm, lịch hẹn), mẫu kiến trúc
-       khuyến nghị là:</p>
+    <h3><span class="tid">Task 3.2</span>Bảo mật & quyền riêng tư dữ liệu</h3>
     <ul>
-      <li>Một <b>supervisor agent</b> làm nhiệm vụ phân loại ý định (intent classification) ngôn ngữ tự nhiên của câu hỏi.</li>
-      <li>Định tuyến câu hỏi tới các <b>collaborator agent</b> chuyên biệt theo từng domain, mỗi collaborator gắn với
-          knowledge base riêng (data isolation) và dùng IAM filtering để kiểm soát quyền truy cập dữ liệu.</li>
-      <li>Mẫu này scale tốt hơn nhiều so với việc dùng nhiều supervisor độc lập chạy song song hoặc một agent tổng quát
-          (general-purpose) với nhiều action group xử lý mọi domain.</li>
+      <li><b>Cô lập mạng</b> — <b>VPC endpoint (interface endpoint)</b> cho Amazon Bedrock đảm bảo lệnh gọi đi qua
+          đường truyền private, không qua internet công cộng.</li>
+      <li><b>Kiểm soát truy cập dữ liệu</b> — IAM policy cho mẫu truy cập an toàn, <b>AWS Lake Formation</b> (LF-Tags)
+          để cấp quyền dữ liệu chi tiết ở mức cột/bảng xuyên nhiều tài khoản, CloudWatch để giám sát truy cập dữ liệu.</li>
+      <li><b>Bảo vệ PII</b> — <b>Amazon Comprehend</b> và <b>Amazon Macie</b> để phát hiện PII, tính năng bảo mật dữ
+          liệu gốc của Bedrock, Bedrock guardrail để lọc đầu ra, <b>S3 Lifecycle</b> để thực thi chính sách lưu trữ.</li>
+      <li><b>Kỹ thuật bảo vệ quyền riêng tư</b> — data masking, anonymization cho thông tin nhạy cảm, kết hợp Bedrock
+          guardrail để vẫn giữ tính hữu dụng của FM trong khi bảo vệ quyền riêng tư người dùng.</li>
     </ul>
 
-    <h3>Amazon Bedrock AgentCore</h3>
-    <p>Nền tảng runtime cho agent "production-grade": cung cấp sẵn <b>memory</b> (nhớ ngữ cảnh xuyên phiên),
-       <b>identity</b> (định danh/ủy quyền), <b>event handling</b>, và <b>observability</b> tích hợp sẵn — giúp agent hỗ
-       trợ cả invocation đồng bộ lẫn event-driven mà không cần tự xây state machine (Step Functions) + DynamoDB để lưu
-       state như cách làm thủ công truyền thống.</p>
-
-    <h3>Model Context Protocol (MCP)</h3>
+    <h3><span class="tid">Task 3.3</span>Quản trị và tuân thủ AI</h3>
     <ul>
-      <li><b>MCP</b> là giao thức chuẩn hóa cách AI agent kết nối tới các "công cụ"/nguồn dữ liệu bên ngoài (MCP server),
-          giúp tách biệt logic công cụ khỏi logic agent.</li>
-      <li><b>STDIO transport</b> — giao tiếp qua input/output cục bộ, phù hợp chạy MCP server trên cùng máy/tiến trình
-          với client (không phù hợp khi cần expose ra ngoài cho nhiều consumer/đối tác thứ ba).</li>
-      <li><b>Streamable HTTP transport</b> — giao tiếp qua HTTP, phù hợp khi cần expose MCP server cho nhiều ứng dụng nội
-          bộ và đối tác bên ngoài; nên đặt sau <b>Amazon API Gateway</b> và bảo vệ bằng <b>OAuth 2.1</b> (qua Amazon
-          Cognito) khi cần strict authentication/authorization cho nhiều bên dùng chung.</li>
-      <li>MCP server có thể host bằng <b>AWS Lambda function URL</b> (bật SigV4 + IAM auth) khi chỉ cần nội bộ AWS gọi,
-          hoặc qua API Gateway khi cần expose rộng hơn ra ngoài AWS.</li>
+      <li><b>Model card</b> — SageMaker AI hỗ trợ tạo model card theo chương trình (programmatic) để ghi lại giới hạn,
+          mục đích sử dụng, và đặc tính của FM — phục vụ tuân thủ quy định.</li>
+      <li><b>Data lineage (phả hệ dữ liệu)</b> — <b>AWS Glue</b> tự động theo dõi nguồn gốc dữ liệu; <b>AWS Glue Data
+          Catalog</b> đăng ký nguồn dữ liệu; gắn tag metadata để phân bổ nguồn cho nội dung do FM sinh ra —
+          <b>AWS CloudTrail</b> ghi log audit cho toàn bộ quá trình truy cập.</li>
+      <li><b>Giám sát quản trị nâng cao</b> — phát hiện tự động cho lạm dụng/drift/vi phạm chính sách, giám sát
+          <b>bias drift</b>, quy trình cảnh báo & khắc phục tự động, ẩn thông tin ở cấp token (token-level redaction),
+          ghi log phản hồi, bộ lọc chính sách đầu ra AI.</li>
     </ul>
 
-    <h3>Orchestration hạ tầng: AWS Step Functions</h3>
+    <h3><span class="tid">Task 3.4</span>Nguyên tắc Responsible AI</h3>
     <ul>
-      <li><b>Standard workflow</b> — hỗ trợ chạy dài (tới 1 năm), có <b>Wait for a Callback (waitForTaskToken)</b> để tạm
-          dừng chờ phê duyệt của con người rồi resume bằng <code>SendTaskSuccess</code> — mẫu chuẩn cho các luồng cần
-          <b>human-in-the-loop</b> review.</li>
-      <li><b>Express workflow</b> — tối ưu cho luồng ngắn, tần suất cao, chi phí thấp hơn nhưng không hỗ trợ callback dài hạn.</li>
-      <li><b>Parallel state</b> — chạy nhiều nhánh xử lý đồng thời (ví dụ nhiều loại phân tích trên cùng một báo cáo) để
-          giảm tổng thời gian xử lý so với xử lý tuần tự.</li>
-      <li><b>Giới hạn payload 256 KB</b> giữa các state — khi output vượt hạn mức này (ví dụ dữ liệu trung gian giữa các
-          agent), giải pháp chuẩn là lưu dữ liệu lớn vào <b>Amazon S3</b> và chỉ truyền <b>reference (S3 URI)</b> giữa
-          các state bằng <code>ResultPath</code>/<code>ResultSelector</code>, không phải nén dữ liệu bằng Lambda.</li>
-    </ul>
-  </section>
-
-  <section class="section" id="guardrails">
-    <h2><span class="num">5</span>Guardrails & Responsible AI</h2>
-    <h3>Amazon Bedrock Guardrails — các loại policy</h3>
-    <ul>
-      <li><b>Content filters</b> — chặn nội dung độc hại theo danh mục (hate, insults, violence...) với ngưỡng cấu hình
-          (low/medium/high).</li>
-      <li><b>Denied topics</b> — định nghĩa chủ đề bị cấm hoàn toàn (ví dụ tư vấn đầu tư cụ thể) kèm câu ví dụ mẫu để mô
-          hình nhận diện tốt hơn.</li>
-      <li><b>Word filters</b> — chặn theo danh sách từ/cụm từ tùy chỉnh (ví dụ tên đối thủ cạnh tranh).</li>
-      <li><b>Sensitive information filters</b> — phát hiện và xử lý PII (personally identifiable information) theo hai
-          chế độ: <b>mask</b> (che thông tin, vẫn giữ ngữ cảnh) hoặc <b>block</b> (chặn toàn bộ request/response).</li>
-      <li><b>Contextual grounding check</b> — so khớp câu trả lời với nguồn tài liệu tham chiếu để phát hiện
-          <b>hallucination</b> (nội dung không có căn cứ) và độ liên quan (relevance) của câu trả lời so với câu hỏi.</li>
-      <li><b>Automated Reasoning checks</b> — dùng suy luận hình thức (formal/logic-based) để xác minh tính đúng đắn của
-          câu trả lời theo một tập quy tắc định trước, giảm hallucination trong các domain có quy tắc rõ ràng.</li>
+      <li><b>Minh bạch (transparency)</b> — hiển thị suy luận (reasoning display) cho người dùng, CloudWatch thu thập
+          metric độ tin cậy và định lượng độ không chắc chắn, <b>Bedrock agent tracing</b> cung cấp dấu vết suy luận.</li>
+      <li><b>Đánh giá công bằng (fairness)</b> — metric công bằng định trước trong CloudWatch (ví dụ dùng
+          <b>Amazon SageMaker Clarify</b> để phân tích bias), Bedrock Prompt Management/Prompt Flows để A/B testing có
+          hệ thống, <b>LLM-as-a-judge</b> để đánh giá model tự động.</li>
+      <li><b>Tuân thủ chính sách</b> — Bedrock guardrail dựa trên yêu cầu chính sách nội bộ, model card ghi lại giới
+          hạn của FM, Lambda function để kiểm tra tuân thủ tự động.</li>
     </ul>
     <div class="callout good">
       <svg class="icon"><use href="#i-check-circle"/></svg>
-      <span>Khi một use case cần <b>nhiều mức xử lý khác nhau cho nhiều loại nội dung nhạy cảm</b> (ví dụ: chặn nội dung
-      độc hại ở mức trung bình, che PII trong response nhưng chặn thông tin tài chính trong input, đồng thời log lại để
-      audit) → thường chỉ cần <b>MỘT guardrail cấu hình đa chính sách</b> (multiple filter/policy trong cùng một
-      guardrail), KHÔNG cần tạo nhiều guardrail rồi nối chuỗi bằng Step Functions — cách đó vừa tốn công vừa tăng
-      operational overhead không cần thiết.</span>
+      <span>Khi cần <b>nhiều mức xử lý khác nhau cho nhiều loại nội dung nhạy cảm</b> → thường chỉ cần MỘT guardrail
+      cấu hình đa chính sách, không cần nhiều guardrail nối chuỗi bằng Step Functions.</span>
     </div>
+  </section>
 
-    <h3>Guardrail vận hành & giám sát</h3>
+  <section class="section" id="domain4">
+    <h2><span class="num">4</span>Operational Efficiency and Optimization for GenAI Applications <span class="weight">12%</span></h2>
+    <p class="lede">Tối ưu chi phí/tài nguyên, tối ưu hiệu năng ứng dụng, và giám sát vận hành cho ứng dụng GenAI.</p>
+
+    <h3><span class="tid">Task 4.1</span>Tối ưu chi phí & hiệu quả tài nguyên</h3>
     <ul>
-      <li><b>Detect mode vs Block mode</b> — thường dùng "detect" (chỉ ghi nhận, không chặn) trong giai đoạn dev/test để
-          đánh giá tác động, rồi chuyển sang "block"/"mask" khi lên production.</li>
-      <li><b>Cross-Region guardrail (guardrail profile)</b> — cho phép guardrail được áp dụng nhất quán qua nhiều Region,
-          hỗ trợ failover.</li>
-      <li>Metric giám sát: <code>InvocationsIntervened</code> (số lần guardrail can thiệp), dimension
-          <code>GuardrailContentSource</code> — theo dõi qua Amazon CloudWatch alarms để phát hiện discrepancy (ví dụ
-          chênh lệch tỷ lệ can thiệp giữa các nhóm nhân khẩu học, phục vụ đánh giá <b>fairness</b>).</li>
+      <li><b>Tối ưu token</b> — ước tính/theo dõi token trước khi gửi request, tối ưu context window, kiểm soát kích
+          thước phản hồi, <b>prompt compression</b> (nén prompt), <b>context pruning</b> (cắt tỉa ngữ cảnh không cần
+          thiết), giới hạn độ dài phản hồi.</li>
+      <li><b>Lựa chọn model tiết kiệm chi phí</b> — đánh đổi chi phí-năng lực, phân tầng sử dụng FM theo độ phức tạp
+          truy vấn (model routing), đo tỷ lệ giá/hiệu năng.</li>
+      <li><b>Tối đa hóa throughput</b> — chiến lược batching, lập kế hoạch capacity, auto-scaling, tối ưu provisioned
+          throughput.</li>
+      <li><b>Caching thông minh</b> — <b>semantic caching</b> (cache theo độ tương đồng ngữ nghĩa của câu hỏi, không
+          chỉ khớp chuỗi chính xác), <b>result fingerprinting</b>, edge caching, băm request tất định (deterministic
+          hashing), <b>prompt caching</b> (cache phần ngữ cảnh lặp lại giữa các lần gọi) — đều nhằm tránh gọi FM không
+          cần thiết.</li>
     </ul>
 
-    <h3>Trách nhiệm giải trình (Responsible AI) khác</h3>
+    <h3><span class="tid">Task 4.2</span>Tối ưu hiệu năng ứng dụng</h3>
     <ul>
-      <li><b>Fairness & Bias detection</b> — dùng <b>Amazon SageMaker Clarify</b> để phân tích và tạo báo cáo về bias
-          trong kết quả mô hình (ví dụ chênh lệch gợi ý sản phẩm giữa các nhóm nhân khẩu học), publish metric vào
-          CloudWatch.</li>
-      <li><b>Human-in-the-loop</b> — <b>Amazon Augmented AI (A2I)</b> định tuyến các kết quả có độ tin cậy thấp (low
-          confidence) tới người review; kết hợp với <b>Amazon Textract</b> cho bài toán trích xuất dữ liệu từ tài liệu
-          scan.</li>
-      <li><b>LLM-as-a-judge</b> — dùng một FM khác (thường mạnh hơn, ví dụ Claude Sonnet) đóng vai "giám khảo" để tự động
-          chấm điểm câu trả lời theo tiêu chí (độ chính xác, mức phù hợp), kết hợp với review của con người cho các
-          trường hợp biên (edge case) — mô hình đánh giá lai (hybrid evaluation) này vừa tăng độ bao phủ vừa giảm chi phí
-          so với 100% con người chấm thủ công.</li>
+      <li><b>Giảm độ trễ</b> — pre-computation cho truy vấn có thể dự đoán, model Bedrock <b>latency-optimized</b> cho
+          ứng dụng nhạy cảm thời gian, request song song cho workflow phức tạp, response streaming.</li>
+      <li><b>Hiệu năng truy xuất</b> — tối ưu index, tiền xử lý truy vấn, hybrid search với chấm điểm tùy chỉnh.</li>
+      <li><b>Tối ưu throughput FM</b> — tối ưu xử lý token, batch inference, quản lý gọi model đồng thời (concurrent).</li>
+      <li><b>Tinh chỉnh tham số</b> — cấu hình riêng theo model, A/B testing, lựa chọn <b>temperature</b> và
+          <b>top-k/top-p</b> phù hợp theo yêu cầu (nhớ: KHÔNG tăng temperature để giảm hallucination).</li>
+      <li><b>Phân bổ tài nguyên & giao tiếp dịch vụ hiệu quả</b> — capacity planning cho token processing, auto-scaling
+          tối ưu theo mẫu traffic GenAI, tối ưu truy vấn vector database cho retrieval augmentation.</li>
+    </ul>
+
+    <h3><span class="tid">Task 4.3</span>Giám sát vận hành cho ứng dụng GenAI</h3>
+    <ul>
+      <li><b>Observability toàn diện</b> — metric vận hành, tracing hiệu năng/tương tác FM, metric tác động kinh doanh
+          với dashboard tùy chỉnh (CloudWatch, Amazon Managed Grafana, Amazon QuickSight).</li>
+      <li><b>Giám sát đặc thù GenAI</b> — CloudWatch theo dõi mức sử dụng token, hiệu quả prompt, tỷ lệ hallucination,
+          chất lượng phản hồi; <b>anomaly detection</b> cho mẫu bùng nổ token và response drift; <b>Amazon Bedrock
+          Model Invocation Logs</b> để phân tích chi tiết request/response; phát hiện bất thường chi phí.</li>
+      <li><b>Giám sát hiệu năng công cụ (tool)</b> — theo dõi mẫu gọi, thu thập metric hiệu năng, quan sát tool calling
+          và điều phối multi-agent, baseline sử dụng để phát hiện bất thường.</li>
+      <li><b>Vận hành vector store</b> — giám sát hiệu năng vector database, quy trình tối ưu index tự động, validate
+          chất lượng dữ liệu định kỳ.</li>
+      <li><b>Nhận diện lỗi đặc thù GenAI</b> (không có trong ML truyền thống) — <b>golden dataset</b> để phát hiện
+          hallucination (so sánh với bộ câu trả lời chuẩn đã biết), <b>output diffing</b> để phân tích tính nhất quán
+          phản hồi giữa các lần gọi, <b>reasoning path tracing</b> để nhận diện lỗi logic trong chuỗi suy luận.</li>
     </ul>
   </section>
 
-  <section class="section" id="eval">
-    <h2><span class="num">6</span>Model Evaluation & Observability</h2>
-    <h3>Amazon Bedrock Evaluation</h3>
+  <section class="section" id="domain5">
+    <h2><span class="num">5</span>Testing, Validation, and Troubleshooting <span class="weight">11%</span></h2>
+    <p class="lede">Hệ thống đánh giá (evaluation) cho GenAI và xử lý sự cố (troubleshooting) ứng dụng GenAI.</p>
+
+    <h3><span class="tid">Task 5.1</span>Hệ thống đánh giá cho GenAI</h3>
     <ul>
-      <li><b>Automatic evaluation</b> — dùng metric có sẵn (built-in) như độ chính xác, độ hoàn chỉnh (completeness),
-          hoặc <b>LLM-as-a-judge</b> để so sánh nhiều FM/nhiều biến thể prompt trên cùng bộ dữ liệu chuẩn.</li>
-      <li><b>Human evaluation</b> — con người trực tiếp chấm điểm, dùng khi cần đánh giá chất lượng hội thoại phức tạp.</li>
-      <li><b>Retrieve-only evaluation</b> — chỉ đánh giá chất lượng bước truy xuất (context relevance, context coverage)
-          của một hệ RAG.</li>
-      <li><b>Retrieve-and-generate evaluation</b> — đánh giá toàn bộ pipeline RAG từ truy xuất tới câu trả lời cuối, dùng
-          các metric như precision@k, faithfulness, citation precision.</li>
-      <li>Khi cần so sánh nhiều chiến lược chunking + nhiều FM cùng lúc và enforce ngưỡng chất lượng trước khi deploy →
-          nên gộp thành các evaluation job chạy trên cùng dataset chuẩn với LLM-as-a-judge, tích hợp vào pipeline CI/CD
-          để tự động chặn (block) release không đạt ngưỡng.</li>
+      <li><b>Metric vượt ngoài ML truyền thống</b> — độ liên quan (relevance), độ chính xác thực tế (factual accuracy),
+          tính nhất quán (consistency), độ trôi chảy (fluency).</li>
+      <li><b>Amazon Bedrock Model Evaluations</b> — A/B testing và <b>canary testing</b> cho FM, đánh giá đa model,
+          phân tích chi phí-hiệu năng (hiệu quả token, tỷ lệ độ trễ/chất lượng, kết quả kinh doanh).</li>
+      <li><b>Đánh giá lấy người dùng làm trung tâm</b> — giao diện phản hồi, hệ thống chấm điểm, quy trình gán nhãn
+          (annotation) để đánh giá chất lượng phản hồi.</li>
+      <li><b>QA có hệ thống</b> — workflow đánh giá liên tục, kiểm thử hồi quy (regression) cho đầu ra model, cổng chất
+          lượng tự động (quality gate) trước khi deploy.</li>
+      <li><b>Đánh giá đa góc độ</b> — đánh giá RAG (context relevance/coverage/faithfulness), <b>LLM-as-a-Judge</b>,
+          thu thập phản hồi con người.</li>
+      <li><b>Đánh giá retrieval</b> — chấm điểm độ liên quan, xác minh khớp ngữ cảnh, đo độ trễ truy xuất.</li>
+      <li><b>Đánh giá agent</b> — tỷ lệ hoàn thành tác vụ, hiệu quả sử dụng công cụ, <b>Amazon Bedrock Agent
+          evaluation</b>, chất lượng suy luận trong workflow nhiều bước.</li>
+      <li><b>Validate khi cập nhật FM</b> — luồng công việc người dùng mô phỏng (synthetic), validate riêng cho AI về
+          tỷ lệ hallucination và semantic drift trước/sau khi đổi phiên bản model.</li>
     </ul>
 
-    <h3>Observability: theo dõi token, chi phí & bất thường</h3>
+    <h3><span class="tid">Task 5.2</span>Xử lý sự cố (troubleshoot) ứng dụng GenAI</h3>
     <ul>
-      <li><b>Model invocation logging</b> — ghi log input/output (text, image) của mọi lệnh gọi Bedrock vào Amazon S3/CloudWatch Logs, là nền tảng cho audit trail và phát hiện hallucination hậu kiểm.</li>
-      <li><b>InputTokenCount / OutputTokenCount</b> — metric CloudWatch theo dõi mức tiêu thụ token; kết hợp
-          <b>CloudWatch Logs Insights</b> để phân tích theo từng tool/tính năng cụ thể khi có nhiều tool integration
-          trong một ứng dụng.</li>
-      <li><b>CloudWatch anomaly detection alarm</b> — tự động điều chỉnh baseline theo pattern lưu lượng thay đổi theo
-          thời gian, ưu việt hơn alarm với ngưỡng cố định (static threshold) khi traffic pattern không ổn định.</li>
-      <li><b>Embedded Metric Format (EMF)</b> — cách phát custom metric hiệu quả trực tiếp từ log, dùng trong
-          <b>CloudWatch Application Insights</b> để theo dõi các metric nghiệp vụ tùy biến (chất lượng gợi ý, latency
-          theo loại request/user segment).</li>
-      <li><b>AWS X-Ray</b> — distributed tracing giúp xác định thành phần nào trong chuỗi service gây ra latency, nên
-          dùng khi cần "trace request qua nhiều service boundary" và tương quan hiệu năng với đặc điểm của từng FM.</li>
-      <li><b>Amazon Managed Grafana / Amazon QuickSight</b> — trực quan hóa dashboard cho nhiều nhóm người dùng (kỹ thuật
-          & business), có thể kết hợp metric kỹ thuật (CloudWatch) với metric nghiệp vụ (nguồn ngoài) trong cùng dashboard,
-          cấu hình composite alarm/anomaly detection để cảnh báo khi hai loại metric cùng lệch bất thường.</li>
+      <li><b>Vấn đề xử lý nội dung</b> — chẩn đoán tràn <b>context window</b>, chiến lược chunking động, tối ưu thiết
+          kế prompt, phân tích lỗi liên quan đến <b>truncation</b> (câu trả lời bị cắt cụt do vượt giới hạn token).</li>
+      <li><b>Vấn đề tích hợp API FM</b> — ghi log lỗi, validate request, phân tích phản hồi để nhận diện lỗi tích hợp
+          đặc thù GenAI (khác lỗi tích hợp API thông thường).</li>
+      <li><b>Vấn đề prompt engineering</b> — khung kiểm thử prompt, so sánh phiên bản (version comparison), tinh chỉnh
+          có hệ thống thay vì sửa mò.</li>
+      <li><b>Vấn đề hệ thống truy xuất</b> — phân tích độ liên quan phản hồi model, chẩn đoán chất lượng embedding,
+          giám sát drift, khắc phục lỗi vector hóa/chunking/tiền xử lý, tối ưu hiệu năng vector search.</li>
+      <li><b>Bảo trì prompt</b> — kiểm thử template + CloudWatch Logs để chẩn đoán prompt gây nhầm lẫn, X-Ray để xây
+          pipeline quan sát prompt, validate schema để phát hiện lỗi không nhất quán định dạng.</li>
     </ul>
+  </section>
+
+  <section class="section" id="services">
+    <h2>Dịch vụ AWS In-Scope & Out-of-Scope</h2>
+    <p class="lede">Đối chiếu danh sách chính thức của AWS với bộ 97 câu hỏi luyện tập hiện có (đếm bằng grep trên dữ
+       liệu câu hỏi). Badge <span class="badge-gap">chưa có trong bộ đề</span> đánh dấu các dịch vụ <b>in-scope</b>
+       nhưng <b>chưa xuất hiện trong bất kỳ câu hỏi nào</b> của bộ đề — vẫn có thể xuất hiện trên đề thi thật nên cần
+       tự tìm hiểu thêm. Xem danh sách đầy đủ, không rút gọn tại
+       <a href="official-exam-guide.html#in-scope">official-exam-guide.html</a>.</p>
+
+    <h3>Nhóm Machine Learning (nhóm quan trọng nhất, hầu hết đã có trong bộ đề)</h3>
+    <div class="svc-groups">
+      <div class="svc-group"><h4>Đã có trong bộ đề</h4><ul>
+        <li>Amazon Bedrock</li><li>Amazon Bedrock AgentCore</li><li>Amazon Bedrock Knowledge Bases</li>
+        <li>Amazon Bedrock Prompt Management</li><li>Amazon Bedrock Prompt Flows (dạng "Bedrock Flows")</li>
+        <li>Amazon Augmented AI</li><li>Amazon Comprehend</li><li>Amazon Kendra</li><li>Amazon Lex</li>
+        <li>Amazon Q Business</li><li>Amazon Q Developer</li><li>Amazon Rekognition</li>
+        <li>Amazon SageMaker AI</li><li>Amazon SageMaker Clarify</li><li>Amazon SageMaker Data Wrangler</li>
+        <li>Amazon SageMaker JumpStart</li><li>Amazon SageMaker Model Monitor</li><li>Amazon SageMaker Neo</li>
+        <li>Amazon SageMaker Processing</li><li>Amazon Textract</li><li>Amazon Titan</li><li>Amazon Transcribe</li>
+      </ul></div>
+      <div class="svc-group"><h4>Chưa có trong bộ đề</h4><ul>
+        <li>Amazon SageMaker Ground Truth <span class="badge-gap">gap</span></li>
+        <li>Amazon SageMaker Model Registry <span class="badge-gap">gap</span></li>
+        <li>Amazon SageMaker Unified Studio <span class="badge-gap">gap</span></li>
+        <li>Amazon Q Business Apps <span class="badge-gap">gap</span></li>
+      </ul></div>
+    </div>
+
+    <h3 style="margin-top:1.5rem;">Các nhóm hạ tầng khác — dịch vụ in-scope nhưng chưa xuất hiện trong bộ đề</h3>
+    <p>Đây là những dịch vụ <b>nằm trong phạm vi thi chính thức</b> nhưng <b>0 lần xuất hiện</b> trong 97 câu hỏi hiện
+       có — nên chủ động đọc thêm tài liệu AWS cho các dịch vụ này thay vì chỉ dựa vào bộ đề luyện tập:</p>
+    <div class="svc-groups">
+      <div class="svc-group"><h4>Compute / Container / Networking</h4><ul>
+        <li>Amazon MSK (Managed Streaming for Kafka)</li>
+        <li>Amazon AppFlow</li><li>AWS App Runner</li><li>AWS Lambda@Edge</li>
+        <li>AWS Wavelength</li><li>Amazon ECR</li><li>AWS Fargate</li><li>Amazon Connect</li>
+        <li>Elastic Load Balancing (ELB)</li>
+      </ul></div>
+      <div class="svc-group"><h4>Developer Tools</h4><ul>
+        <li>AWS CLI</li><li>AWS CodeArtifact</li><li>AWS CodeDeploy</li><li>Kiro</li>
+      </ul></div>
+      <div class="svc-group"><h4>Management, Storage & Security</h4><ul>
+        <li>AWS Chatbot</li><li>AWS Cost Anomaly Detection</li><li>AWS Cost Explorer</li>
+        <li>AWS DataSync</li><li>AWS Transfer Family</li><li>AWS Encryption SDK</li>
+        <li>IAM Access Analyzer</li><li>AWS Secrets Manager</li>
+        <li>Amazon EBS</li><li>Amazon EFS</li>
+        <li>Amazon S3 Intelligent-Tiering</li><li>Amazon S3 Cross-Region Replication</li>
+      </ul></div>
+    </div>
+
     <div class="callout warn">
       <svg class="icon"><use href="#i-alert"/></svg>
-      <span><b>Bẫy thường gặp:</b> đề bài yêu cầu giám sát "gần thời gian thực" + "ít công sức phát triển nhất" cho
-      hallucination/chi phí bất thường → ưu tiên bật <b>model invocation logging + contextual grounding check của
-      Guardrails + CloudWatch anomaly detection alarm</b> (toàn bộ đều là tính năng có sẵn), thay vì tự xây pipeline
-      Glue/Athena hoặc SageMaker Model Monitor riêng để phân tích log thủ công.</span>
+      <span>Ngược lại, các dịch vụ <b>out-of-scope</b> (Redshift, IoT, Media Services, Robotics, Quantum, Elastic
+      Beanstalk, Lightsail...) sẽ KHÔNG xuất hiện trong đề thi thật — nếu gặp đáp án nhiễu chứa các dịch vụ này trong
+      lúc tự luyện thêm ở nguồn khác, có thể loại ngay. Xem danh sách out-of-scope đầy đủ tại
+      <a href="official-exam-guide.html#out-of-scope">official-exam-guide.html</a>.</span>
     </div>
-  </section>
-
-  <section class="section" id="perf">
-    <h2><span class="num">7</span>Hiệu năng, Khả năng mở rộng & Tối ưu chi phí</h2>
-    <ul>
-      <li><b>Caching</b> — dùng <b>Amazon ElastiCache</b>/<b>MemoryDB</b> hoặc <b>OpenSearch k-NN</b> để cache câu trả lời
-          cho các câu hỏi ngữ nghĩa tương đương (semantically equivalent) nhằm giảm số lần gọi FM trùng lặp; tìm kiếm
-          gần đúng bằng vector similarity hiệu quả hơn nhiều so với so khớp chuỗi (LIKE) hay chuẩn hóa từ khóa thủ công.</li>
-      <li><b>Retry strategy thích ứng</b> — <b>adaptive retry với exponential backoff + jitter</b> kết hợp
-          <b>circuit breaker</b> (tạm ngắt retry khi tỷ lệ lỗi vượt ngưỡng) là chuẩn để xử lý throttling khi traffic đạt
-          đỉnh, tốt hơn nhiều so với retry với delay cố định.</li>
-      <li><b>Response streaming resilience</b> — khi stream bị ngắt giữa chừng, nên buffer các chunk đã nhận và resume từ
-          điểm ngắt thay vì phải gọi lại toàn bộ request.</li>
-      <li><b>Cross-Region inference</b> để phân tán tải khi một Region đạt service quota, kết hợp failover tự động thay
-          vì chỉ tăng provisioned throughput tại một Region duy nhất.</li>
-      <li><b>Model routing theo độ phức tạp</b> — dùng <b>Bedrock Intelligent Prompt Routing</b> để tự động gửi câu hỏi
-          đơn giản tới mô hình nhỏ, câu hỏi phức tạp tới mô hình lớn, tối ưu chi phí mà vẫn giữ chất lượng, thay vì tự
-          viết logic keyword-based routing hoặc dùng một model duy nhất cho mọi loại câu hỏi.</li>
-      <li><b>Batch inference</b> — dùng cho khối lượng lớn không yêu cầu phản hồi tức thời (ví dụ xử lý hàng loạt tài
-          liệu) để tối ưu chi phí so với real-time endpoint.</li>
-      <li><b>SageMaker AI endpoint types</b> — real-time (độ trễ thấp, luôn sẵn sàng, phù hợp GPU chuyên dụng),
-          serverless (tự động scale-to-zero, phù hợp tải không đều), asynchronous (xử lý ngầm cho payload lớn/thời gian
-          xử lý dài).</li>
-    </ul>
-  </section>
-
-  <section class="section" id="security">
-    <h2><span class="num">8</span>Bảo mật, Quản trị dữ liệu & Tuân thủ</h2>
-    <h3>Kết nối private & kiểm soát truy cập</h3>
-    <ul>
-      <li><b>VPC endpoint (interface endpoint)</b> cho Amazon Bedrock — đảm bảo mọi lệnh gọi tới Bedrock đi qua đường
-          truyền private trong VPC của khách hàng, không qua internet công cộng; đây là lựa chọn chuẩn khi đề yêu cầu
-          "chỉ dùng private connectivity", thay vì NAT gateway (vẫn đi qua public endpoint) hoặc để public fallback.</li>
-      <li><b>AWS Lake Formation với LF-Tags</b> — kiểm soát truy cập dữ liệu ở mức <b>cột (column-level)</b> và
-          <b>hàng/bảng</b> xuyên nhiều tài khoản AWS bằng cách gắn tag cho database/table rồi cấp quyền theo tag — linh
-          hoạt và ít bảo trì hơn nhiều so với cấp quyền trực tiếp (direct grant) trên từng bảng.</li>
-      <li><b>IAM condition keys</b> — ràng buộc chi tiết (ví dụ chỉ cho phép invoke một <code>GuardrailIdentifier</code>
-          hoặc <code>ModelId</code> cụ thể) để đảm bảo mọi lệnh gọi Bedrock đều đi qua guardrail bắt buộc.</li>
-      <li><b>Attribute-based access control (ABAC)</b> — cấp quyền theo thuộc tính (ví dụ phòng ban) thay vì liệt kê từng
-          tài nguyên, giảm số lượng policy cần quản lý khi tổ chức có nhiều team/nhiều tài nguyên tương tự nhau.</li>
-    </ul>
-
-    <h3>Service Control Policy (SCP) & Data residency</h3>
-    <ul>
-      <li><b>SCP</b> (AWS Organizations) — giới hạn hành động ở mức tổ chức, ví dụ chỉ cho phép dùng một số FM/Region
-          nhất định để đảm bảo <b>data residency</b> (dữ liệu không rời khỏi khu vực pháp lý yêu cầu, ví dụ EU).</li>
-      <li>Khi SCP chặn nhầm một inference profile CRI hợp lệ (ví dụ lỗi "explicitly denies the action" dù đã enable model
-          access) → cần rà soát và <b>mở rộng điều kiện SCP để cho phép đúng ARN của inference profile theo khu vực</b>
-          (ví dụ pattern <code>eu.*</code>) kết hợp xác nhận IAM role có quyền invoke qua đúng profile đó — đây là lỗi
-          cấu hình SCP quá chặt, không phải lỗi thiếu model access.</li>
-      <li><b>Multi-Region/Multi-continent architecture</b> — khi dữ liệu độc quyền của khách hàng "không được rời khỏi
-          khu vực địa lý", nên triển khai riêng theo từng khu vực (regional deployment) thay vì một kiến trúc tập trung
-          toàn cầu.</li>
-    </ul>
-
-    <h3>Bảo vệ dữ liệu nhạy cảm (PII)</h3>
-    <ul>
-      <li><b>Amazon Macie</b> — tự động phát hiện và phân loại dữ liệu nhạy cảm (PII, dữ liệu tài chính) trong S3.</li>
-      <li><b>Amazon Comprehend / Comprehend Medical</b> — trích xuất thực thể (entity) và phát hiện PII trong văn bản,
-          hỗ trợ redact trước khi đưa dữ liệu vào FM.</li>
-      <li>Với hệ thống RAG cần phân quyền hiển thị PII khác nhau theo vai trò người dùng (ví dụ bác sĩ thấy đầy đủ, kỹ sư
-          bị redact) → giải pháp gọn nhất là gọi <b>ApplyGuardrail</b> tương ứng với nhóm người dùng (Cognito group) ngay
-          tại thời điểm hỏi đáp, thay vì duy trì nhiều bản sao knowledge base đã redact sẵn.</li>
-    </ul>
-
-    <h3>Audit trail</h3>
-    <ul>
-      <li><b>AWS CloudTrail</b> — ghi lại mọi API call (management & data event) để phục vụ audit; <b>CloudTrail Insights</b>
-          phát hiện pattern bất thường; <b>CloudTrail Lake</b> cho phép truy vấn log tập trung xuyên nhiều tài khoản.</li>
-      <li>Kết hợp <b>S3 server access logging</b> khi cần audit chi tiết ở mức file/object, và <b>SSE-KMS</b> để mã hóa
-          dữ liệu tại chỗ (encryption at rest) bằng khóa do khách hàng quản lý.</li>
-    </ul>
-  </section>
-
-  <section class="section" id="devops">
-    <h2><span class="num">9</span>Triển khai, CI/CD & Kiến trúc đa Region</h2>
-    <ul>
-      <li><b>AWS CDK cho Bedrock</b> — dùng <code>aws_bedrock.FoundationModel.fromFoundationModelId()</code> khi muốn dễ
-          dàng đổi FM giữa các môi trường (dev/prod) chỉ bằng tham số, thay vì
-          <code>aws_bedrock.ProvisionedModel.fromProvisionedModelArn()</code> vốn gắn cứng với một provisioned model ARN
-          cụ thể (chỉ phù hợp production ổn định).</li>
-      <li><b>Một CDK app + một CodePipeline nhiều deployment stage</b> (mỗi stage một environment, dùng CodeBuild deploy
-          action) là mẫu chuẩn để tránh trùng lặp hạ tầng khi cần "dễ dàng chuyển đổi FM để test giữa các environment".</li>
-      <li><b>Canary deployment cho model version</b> — dùng EventBridge + Step Functions để tự động dịch chuyển traffic
-          theo giai đoạn (staged traffic shifting), theo dõi CloudWatch metric ở mỗi giai đoạn, tự động tăng traffic nếu
-          đạt ngưỡng và <b>tự động rollback</b> nếu hiệu năng giảm — không cần can thiệp thủ công.</li>
-      <li><b>AWS AppConfig</b> — quản lý configuration động (model provider, feature flag, tham số như temperature/token
-          limit) với khả năng validate bằng JSON schema, rollout an toàn và rollback, phù hợp khi cần đổi model
-          provider/tham số "không cần deploy lại code" và có kiểm soát rủi ro.</li>
-      <li><b>AWS Service Catalog</b> — chuẩn hóa các pattern hạ tầng đã được duyệt (bảo mật, observability, RAG theo AWS
-          Well-Architected Generative AI Lens) thành portfolio/product tái sử dụng, versioned, cho nhiều business unit
-          cùng dùng mà vẫn đảm bảo governance nhất quán.</li>
-      <li><b>Multi-language / multi-runtime consistency</b> — khi một ứng dụng chạy trên nhiều SDK (ví dụ Lambda Python
-          + EKS JavaScript) nhưng cần cùng FM, cùng cơ chế xác thực (IAM role), và giữ ngữ cảnh hội thoại nhất quán →
-          nên dùng chung <b>Converse API</b> (chuẩn hóa qua các SDK ngôn ngữ khác nhau) và tự truyền lại lịch sử hội
-          thoại trong mảng <code>messages</code> của mỗi request.</li>
-    </ul>
   </section>
 
   <section class="section" id="glossary">
-    <h2><span class="num">10</span>Bảng thuật ngữ AWS (Glossary)</h2>
-    <p>Tra cứu nhanh toàn bộ dịch vụ/API/khái niệm AWS xuất hiện trong bộ đề. Gõ để lọc.</p>
-    <input type="text" class="gloss-search" id="glossSearch" placeholder="Tìm thuật ngữ, ví dụ: guardrail, chunking, VPC endpoint…">
+    <h2>Bảng thuật ngữ AWS (Glossary)</h2>
+    <p>Tra cứu nhanh toàn bộ dịch vụ/API/khái niệm AWS xuất hiện trong bộ đề và trong Exam Guide chính thức. Gõ để lọc.</p>
+    <input type="text" class="gloss-search" id="glossSearch" placeholder="Tìm thuật ngữ, ví dụ: guardrail, chunking, LoRA…">
 
     <div class="gloss-group">
       <h3>Generative AI / Bedrock</h3>
@@ -675,31 +673,34 @@
         <div class="term"><dt>Amazon Bedrock Knowledge Bases</dt><dd>Dịch vụ RAG managed: tự ingest, chunk, tạo embedding, lưu vector và cung cấp API truy xuất/sinh câu trả lời.</dd></div>
         <div class="term"><dt>Amazon Bedrock Agents</dt><dd>Cho phép FM tự lập kế hoạch và gọi công cụ (action group) hoặc knowledge base để hoàn thành nhiệm vụ nhiều bước.</dd></div>
         <div class="term"><dt>Amazon Bedrock AgentCore</dt><dd>Runtime cho agent production-grade với memory, identity, event handling, observability tích hợp sẵn.</dd></div>
-        <div class="term"><dt>Amazon Bedrock Flows</dt><dd>Công cụ kéo-thả xây pipeline nhiều bước (input/prompt/output node) không cần code orchestration.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Prompt Flows</dt><dd>Công cụ kéo-thả xây pipeline nhiều bước (input/prompt/output node) không cần code orchestration.</dd></div>
         <div class="term"><dt>Amazon Bedrock Prompt Management</dt><dd>Quản lý version, biến, biến thể của prompt template tập trung kèm workflow phê duyệt & audit trail.</dd></div>
-        <div class="term"><dt>Prompt Router / Intelligent Prompt Routing</dt><dd>Tự động định tuyến câu hỏi đơn giản tới mô hình nhỏ, câu hỏi phức tạp tới mô hình lớn để tối ưu chi phí.</dd></div>
-        <div class="term"><dt>Application Inference Profile</dt><dd>Định danh gắn tag/theo dõi chi phí và policy riêng cho một use case cụ thể trên cùng một FM.</dd></div>
+        <div class="term"><dt>Bedrock Intelligent Prompt Routing</dt><dd>Tự động định tuyến câu hỏi đơn giản tới mô hình nhỏ, câu hỏi phức tạp tới mô hình lớn để tối ưu chi phí.</dd></div>
         <div class="term"><dt>Cross-Region Inference (CRI)</dt><dd>Định tuyến request tự động qua một tập Region khác để tăng khả năng chịu tải, vẫn giữ dữ liệu trong khu vực pháp lý cho phép.</dd></div>
         <div class="term"><dt>Provisioned Throughput / Model Unit (MU)</dt><dd>Mua trước công suất cố định để đảm bảo throughput ổn định cho tải cao liên tục, tạo qua CreateProvisionedModelThroughput.</dd></div>
-        <div class="term"><dt>Amazon Bedrock Model Evaluation</dt><dd>Tạo evaluation job so sánh FM/prompt bằng metric tự động (kể cả LLM-as-a-judge) hoặc đánh giá của con người.</dd></div>
-        <div class="term"><dt>Amazon Bedrock Rerank API</dt><dd>Sắp xếp lại kết quả truy xuất RAG theo mức độ liên quan thực sự trước khi đưa vào FM.</dd></div>
-        <div class="term"><dt>Amazon Bedrock Custom Model Import</dt><dd>Đưa một mô hình tùy chỉnh/tự huấn luyện (ví dụ từ SageMaker) vào chạy trong Amazon Bedrock.</dd></div>
-        <div class="term"><dt>Amazon Bedrock Studio</dt><dd>Môi trường làm việc trực quan để thử nghiệm prompt và xây dựng ứng dụng GenAI trên Bedrock.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Model Evaluations</dt><dd>Tạo evaluation job so sánh FM/prompt bằng metric tự động (kể cả LLM-as-a-judge) hoặc đánh giá của con người.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Rerank</dt><dd>Sắp xếp lại kết quả truy xuất RAG theo mức độ liên quan thực sự trước khi đưa vào FM.</dd></div>
+        <div class="term"><dt>Amazon Bedrock Data Automation</dt><dd>Tự động hóa quy trình xử lý dữ liệu (trích xuất, chuẩn hóa) để phục vụ ứng dụng GenAI.</dd></div>
         <div class="term"><dt>InvokeModel / InvokeModelWithResponseStream</dt><dd>API gọi FM đồng bộ (trả toàn bộ kết quả) hoặc dạng stream (trả từng phần theo thời gian thực).</dd></div>
         <div class="term"><dt>Converse API / ConverseStream</dt><dd>API hội thoại chuẩn hóa format giữa nhiều FM, hỗ trợ multi-turn qua mảng messages.</dd></div>
         <div class="term"><dt>Retrieve / RetrieveAndGenerate(Stream)</dt><dd>API của Knowledge Bases: chỉ truy xuất tài liệu, hoặc truy xuất + sinh câu trả lời kèm trích dẫn nguồn.</dd></div>
         <div class="term"><dt>Amazon Titan</dt><dd>Dòng foundation model của AWS, bao gồm Titan Embeddings dùng để tạo vector embedding.</dd></div>
-        <div class="term"><dt>Amazon Nova</dt><dd>Dòng foundation model đa phương thức của AWS (ví dụ Amazon Nova Pro).</dd></div>
-        <div class="term"><dt>Anthropic Claude</dt><dd>Họ foundation model của Anthropic (Claude 3 Haiku, Sonnet...), khả dụng qua Amazon Bedrock.</dd></div>
-        <div class="term"><dt>Temperature</dt><dd>Tham số điều chỉnh mức ngẫu nhiên/sáng tạo của đầu ra mô hình; càng cao càng dễ hallucination.</dd></div>
+        <div class="term"><dt>Temperature / top-k / top-p</dt><dd>Tham số điều chỉnh mức ngẫu nhiên/đa dạng của đầu ra mô hình; temperature cao hơn dễ gây hallucination hơn.</dd></div>
         <div class="term"><dt>Chain-of-Thought (CoT)</dt><dd>Kỹ thuật prompt yêu cầu mô hình suy luận từng bước trước khi kết luận để tăng độ chính xác.</dd></div>
-        <div class="term"><dt>Extended thinking</dt><dd>Cấu hình ngân sách token để mô hình suy luận nội bộ trước khi trả lời, hỗ trợ explainability.</dd></div>
         <div class="term"><dt>Prompt caching</dt><dd>Lưu lại phần ngữ cảnh lặp lại giữa các lần gọi để giảm chi phí và độ trễ.</dd></div>
+        <div class="term"><dt>Semantic caching</dt><dd>Cache câu trả lời theo độ tương đồng ngữ nghĩa của câu hỏi, không chỉ khớp chuỗi chính xác, giúp giảm gọi FM trùng lặp.</dd></div>
+        <div class="term"><dt>Prompt compression / Context pruning</dt><dd>Kỹ thuật rút gọn hoặc cắt tỉa phần ngữ cảnh không cần thiết trong prompt để giảm chi phí token.</dd></div>
         <div class="term"><dt>Hallucination</dt><dd>Hiện tượng mô hình sinh ra nội dung sai sự thật hoặc không có căn cứ trong nguồn dữ liệu.</dd></div>
         <div class="term"><dt>Grounding / Contextual grounding check</dt><dd>Cơ chế đối chiếu câu trả lời với nguồn tham chiếu để phát hiện hallucination.</dd></div>
-        <div class="term"><dt>Automated Reasoning checks</dt><dd>Tính năng Guardrails dùng suy luận hình thức để xác minh tính đúng đắn theo bộ quy tắc định trước.</dd></div>
         <div class="term"><dt>LLM-as-a-judge</dt><dd>Dùng một FM khác (thường mạnh hơn) để tự động chấm điểm chất lượng câu trả lời theo tiêu chí.</dd></div>
+        <div class="term"><dt>Golden dataset</dt><dd>Bộ dữ liệu câu hỏi/câu trả lời chuẩn đã biết trước, dùng làm mốc so sánh để phát hiện hallucination hoặc đo chất lượng model.</dd></div>
+        <div class="term"><dt>Output diffing</dt><dd>Kỹ thuật so sánh sự khác biệt giữa các lần sinh câu trả lời để phân tích tính nhất quán của model.</dd></div>
+        <div class="term"><dt>Reasoning path tracing</dt><dd>Theo dõi từng bước suy luận của model/agent để nhận diện lỗi logic trong chuỗi suy luận nhiều bước.</dd></div>
         <div class="term"><dt>Model Context Protocol (MCP)</dt><dd>Giao thức chuẩn hóa cách AI agent kết nối tới công cụ/nguồn dữ liệu ngoài (MCP server).</dd></div>
+        <div class="term"><dt>Strands Agents / AWS Agent Squad</dt><dd>Framework mã nguồn mở của AWS để xây hệ thống multi-agent với quản lý memory/state và tool integration.</dd></div>
+        <div class="term"><dt>LoRA (Low-Rank Adaptation) / Adapter</dt><dd>Kỹ thuật parameter-efficient fine-tuning: tùy biến model với chi phí huấn luyện thấp hơn nhiều so với fine-tune toàn bộ tham số.</dd></div>
+        <div class="term"><dt>Model card</dt><dd>Tài liệu (có thể tạo tự động qua SageMaker AI) ghi lại mục đích, giới hạn, và đặc tính của một FM phục vụ tuân thủ/quản trị.</dd></div>
+        <div class="term"><dt>Data lineage</dt><dd>Khả năng theo dõi phả hệ/nguồn gốc dữ liệu xuyên suốt pipeline, thường dùng AWS Glue để tự động hóa.</dd></div>
       </dl>
     </div>
 
@@ -708,35 +709,31 @@
       <dl>
         <div class="term"><dt>Retrieval Augmented Generation (RAG)</dt><dd>Kỹ thuật truy xuất dữ liệu liên quan rồi đưa vào prompt để mô hình sinh câu trả lời có căn cứ.</dd></div>
         <div class="term"><dt>Embedding</dt><dd>Biểu diễn vector số học của văn bản/dữ liệu, dùng để so sánh độ tương đồng ngữ nghĩa.</dd></div>
-        <div class="term"><dt>k-NN (k-nearest neighbor)</dt><dd>Thuật toán tìm k điểm dữ liệu gần nhất trong không gian vector — nền tảng của semantic search.</dd></div>
-        <div class="term"><dt>HNSW (Hierarchical Navigable Small World)</dt><dd>Thuật toán index vector cho approximate nearest neighbor search tốc độ cao trên tập dữ liệu lớn.</dd></div>
-        <div class="term"><dt>IVFFlat</dt><dd>Thuật toán index vector (Inverted File with Flat Compression), phù hợp dataset nhỏ cần độ chính xác cao.</dd></div>
         <div class="term"><dt>Chunking</dt><dd>Chia nhỏ tài liệu thành các đoạn (fixed-size/semantic/hierarchical) trước khi tạo embedding cho RAG.</dd></div>
         <div class="term"><dt>Hybrid search</dt><dd>Kết hợp vector search (ngữ nghĩa) và keyword search (khớp từ khóa chính xác) để tăng độ chính xác truy xuất.</dd></div>
         <div class="term"><dt>Reranking</dt><dd>Sắp xếp lại kết quả truy xuất ban đầu theo mức độ liên quan thực sự bằng một mô hình chuyên biệt.</dd></div>
-        <div class="term"><dt>Graph RAG</dt><dd>RAG dựa trên dữ liệu dạng đồ thị để nắm bắt quan hệ nhiều bước (multi-hop) giữa các thực thể.</dd></div>
-        <div class="term"><dt>Amazon OpenSearch Service/Serverless</dt><dd>Dịch vụ tìm kiếm/phân tích hỗ trợ vector search (k-NN), hybrid search, metadata filtering.</dd></div>
+        <div class="term"><dt>Query expansion / decomposition / transformation</dt><dd>Các kỹ thuật xử lý truy vấn: mở rộng, phân rã thành truy vấn nhỏ hơn, hoặc biến đổi truy vấn để cải thiện kết quả truy xuất.</dd></div>
+        <div class="term"><dt>Amazon OpenSearch Service</dt><dd>Dịch vụ tìm kiếm/phân tích hỗ trợ vector search, hybrid search, metadata filtering, tích hợp Neural plugin với Bedrock.</dd></div>
         <div class="term"><dt>Amazon Aurora + pgvector</dt><dd>Cơ sở dữ liệu quan hệ PostgreSQL với extension pgvector để lưu và tìm kiếm vector embedding.</dd></div>
-        <div class="term"><dt>Amazon S3 Vectors</dt><dd>Lưu trữ vector-native trên S3, tích hợp trực tiếp với Bedrock Knowledge Bases, chi phí thấp.</dd></div>
-        <div class="term"><dt>Amazon MemoryDB (Valkey/Redis OSS)</dt><dd>Cơ sở dữ liệu in-memory hỗ trợ vector search độ trễ cực thấp (HNSW/Flat index).</dd></div>
-        <div class="term"><dt>Amazon Neptune Analytics</dt><dd>Cơ sở dữ liệu đồ thị dùng cho Graph RAG và phân tích quan hệ nhiều bước.</dd></div>
         <div class="term"><dt>Amazon Kendra</dt><dd>Dịch vụ tìm kiếm doanh nghiệp (enterprise search) hỗ trợ query expansion và semantic search.</dd></div>
-        <div class="term"><dt>Amazon DynamoDB Accelerator (DAX)</dt><dd>Lớp cache in-memory cho DynamoDB, tăng tốc đọc dữ liệu tần suất cao.</dd></div>
+        <div class="term"><dt>Vector store operational management</dt><dd>Giám sát hiệu năng, tối ưu index tự động và validate chất lượng dữ liệu cho vector database.</dd></div>
       </dl>
     </div>
 
     <div class="gloss-group">
-      <h3>Orchestration / Compute</h3>
+      <h3>Orchestration / Compute / Enterprise Integration</h3>
       <dl>
         <div class="term"><dt>AWS Lambda</dt><dd>Dịch vụ serverless compute, chạy code theo sự kiện mà không cần quản lý server.</dd></div>
         <div class="term"><dt>Amazon API Gateway (REST/HTTP/WebSocket)</dt><dd>Dịch vụ quản lý API; WebSocket API dùng cho giao tiếp hai chiều/streaming thời gian thực.</dd></div>
-        <div class="term"><dt>AWS Step Functions</dt><dd>Dịch vụ orchestration dạng state machine; Standard hỗ trợ chạy dài + callback, Express tối ưu cho luồng ngắn tần suất cao.</dd></div>
-        <div class="term"><dt>Wait for a Callback (waitForTaskToken)</dt><dd>Mẫu Step Functions tạm dừng workflow chờ phản hồi ngoài (ví dụ con người duyệt) rồi resume bằng SendTaskSuccess.</dd></div>
-        <div class="term"><dt>Amazon EventBridge</dt><dd>Dịch vụ event bus, định tuyến sự kiện giữa các service theo rule tùy chỉnh.</dd></div>
-        <div class="term"><dt>Amazon SQS / SNS</dt><dd>Dịch vụ hàng đợi tin nhắn (SQS) và thông báo pub/sub (SNS) cho kiến trúc bất đồng bộ.</dd></div>
-        <div class="term"><dt>Amazon ECS / EC2 Auto Scaling</dt><dd>Dịch vụ chạy container/máy ảo với khả năng tự động mở rộng theo tải.</dd></div>
-        <div class="term"><dt>AWS AppConfig</dt><dd>Quản lý cấu hình động (feature flag, tham số) với validate schema, rollout an toàn và rollback.</dd></div>
-        <div class="term"><dt>AWS Systems Manager Parameter Store</dt><dd>Lưu trữ tham số/cấu hình tập trung, đơn giản hơn AppConfig nhưng ít tính năng rollout/validate hơn.</dd></div>
+        <div class="term"><dt>AWS Step Functions</dt><dd>Dịch vụ orchestration dạng state machine; hỗ trợ circuit breaker pattern, ReAct pattern, Wait for Callback.</dd></div>
+        <div class="term"><dt>Circuit breaker pattern</dt><dd>Mẫu thiết kế tạm ngắt gọi tới một thành phần đang lỗi liên tục để tránh lỗi lan truyền, tự phục hồi khi thành phần đó ổn định trở lại.</dd></div>
+        <div class="term"><dt>Graceful degradation</dt><dd>Chiến lược giảm cấp độ dịch vụ có kiểm soát (ví dụ chuyển sang model dự phòng) thay vì để hệ thống sập hoàn toàn khi có sự cố.</dd></div>
+        <div class="term"><dt>Amazon EventBridge</dt><dd>Dịch vụ event bus, định tuyến sự kiện giữa các service theo rule tùy chỉnh — nền tảng cho kiến trúc event-driven.</dd></div>
+        <div class="term"><dt>AWS AppConfig</dt><dd>Quản lý cấu hình động (feature flag, tham số, model provider) với validate schema, rollout an toàn và rollback.</dd></div>
+        <div class="term"><dt>AWS Outposts / AWS Wavelength</dt><dd>Hạ tầng AWS mở rộng ra on-premises (Outposts) hoặc ra rìa mạng viễn thông (Wavelength) cho các yêu cầu hybrid/edge và data residency.</dd></div>
+        <div class="term"><dt>AWS Amplify</dt><dd>Bộ công cụ xây dựng ứng dụng web/mobile full-stack, hỗ trợ UI khai báo tích hợp nhanh với backend GenAI.</dd></div>
+        <div class="term"><dt>Amazon Q Developer</dt><dd>AI assistant hỗ trợ lập trình: sinh/tái cấu trúc code, gợi ý code, kiểm thử, tối ưu hiệu năng, tùy biến theo coding convention nội bộ.</dd></div>
+        <div class="term"><dt>AWS CDK</dt><dd>Bộ công cụ định nghĩa hạ tầng dưới dạng code (Infrastructure as Code) bằng ngôn ngữ lập trình quen thuộc.</dd></div>
       </dl>
     </div>
 
@@ -744,37 +741,31 @@
       <h3>Bảo mật / Quản trị / Tuân thủ</h3>
       <dl>
         <div class="term"><dt>IAM (Identity and Access Management)</dt><dd>Dịch vụ quản lý danh tính, phân quyền qua role/policy/permissions boundary/condition key.</dd></div>
-        <div class="term"><dt>Attribute-based access control (ABAC)</dt><dd>Cấp quyền theo thuộc tính (ví dụ phòng ban) thay vì liệt kê từng tài nguyên.</dd></div>
-        <div class="term"><dt>AWS Organizations / SCP</dt><dd>Quản lý nhiều tài khoản AWS; Service Control Policy giới hạn hành động được phép ở mức tổ chức.</dd></div>
-        <div class="term"><dt>AWS IAM Identity Center</dt><dd>Quản lý tập trung quyền truy cập của người dùng/nhóm xuyên nhiều tài khoản AWS.</dd></div>
         <div class="term"><dt>VPC Endpoint (Interface/Gateway)</dt><dd>Cho phép truy cập dịch vụ AWS qua đường truyền private trong VPC, không qua internet công cộng.</dd></div>
         <div class="term"><dt>AWS Lake Formation / LF-Tags</dt><dd>Quản trị data lake với kiểm soát truy cập cột/bảng dựa trên tag, xuyên nhiều tài khoản.</dd></div>
-        <div class="term"><dt>AWS KMS / SSE-KMS</dt><dd>Dịch vụ quản lý khóa mã hóa; SSE-KMS là mã hóa phía server dùng khóa KMS cho dữ liệu tại chỗ.</dd></div>
-        <div class="term"><dt>Amazon Cognito</dt><dd>Dịch vụ xác thực người dùng (user pool), hỗ trợ OAuth cho ứng dụng và API.</dd></div>
-        <div class="term"><dt>AWS CloudTrail (Insights/Lake)</dt><dd>Ghi log mọi API call phục vụ audit; Insights phát hiện bất thường, Lake cho phép truy vấn log tập trung.</dd></div>
+        <div class="term"><dt>AWS CloudTrail</dt><dd>Ghi log mọi API call phục vụ audit trail và data lineage.</dd></div>
         <div class="term"><dt>Amazon Macie</dt><dd>Tự động phát hiện và phân loại dữ liệu nhạy cảm (PII) trong Amazon S3.</dd></div>
         <div class="term"><dt>Personally Identifiable Information (PII)</dt><dd>Thông tin định danh cá nhân cần được bảo vệ/redact trong dữ liệu và phản hồi của AI.</dd></div>
+        <div class="term"><dt>Prompt injection / Jailbreak</dt><dd>Kỹ thuật tấn công cố gắng thao túng FM bỏ qua chỉ dẫn/guardrail ban đầu để sinh nội dung không mong muốn.</dd></div>
+        <div class="term"><dt>Bias drift</dt><dd>Hiện tượng độ thiên vị (bias) của model thay đổi/tăng theo thời gian, cần giám sát liên tục thay vì chỉ đánh giá một lần.</dd></div>
         <div class="term"><dt>Data residency</dt><dd>Yêu cầu dữ liệu chỉ được lưu trữ/xử lý trong một khu vực địa lý/pháp lý nhất định.</dd></div>
       </dl>
     </div>
 
     <div class="gloss-group">
-      <h3>Observability / ML Ops</h3>
+      <h3>Observability / ML Ops / Testing</h3>
       <dl>
         <div class="term"><dt>Amazon CloudWatch</dt><dd>Dịch vụ giám sát: Logs, Logs Insights, Alarms, composite alarm, anomaly detection, dashboard.</dd></div>
-        <div class="term"><dt>Embedded Metric Format (EMF)</dt><dd>Định dạng log đặc biệt để CloudWatch tự trích xuất custom metric hiệu quả từ log.</dd></div>
         <div class="term"><dt>AWS X-Ray</dt><dd>Dịch vụ distributed tracing giúp xác định thành phần gây latency qua nhiều service.</dd></div>
-        <div class="term"><dt>Amazon Managed Grafana</dt><dd>Dịch vụ Grafana managed để trực quan hóa dashboard đa nguồn dữ liệu.</dd></div>
-        <div class="term"><dt>Amazon QuickSight</dt><dd>Dịch vụ business intelligence/dashboard trực quan hóa dữ liệu.</dd></div>
-        <div class="term"><dt>Amazon SageMaker AI</dt><dd>Nền tảng ML end-to-end: huấn luyện, triển khai endpoint (real-time/serverless/async), Pipelines, Clarify, Model Monitor.</dd></div>
+        <div class="term"><dt>Amazon SageMaker AI</dt><dd>Nền tảng ML end-to-end: huấn luyện, triển khai endpoint (real-time/serverless/async), Model Registry, model card.</dd></div>
+        <div class="term"><dt>Amazon SageMaker Model Registry</dt><dd>Quản lý phiên bản (versioning) và vòng đời triển khai của model tùy biến.</dd></div>
         <div class="term"><dt>Amazon SageMaker Clarify</dt><dd>Công cụ phân tích và báo cáo fairness/bias trong dữ liệu và kết quả mô hình.</dd></div>
-        <div class="term"><dt>Amazon Comprehend / Comprehend Medical</dt><dd>Dịch vụ NLP trích xuất thực thể, phát hiện PII, phân tích sentiment; bản Medical chuyên biệt cho văn bản y tế.</dd></div>
-        <div class="term"><dt>Amazon Textract</dt><dd>Dịch vụ trích xuất văn bản/dữ liệu có cấu trúc từ tài liệu scan/ảnh.</dd></div>
-        <div class="term"><dt>Amazon Transcribe</dt><dd>Dịch vụ chuyển giọng nói thành văn bản, hỗ trợ streaming với partial results.</dd></div>
-        <div class="term"><dt>Amazon Rekognition</dt><dd>Dịch vụ phân tích hình ảnh/video, bao gồm kiểm duyệt nội dung (content moderation).</dd></div>
+        <div class="term"><dt>Amazon SageMaker Data Wrangler</dt><dd>Công cụ trực quan để chuẩn bị và kiểm tra chất lượng dữ liệu trước khi đưa vào model.</dd></div>
+        <div class="term"><dt>AWS Glue Data Quality</dt><dd>Tính năng của AWS Glue để validate chất lượng dữ liệu theo quy tắc tùy chỉnh trong pipeline ETL.</dd></div>
+        <div class="term"><dt>Canary testing (cho FM)</dt><dd>Kiểm thử phiên bản model mới trên một phần nhỏ traffic thực tế trước khi chuyển toàn bộ traffic sang.</dd></div>
+        <div class="term"><dt>Context window overflow</dt><dd>Lỗi xảy ra khi lượng dữ liệu đầu vào vượt quá giới hạn ngữ cảnh (context window) mà FM hỗ trợ, thường gây truncation.</dd></div>
         <div class="term"><dt>Amazon Augmented AI (A2I)</dt><dd>Dịch vụ định tuyến kết quả AI có độ tin cậy thấp tới con người review.</dd></div>
         <div class="term"><dt>Amazon Q Business</dt><dd>AI assistant doanh nghiệp truy vấn dữ liệu nội bộ theo ngôn ngữ tự nhiên, tôn trọng phân quyền nguồn dữ liệu gốc.</dd></div>
-        <div class="term"><dt>Amazon Q Developer</dt><dd>AI assistant hỗ trợ lập trình, có thể tùy biến (customization) theo thư viện/coding convention nội bộ công ty.</dd></div>
       </dl>
     </div>
   </section>
