@@ -76,7 +76,6 @@
 
   /* ── NAV ── */
   nav {
-    position: sticky; top: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between; gap: var(--space-m);
     padding: var(--space-s) var(--space-l);
     background: rgba(11, 13, 19, 0.72);
@@ -215,12 +214,27 @@
   footer a { text-decoration: none; }
   footer a:hover { text-decoration: underline; }
 
+  /* ── SCROLL TO TOP ── */
+  .scroll-top-btn {
+    position: fixed; right: 24px; bottom: 24px; z-index: 90;
+    width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%;
+    border: 1px solid var(--border-2);
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; box-shadow: 0 6px 20px rgba(99,102,241,0.4); cursor: pointer;
+    opacity: 0; pointer-events: none; transform: translateY(8px);
+    transition: opacity .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .scroll-top-btn.visible { opacity: 1; pointer-events: auto; transform: none; }
+  .scroll-top-btn:hover { box-shadow: 0 8px 26px rgba(99,102,241,0.55); }
+  .scroll-top-btn .icon { width: 20px; height: 20px; stroke-width: 2.5; }
+
   @media (max-width: 720px) {
     nav { padding: var(--space-s) var(--space-m); flex-wrap: wrap; }
     .nav-links { order: 3; width: 100%; justify-content: space-between; }
     main { padding: var(--space-m); }
     .section, .toc { padding: var(--space-m); }
     .hero h1 { font-size: 1.5rem; }
+    .scroll-top-btn { right: 16px; bottom: 16px; }
     .term { grid-template-columns: 1fr; gap: 4px; }
     .svc-groups { grid-template-columns: 1fr 1fr; }
   }
@@ -243,6 +257,7 @@
     <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
     <symbol id="i-check-circle" viewBox="0 0 24 24"><path d="M22 11.1V12a10 10 0 11-5.9-9.1"/><path d="M22 4L12 14.01l-3-3"/></symbol>
     <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 2h6v4H9z"/><path d="M9 11h6M9 15h6"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
   </defs>
 </svg>
 
@@ -778,6 +793,10 @@
   <p>AWS Certified Generative AI Developer — Professional (AIP-C01) · <a href="https://github.com/vinhnguyenthanhdn/aip">GitHub</a></p>
 </footer>
 
+<button type="button" class="scroll-top-btn" id="scrollTopBtn" aria-label="Lên đầu trang">
+  <svg class="icon"><use href="#i-arrow-up"/></svg>
+</button>
+
 <script>
 document.getElementById('glossSearch').addEventListener('input', e => {
   const q = e.target.value.trim().toLowerCase();
@@ -786,6 +805,12 @@ document.getElementById('glossSearch').addEventListener('input', e => {
     t.hidden = q.length > 0 && !text.includes(q);
   });
 });
+
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', () => {
+  scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+});
+scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 </script>
 
 </body>
