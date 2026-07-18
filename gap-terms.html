@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>19 Thuật ngữ Gap — Ôn bổ sung AIP-C01</title>
+<link rel="icon" type="image/png" href="v-icon.png">
+<meta name="description" content="19 thuật ngữ có trong cram sheet AIP-C01 nhưng chưa xuất hiện trong bộ 97 câu luyện tập — học bổ sung để tránh gap kiến thức trước khi thi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0B0D13;
+    --bg-2:      #0F1117;
+    --surface:   #161925;
+    --surface-2: #1C2030;
+    --surface-3: #232838;
+    --border:    #272C3E;
+    --border-2:  #333A52;
+    --text:      #F2F4FA;
+    --muted:     #9AA3B7;
+    --muted-2:   #6B7488;
+
+    --accent:    #6366F1;
+    --accent-2:  #818CF8;
+    --accent-dim: rgba(99, 102, 241, 0.14);
+    --good:      #34D399;
+    --good-dim:  rgba(52, 211, 153, 0.14);
+    --bad:       #F87171;
+    --bad-dim:   rgba(248, 113, 113, 0.14);
+    --warn:      #FBBF24;
+    --warn-dim:  rgba(251, 191, 36, 0.14);
+
+    --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    --font-body: 'IBM Plex Sans', -apple-system, 'Segoe UI', system-ui, sans-serif;
+
+    --space-xs: 0.375rem;
+    --space-s:  0.75rem;
+    --space-m:  1.25rem;
+    --space-l:  2rem;
+    --space-xl: 3rem;
+
+    --radius:    10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+
+    --shadow:    0 8px 24px rgba(0,0,0,0.35);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+
+  body {
+    background:
+      radial-gradient(900px 500px at 12% -10%, rgba(99,102,241,0.10), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(52,211,153,0.06), transparent 55%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  ::selection { background: var(--accent-dim); color: var(--text); }
+  *:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; border-radius: 4px; }
+
+  .icon { width: 1.15em; height: 1.15em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+  code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-3); border: 1px solid var(--border); border-radius: 5px; padding: 0.05em 0.4em; color: var(--accent-2); }
+  a { color: var(--accent-2); }
+
+  /* ── NAV ── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-m);
+    padding: var(--space-s) var(--space-l);
+    background: rgba(11, 13, 19, 0.72);
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 20;
+  }
+  .nav-brand { display: flex; align-items: center; gap: var(--space-s); text-decoration: none; color: var(--text); }
+  .nav-logo {
+    width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
+    box-shadow: 0 4px 14px rgba(99,102,241,0.45);
+  }
+  .nav-logo .icon { width: 19px; height: 19px; stroke-width: 2.25; }
+  .nav-title { display: flex; flex-direction: column; line-height: 1.15; }
+  .nav-title b { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; letter-spacing: -0.02em; }
+  .nav-title span { font-size: 0.68rem; color: var(--muted-2); letter-spacing: 0.02em; }
+
+  .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .navlink {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 0.5rem 0.9rem; border-radius: var(--radius);
+    font-size: 0.85rem; font-weight: 500; color: var(--muted);
+    text-decoration: none; transition: color .2s var(--ease), background .2s var(--ease);
+  }
+  .navlink .icon { width: 15px; height: 15px; }
+  .navlink:hover { color: var(--text); background: var(--surface-2); }
+  .navlink.active { color: var(--accent-2); background: var(--accent-dim); font-weight: 600; }
+
+  /* ── LAYOUT ── */
+  main { max-width: 980px; margin: 0 auto; padding: var(--space-l) var(--space-l) var(--space-xl); }
+
+  .hero { margin-bottom: var(--space-l); }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
+    color: var(--warn); background: var(--warn-dim); border: 1px solid rgba(251,191,36,0.3);
+    padding: 3px 11px; border-radius: 999px; margin-bottom: var(--space-m);
+  }
+  .hero h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: var(--space-s); }
+  .hero p { color: var(--muted); font-size: 1rem; max-width: 68ch; }
+
+  .toc {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: var(--space-l) 0; padding: var(--space-m);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  }
+  .toc a {
+    text-decoration: none; color: var(--muted); font-size: 0.82rem; font-weight: 500;
+    padding: 6px 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border);
+    transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .toc a:hover { color: var(--text); border-color: var(--border-2); background: var(--surface-3); }
+
+  .section {
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
+    border: 1px solid var(--border); border-radius: var(--radius-xl);
+    padding: var(--space-l); margin-bottom: var(--space-l);
+    scroll-margin-top: 130px;
+  }
+  .section h2 {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 1.25rem; font-weight: 800; letter-spacing: -0.01em;
+    margin-bottom: 4px; color: var(--text);
+  }
+  .section .weight { font-size: 0.78rem; font-weight: 600; color: var(--muted-2); margin-left: auto; }
+  .section .num {
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+    color: var(--warn); background: var(--warn-dim); border: 1px solid rgba(251,191,36,0.3);
+    width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; flex: 0 0 auto;
+  }
+  .section > p.lead { color: var(--muted); font-size: 0.9rem; margin-bottom: var(--space-m); }
+
+  /* ── TERM CARD ── */
+  .term-card {
+    border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: var(--space-m); margin-bottom: var(--space-m);
+    background: var(--surface-2);
+  }
+  .term-card h3 {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-size: 1.02rem; font-weight: 700; color: var(--text); margin-bottom: 8px;
+  }
+  .badge {
+    font-family: var(--font-mono); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em;
+    padding: 2px 8px; border-radius: 999px; white-space: nowrap;
+  }
+  .badge.hot { color: var(--bad); background: var(--bad-dim); border: 1px solid rgba(248,113,113,0.35); }
+  .badge.trap { color: var(--warn); background: var(--warn-dim); border: 1px solid rgba(251,191,36,0.35); }
+  .term-card p { color: #D3D7E4; font-size: 0.9rem; margin-bottom: 8px; }
+  .term-card ul { color: #D3D7E4; font-size: 0.9rem; margin: 0 0 8px 1.2em; }
+  .term-card li { margin-bottom: 4px; }
+  .term-card b, .term-card strong { color: var(--text); }
+
+  .triggers {
+    display: flex; gap: 8px; align-items: flex-start;
+    background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
+    border-radius: var(--radius); padding: var(--space-s) var(--space-m); margin: 8px 0;
+    font-size: 0.85rem; color: #E7EAF3;
+  }
+  .triggers .icon { color: var(--accent-2); margin-top: 2px; width: 15px; height: 15px; flex: 0 0 auto; }
+
+  .vs {
+    display: flex; gap: 8px; align-items: flex-start;
+    background: var(--bad-dim); border: 1px solid rgba(248,113,113,0.3);
+    border-radius: var(--radius); padding: var(--space-s) var(--space-m); margin: 8px 0;
+    font-size: 0.85rem; color: #E7EAF3;
+  }
+  .vs .icon { color: var(--bad); margin-top: 2px; width: 15px; height: 15px; flex: 0 0 auto; }
+
+  .trap-box {
+    display: flex; gap: 8px; align-items: flex-start;
+    background: var(--warn-dim); border: 1px solid rgba(251,191,36,0.35);
+    border-radius: var(--radius); padding: var(--space-s) var(--space-m); margin: 8px 0 0;
+    font-size: 0.85rem; color: #E7EAF3;
+  }
+  .trap-box .icon { color: var(--warn); margin-top: 2px; width: 15px; height: 15px; flex: 0 0 auto; }
+
+  /* ── KEYWORD TABLE ── */
+  .kw-table { width: 100%; border-collapse: collapse; margin: var(--space-s) 0; font-size: 0.85rem; }
+  .kw-table th {
+    text-align: left; font-family: var(--font-body); font-size: 0.88rem; font-weight: 700;
+    color: var(--text); background: var(--surface-3); padding: 10px; border-bottom: 2px solid var(--accent);
+  }
+  .kw-table td { padding: 9px 10px; border-bottom: 1px dashed var(--border); color: #D3D7E4; vertical-align: top; }
+  .kw-table tr:last-child td { border-bottom: none; }
+  .kw-table code { white-space: nowrap; }
+
+  .checklist { list-style: none; margin-left: 0; }
+  .checklist li {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px dashed var(--border);
+    font-size: 0.9rem; color: #D3D7E4;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist .icon { color: var(--good); margin-top: 3px; flex: 0 0 auto; }
+
+  footer { border-top: 1px solid var(--border); padding: var(--space-l); text-align: center; }
+  footer p { font-size: 0.76rem; color: var(--muted-2); font-family: var(--font-mono); }
+  footer a { text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── SCROLL TO TOP ── */
+  .scroll-top-btn {
+    position: fixed; right: 24px; bottom: 24px; z-index: 90;
+    width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%;
+    border: 1px solid var(--border-2);
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; box-shadow: 0 6px 20px rgba(99,102,241,0.4); cursor: pointer;
+    opacity: 0; pointer-events: none; transform: translateY(8px);
+    transition: opacity .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .scroll-top-btn.visible { opacity: 1; pointer-events: auto; transform: none; }
+  .scroll-top-btn:hover { box-shadow: 0 8px 26px rgba(99,102,241,0.55); }
+  .scroll-top-btn .icon { width: 20px; height: 20px; stroke-width: 2.5; }
+
+  @media (max-width: 720px) {
+    nav { padding: var(--space-s) var(--space-m); flex-wrap: wrap; }
+    .nav-links { order: 3; width: 100%; justify-content: space-between; }
+    main { padding: var(--space-m); }
+    .section { padding: var(--space-m); }
+    .hero h1 { font-size: 1.5rem; }
+    .kw-table { display: block; overflow-x: auto; white-space: nowrap; }
+    .scroll-top-btn { right: 16px; bottom: 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.2L19 10l-5.1 1.8L12 17l-1.9-5.2L5 10l5.1-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/><path d="M10 6h10M10 12h10M10 18h10"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8h.01"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 2h6v4H9z"/><path d="M9 11h6M9 15h6"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+    <symbol id="i-gap" viewBox="0 0 24 24"><path d="M9 3v18M15 3v18"/><path d="M3 9h4M17 9h4M3 15h4M17 15h4"/></symbol>
+  </defs>
+</svg>
+
+<nav>
+  <a href="index.html" class="nav-brand">
+    <span class="nav-logo"><svg class="icon"><use href="#i-spark"/></svg></span>
+    <span class="nav-title"><b>AIP-C01</b><span>AWS GenAI Developer Pro</span></span>
+  </a>
+  <div class="nav-links">
+    <a class="navlink" href="index.html"><svg class="icon"><use href="#i-list"/></svg>Trắc nghiệm</a>
+    <a class="navlink" href="theory.html"><svg class="icon"><use href="#i-book"/></svg>Lý thuyết</a>
+    <a class="navlink" href="tips.html"><svg class="icon"><use href="#i-target"/></svg>Kinh nghiệm thi</a>
+    <a class="navlink" href="official-exam-guide.html"><svg class="icon"><use href="#i-clipboard"/></svg>Exam Guide</a>
+    <a class="navlink active" href="gap-terms.html"><svg class="icon"><use href="#i-gap"/></svg>Gap Terms</a>
+  </div>
+</nav>
+
+<main>
+  <div class="hero">
+    <span class="eyebrow"><svg class="icon"><use href="#i-gap"/></svg>ÔN BỔ SUNG — TRÁNH GAP KIẾN THỨC</span>
+    <h1>19 thuật ngữ chưa có trong bộ 97 câu luyện tập</h1>
+    <p>Đây là các khái niệm <b>có mặt trong cram sheet lý thuyết</b> (aiplearning.vercel.app) nhưng <b>không xuất hiện
+       trong bất kỳ câu nào</b> của <code>aws_aip_c01_summary.html</code> (97 câu ExamTopics). Nghĩa là bạn chưa từng
+       "thực chiến" các khái niệm này qua câu hỏi — học kỹ phần này để không bị bất ngờ nếu đề thi thật hỏi tới.</p>
+  </div>
+
+  <div class="toc" role="navigation" aria-label="Mục lục">
+    <a href="#d1">D1 · FM & Data (4 thuật ngữ)</a>
+    <a href="#d2">D2 · Implementation & Integration (7 thuật ngữ)</a>
+    <a href="#d3">D3 · Security & Governance (2 thuật ngữ)</a>
+    <a href="#d4">D4 · Optimization (4 thuật ngữ)</a>
+    <a href="#d5">D5 · Testing (2 thuật ngữ)</a>
+    <a href="#checklist">Checklist tự kiểm tra</a>
+  </div>
+
+  <!-- ============ D1 ============ -->
+  <section class="section" id="d1">
+    <h2><span class="num">1</span>FM Integration &amp; Data Management <span class="weight">Domain 1 · 31%</span></h2>
+    <p class="lead">4 khái niệm quanh việc tùy biến model và xử lý prompt/đa phương tiện.</p>
+
+    <div class="term-card">
+      <h3>LoRA (Low-Rank Adaptation) <span class="badge hot">HIGH-YIELD</span></h3>
+      <p>Kỹ thuật <b>fine-tune giá rẻ</b>: thay vì cập nhật toàn bộ trọng số model, LoRA chèn thêm các <b>ma trận
+         low-rank</b> vào lớp attention và chỉ huấn luyện các ma trận nhỏ này. Model gốc giữ nguyên không đổi, chi phí
+         và thời gian huấn luyện giảm mạnh so với fine-tune đầy đủ.</p>
+      <table class="kw-table">
+        <thead><tr><th>Phương pháp</th><th>Dữ liệu cần</th><th>Dùng khi</th></tr></thead>
+        <tbody>
+          <tr><td><b>Fine-tuning</b></td><td>Cặp prompt/completion có nhãn</td><td>Dạy style/task cụ thể, giảm token/prompt</td></tr>
+          <tr><td><b>Continued Pre-training</b></td><td>Văn bản thô không nhãn</td><td>Nạp kiến thức domain/business docs</td></tr>
+          <tr><td><b>LoRA</b></td><td>Ma trận low-rank trên attention</td><td>Fine-tune rẻ, giữ nguyên model gốc</td></tr>
+        </tbody>
+      </table>
+      <div class="triggers"><svg class="icon"><use href="#i-target"/></svg>
+        <span><b>Exam trigger:</b> "huấn luyện lại rẻ", "adapter nhỏ gắn thêm vào model", "không muốn đổi trọng số gốc" → nghĩ tới LoRA.</span>
+      </div>
+      <div class="trap-box"><svg class="icon"><use href="#i-alert"/></svg>
+        <span><b>TRAP:</b> Fine-tuning/LoRA ≠ cách rẻ để "nạp" kiến thức MỚI/proprietary. Muốn thêm sự kiện/dữ kiện mới mà không train lại → dùng <b>RAG</b>, không phải LoRA.</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>Titan Multimodal Embeddings</h3>
+      <p>Model embedding của Amazon Titan cho phép đưa <b>ảnh (base64) + text tuỳ chọn</b> vào cùng một
+         <b>vector space</b>, nên có thể tìm kiếm chéo giữa văn bản và hình ảnh (ví dụ: nhập câu mô tả bằng chữ để
+         tìm ảnh tương ứng, hoặc ngược lại).</p>
+      <ul>
+        <li>Multimodal = kết hợp text/ảnh/audio/video trong một pipeline; Claude, Nova, Titan đều hỗ trợ đa phương tiện.</li>
+        <li>Titan Multimodal Embeddings G1: input là JSON chứa ảnh base64 (+ text tuỳ chọn) → trả về 1 vector chung.</li>
+      </ul>
+      <div class="vs"><svg class="icon"><use href="#i-x-circle"/></svg>
+        <span><b>Phân biệt:</b> Embedding text-only (Titan Text / Cohere Embed) <b>KHÔNG</b> tìm được ảnh — nếu đề bài cần "search across text and image" thì phải chọn multimodal embedding, không phải embedding text thường.</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>Few-shot prompting</h3>
+      <p>Một trong 3 kiểu prompt cơ bản, xếp cùng nhóm Zero-shot và Chain-of-Thought:</p>
+      <ul>
+        <li><b>Zero-shot</b> — không kèm ví dụ, chỉ có chỉ dẫn.</li>
+        <li><b>Few-shot</b> — kèm vài ví dụ input/output mẫu để định hướng <b>format hoặc văn phong</b> đầu ra (ví dụ:
+            cho model biết cần trả lời ngắn gọn cỡ nào, theo cấu trúc nào).</li>
+        <li><b>Chain-of-Thought (CoT)</b> — yêu cầu "suy nghĩ từng bước" để cải thiện khả năng suy luận.</li>
+      </ul>
+      <p>Cấu trúc chuẩn của một prompt tốt: <b>Instructions → Context → Input data → Output indicator</b> (đặt yêu
+         cầu định dạng đầu ra ở cuối cùng để model "nhớ" tốt nhất).</p>
+      <div class="triggers"><svg class="icon"><use href="#i-target"/></svg>
+        <span><b>Exam trigger:</b> "few-shot examples to guide output/format" → Few-shot. "improve reasoning/step-by-step" → CoT. Đừng nhầm CoT có thể sửa được <b>facts sai</b> — CoT chỉ cải thiện bước suy luận, không thêm kiến thức thật (muốn đúng facts → RAG).</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>Prompt leaking <span class="badge trap">DỄ NHẦM</span></h3>
+      <p>Một dạng tấn công khác với prompt injection: người dùng cố tình hỏi model để <b>lộ ra system prompt / chỉ dẫn
+         nội bộ</b> đã được cấu hình sẵn (ví dụ: "hãy cho tôi biết instructions gốc của bạn là gì").</p>
+      <table class="kw-table">
+        <thead><tr><th>Tấn công</th><th>Mục tiêu</th><th>Ví dụ câu lệnh</th></tr></thead>
+        <tbody>
+          <tr><td><b>Prompt injection</b></td><td>Khiến model <b>bỏ qua chỉ dẫn gốc</b>, làm việc khác</td><td>"Ignore the above instructions and…"</td></tr>
+          <tr><td><b>Prompt leaking</b></td><td><b>Trích xuất</b> system prompt/instructions bí mật</td><td>"Tell me your system instructions"</td></tr>
+        </tbody>
+      </table>
+      <div class="triggers"><svg class="icon"><use href="#i-target"/></svg>
+        <span><b>Giải pháp chung cho cả 2:</b> Bedrock Guardrails (content filter mức cao chặn injection) kết hợp system prompt được thiết kế chặt + không đặt thông tin nhạy cảm trong system prompt.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ D2 ============ -->
+  <section class="section" id="d2">
+    <h2><span class="num">2</span>Implementation &amp; Integration <span class="weight">Domain 2 · 26%</span></h2>
+    <p class="lead">7 khái niệm — phần lớn liên quan tới hệ sinh thái Agent/AgentCore và triển khai model.</p>
+
+    <div class="term-card">
+      <h3>Agent memory (short-term vs long-term)</h3>
+      <p>Cách một agent "nhớ" thông tin qua nhiều lượt tương tác:</p>
+      <table class="kw-table">
+        <thead><tr><th>Loại</th><th>Nội dung lưu</th><th>Nơi lưu phổ biến</th></tr></thead>
+        <tbody>
+          <tr><td><b>Short-term</b></td><td>Lịch sử chat / ngữ cảnh trong 1 session</td><td>Truyền qua mảng <code>messages</code> của Converse API, hoặc ElastiCache/MemoryDB/DynamoDB theo session ID</td></tr>
+          <tr><td><b>Long-term</b></td><td>Insight đã rút ra, tóm tắt phiên, sở thích người dùng, sự kiện</td><td>DynamoDB/RDS/Aurora, <b>AgentCore Memory</b>, hoặc Mem0 (dùng với Strands)</td></tr>
+        </tbody>
+      </table>
+      <p>Một <b>Knowledge Base</b> cũng có thể đóng vai trò bộ nhớ dài hạn (lưu fact/tài liệu để truy xuất).</p>
+      <div class="vs"><svg class="icon"><use href="#i-x-circle"/></svg>
+        <span><b>Phân biệt:</b> Nếu đề cần "managed memory, không muốn tự xây store" → chọn <b>AgentCore Memory</b> (đã có sẵn short+long-term), không phải tự dựng DynamoDB/ElastiCache thủ công.</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>Strands Agents SDK</h3>
+      <p>SDK <b>mã nguồn mở của Amazon</b> để tự viết agent, code-first, ngang hàng với OpenAI Agents SDK, CrewAI,
+         LangGraph, Google ADK — <b>không bị khoá vào AWS</b> dù tích hợp rất chặt với Bedrock/Lambda/Step Functions.</p>
+      <ul>
+        <li>Định nghĩa tool tuỳ chỉnh bằng decorator <code>@tool</code>.</li>
+        <li>Vòng lặp hoạt động: input → chọn tool → suy luận → thực thi → trả lời.</li>
+        <li>Hỗ trợ multimodal và <b>MCP</b> (Model Context Protocol).</li>
+      </ul>
+      <div class="triggers"><svg class="icon"><use href="#i-target"/></svg>
+        <span><b>Exam trigger:</b> "code-first, single-agent tool-use loop", "@tool decorator", "not AWS-locked" → Strands Agents.</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>AWS Agent Squad <span class="badge trap">TRAP quen thuộc</span></h3>
+      <p>Framework <b>mã nguồn mở</b> (Python/TypeScript) chuyên về <b>routing</b>: một Supervisor Agent phân loại
+         intent của request rồi định tuyến tới đúng agent chuyên biệt trong một nhóm nhiều agent, chia sẻ ngữ cảnh
+         giữa các agent.</p>
+      <div class="trap-box"><svg class="icon"><use href="#i-alert"/></svg>
+        <span><b>TRAP kinh điển:</b> <b>Agent Squad</b> = routing <u>giữa nhiều agent</u> (multi-agent). <b>Strands</b> = tool-use <u>bên trong một agent</u> (single-agent loop). Đề hay đảo hai khái niệm này để đánh lừa.</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>AgentCore Policy (Cedar) <span class="badge trap">TRAP</span></h3>
+      <p>Cơ chế chặn/cho phép <b>từng tool call</b> ngay tại AgentCore Gateway, được đánh giá <b>bên ngoài code của
+         agent</b>. Policy được viết bằng ngôn ngữ <b>Cedar</b> (hoặc form/NLP), mặc định <b>deny-by-default</b>.</p>
+      <ul>
+        <li><b>Enforce mode</b> — chặn thật sự khi vi phạm policy.</li>
+        <li><b>Log-only mode</b> — chỉ ghi log để test policy, không chặn.</li>
+        <li>Có thể validate theo ngữ cảnh: OAuth sub-claims, tham số của tool call.</li>
+      </ul>
+      <div class="vs"><svg class="icon"><use href="#i-x-circle"/></svg>
+        <span><b>Phân biệt:</b> IAM = quyền cấp <u>tài nguyên AWS</u>, không kiểm tra tham số từng tool call. Guardrails = lọc <u>nội dung</u>, không phải authorization cho tool. Cần "ai được gọi tool nào, với tham số gì" → AgentCore Policy (Cedar).</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>OpenAPI schema (cho Action Groups)</h3>
+      <p>Chuẩn OpenAPI (tiền thân Swagger) dùng để mô tả một tool trong Bedrock <b>Action Group</b>: tham số đầu vào,
+         kiểu dữ liệu đầu ra, và các điều kiện lỗi. Schema này được <b>upload lên S3</b> hoặc chỉnh sửa trực tiếp
+         trong console để Agent biết cách gọi tool.</p>
+      <div class="vs"><svg class="icon"><use href="#i-x-circle"/></svg>
+        <span><b>Phân biệt:</b> Knowledge Base là nguồn <u>retrieval</u> (đọc tài liệu), không phải định nghĩa <u>tool có thể gọi</u> — đừng nhầm 2 khái niệm khi đề hỏi "cách định nghĩa 1 action group tool".</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>Model servers &amp; nén model (DJL Serving / TorchServe / Triton + quantization / pruning / distillation)</h3>
+      <p>Khi tự host model (ngoài Bedrock managed), cần chọn <b>model server</b> và có thể áp dụng kỹ thuật <b>nén
+         model</b> để giảm kích thước/chi phí:</p>
+      <table class="kw-table">
+        <thead><tr><th>Model server</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td><b>DJL Serving</b></td><td>Do Amazon phát triển → khả năng cao xuất hiện trong đề</td></tr>
+          <tr><td><b>TorchServe</b></td><td>Chuẩn của PyTorch</td></tr>
+          <tr><td><b>Triton</b></td><td>Của NVIDIA, tối ưu GPU</td></tr>
+        </tbody>
+      </table>
+      <table class="kw-table">
+        <thead><tr><th>Kỹ thuật nén</th><th>Cách hoạt động</th></tr></thead>
+        <tbody>
+          <tr><td><b>Quantization</b></td><td>Giảm độ chính xác trọng số (vd FP32→INT8), giữ nguyên kiến trúc</td></tr>
+          <tr><td><b>Pruning</b></td><td>Loại bỏ trọng số/neuron ít quan trọng</td></tr>
+          <tr><td><b>Knowledge distillation</b></td><td>Huấn luyện model nhỏ ("student") học lại từ model lớn ("teacher")</td></tr>
+        </tbody>
+      </table>
+      <div class="trap-box"><svg class="icon"><use href="#i-alert"/></svg>
+        <span><b>Lưu ý:</b> Luôn <b>đo lường trước khi tối ưu</b> (avoid premature optimization) — đề hay đưa phương án tối ưu hoá sớm mà chưa có baseline làm bẫy.</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>Bedrock Custom Model Import</h3>
+      <p>Cho phép <b>train/tune một model ở SageMaker</b> rồi <b>import vào Bedrock</b> để chạy inference serverless
+         (không cần tự quản lý SageMaker endpoint sau khi import).</p>
+      <div class="trap-box"><svg class="icon"><use href="#i-alert"/></svg>
+        <span><b>TRAP liên quan (Provisioned Throughput):</b> Custom/imported model <b>BẮT BUỘC</b> phải dùng
+        Provisioned Throughput — khi gọi inference phải truyền <b>ARN của provisioned model</b> làm <code>modelId</code>,
+        không phải model ID thông thường, nếu không sẽ bị throttle dù đã mua capacity.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ D3 ============ -->
+  <section class="section" id="d3">
+    <h2><span class="num">3</span>AI Safety, Security &amp; Governance <span class="weight">Domain 3 · 20%</span></h2>
+    <p class="lead">2 dịch vụ nền tảng về mã hoá và quản lý bí mật — rất hay bị nhầm với nhau.</p>
+
+    <div class="term-card">
+      <h3>AWS KMS (Key Management Service) <span class="badge hot">HIGH-YIELD</span></h3>
+      <p>Hễ nghe từ khoá <b>"encryption"</b> → nghĩ ngay tới KMS. Quản lý khoá mã hoá, có audit đầy đủ qua CloudTrail,
+         tích hợp sâu với S3/EBS/RDS/SSM.</p>
+      <ul>
+        <li><b>Loại khoá:</b> Symmetric (AES-256, dùng bởi hầu hết dịch vụ AWS) và Asymmetric (RSA/ECC — có thể tải
+            public key để mã hoá/ký ngoài AWS).</li>
+        <li><b>Quyền sở hữu khoá:</b> AWS Owned (miễn phí) · AWS Managed (miễn phí) · <b>Customer Managed</b>
+            ($1/tháng, hỗ trợ rotation tự động + on-demand) · Imported (chỉ rotation thủ công).</li>
+        <li><b>Envelope encryption:</b> một "data key" mã hoá dữ liệu thực tế; bản thân data key đó lại được KMS mã hoá.</li>
+      </ul>
+      <div class="vs"><svg class="icon"><use href="#i-x-circle"/></svg>
+        <span><b>Phân biệt:</b> KMS quản lý <u>khoá mã hoá</u>. <b>Secrets Manager</b> quản lý <u>giá trị bí mật</u>
+        (mật khẩu, API key). <b>CloudHSM</b> = HSM chuyên dụng single-tenant, chỉ chọn khi cần FIPS 140-2 Level 3
+        hoặc toàn quyền kiểm soát khoá vật lý.</span>
+      </div>
+      <div class="trap-box"><svg class="icon"><use href="#i-alert"/></svg>
+        <span><b>TRAP:</b> SSE-KMS tính vào <b>quota request/giây của KMS</b> (GenerateDataKey/Decrypt) — hệ thống
+        S3 throughput cao có thể bị throttle vì lý do này, giải pháp là xin tăng quota KMS chứ không phải đổi sang mã hoá khác.</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>Secrets Manager <span class="badge trap">TRAP vs Parameter Store</span></h3>
+      <p>Dịch vụ lưu trữ và <b>tự động rotate secret</b> (mật khẩu DB, API key) qua Lambda, có tích hợp rotation
+         <b>native với RDS</b>, mã hoá bằng KMS, và hỗ trợ replicate đa vùng (multi-Region).</p>
+      <table class="kw-table">
+        <thead><tr><th>Nhu cầu</th><th>Chọn dịch vụ</th></tr></thead>
+        <tbody>
+          <tr><td>Cần <b>tự động rotate</b> secret định kỳ</td><td><b>Secrets Manager</b></td></tr>
+          <tr><td>Chỉ cần <b>cấu hình rẻ</b>, không cần rotation</td><td><b>SSM Parameter Store</b> (có thể mã hoá bằng KMS nhưng không có rotation built-in)</td></tr>
+        </tbody>
+      </table>
+      <div class="trap-box"><svg class="icon"><use href="#i-alert"/></svg>
+        <span><b>TRAP:</b> Đề bài nhắc "rotate credentials automatically" → luôn là Secrets Manager, dù Parameter Store rẻ hơn. Ngược lại nếu chỉ là "config values, occasional read" → Parameter Store đủ dùng, chọn Secrets Manager sẽ là over-engineering.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ D4 ============ -->
+  <section class="section" id="d4">
+    <h2><span class="num">4</span>Operational Efficiency &amp; Optimization <span class="weight">Domain 4 · 12%</span></h2>
+    <p class="lead">4 khái niệm về đo lường độ trễ, xử lý hàng loạt, và hạ tầng hiệu năng cao.</p>
+
+    <div class="term-card">
+      <h3>TTFT (Time To First Token)</h3>
+      <p>Chỉ số đo <b>thời gian tới khi token đầu tiên</b> xuất hiện khi streaming — cực kỳ quan trọng với trải
+         nghiệm real-time (người dùng cảm nhận độ trễ dựa vào TTFT chứ không phải tổng thời gian).</p>
+      <ul>
+        <li>CloudWatch theo dõi trực tiếp TTFT cùng với <code>InputTokenCount</code>, <code>OutputTokenCount</code>,
+            latency, invocation count, throttle — không cần tự tính toán thủ công.</li>
+        <li><b>Latency-optimized inference</b>: bật <code>performanceConfig={"latency":"optimized"}</code> để cải
+            thiện TTFT và Output Tokens/giây (OTPS).</li>
+        <li><b>CountTokens API</b>: ước tính số token của 1 request <i>trước khi</i> gửi thật, miễn phí, không tốn chi
+            phí inference — dùng để dự trù chi phí, khác với TTFT (đo độ trễ, không đo token).</li>
+      </ul>
+      <div class="triggers"><svg class="icon"><use href="#i-target"/></svg>
+        <span><b>Exam trigger:</b> "track time to first token", "improve perceived responsiveness while streaming" → TTFT + latency-optimized inference, không phải Provisioned Throughput hay Cross-Region Inference (2 cái đó tối ưu capacity/tính sẵn sàng, không phải độ trễ của 1 request).</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>Batch Inference</h3>
+      <p>Gửi <b>nhiều prompt cùng lúc qua S3</b>, Bedrock xử lý theo lô và trả kết quả cũng vào S3. Rẻ hơn đáng kể so
+         với gọi real-time, nhưng <b>không phù hợp cho tương tác thời gian thực</b>.</p>
+      <div class="vs"><svg class="icon"><use href="#i-x-circle"/></svg>
+        <span><b>Phân biệt:</b> Cần khối lượng lớn nhưng <u>không cần trả lời ngay</u> → Batch Inference (rẻ). Cần
+        <u>độ trễ thấp ổn định liên tục</u> → Provisioned Throughput (đắt hơn nhưng real-time). Đừng chọn Batch khi đề nhắc "real-time" hay "interactive".</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>Connection pooling</h3>
+      <p>Kỹ thuật <b>tái sử dụng kết nối HTTP</b> đã mở thay vì tạo kết nối mới cho mỗi request — giảm overhead
+         handshake (đặc biệt TLS), cải thiện độ trễ và khả năng chịu tải khi gọi Bedrock/API tần suất cao.</p>
+      <ul>
+        <li>Khuyến nghị: giữ 10–20 kết nối mở/instance, TTL 60–300 giây.</li>
+        <li>Thường đi kèm với chiến lược resilience khác: <b>exponential backoff + jitter</b> (bắt đầu ~100ms, nhân
+            đôi mỗi lần retry, tối đa 3–5 lần, cộng thêm jitter ngẫu nhiên ±100ms để tránh các client retry đồng loạt),
+            và <b>circuit breaker</b> để ngăn lỗi lan truyền khi bị throttle liên tục.</li>
+      </ul>
+      <div class="triggers"><svg class="icon"><use href="#i-target"/></svg>
+        <span><b>Exam trigger:</b> "reuse open connections", "reduce connection overhead at high request volume" → Connection pooling, thường xuất hiện cùng câu hỏi về backoff/retry cho throttling tạm thời (transient) — phân biệt với việc cần tăng Model Units khi thiếu hụt capacity dài hạn (sustained).</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>UltraServers (Trn2, P6e-GB200)</h3>
+      <p>Cụm phần cứng với <b>interconnect băng thông cao, độ trễ thấp</b> giữa nhiều instance AI (EC2) — dùng khi
+         tự host model rất lớn trên SageMaker cần giao tiếp nhanh giữa các GPU/accelerator.</p>
+      <ul>
+        <li>SageMaker AI có thể host model tới <b>500 GB</b> — cần tăng quota <b>container health-check</b> và
+            <b>model download timeout</b> để model tải xong không bị coi là treo.</li>
+        <li>Chọn instance theo kích thước: model lớn → <code>ml.p4d.24xlarge</code> (GPU); model nhỏ (vd NER) →
+            <code>ml.c5.9xlarge</code> (CPU).</li>
+        <li>Tensor parallelism (chia trọng số model qua nhiều GPU) hỗ trợ bởi thư viện bên thứ 3: Triton, DeepSpeed,
+            FasterTransformer.</li>
+      </ul>
+      <div class="vs"><svg class="icon"><use href="#i-x-circle"/></svg>
+        <span><b>Phân biệt:</b> Đây là bài toán <u>tự host trên SageMaker</u> — nếu đề đang nói về Bedrock managed
+        (Provisioned Throughput) thì không cần lo về UltraServers/instance sizing, vì Bedrock tự quản lý hạ tầng.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ D5 ============ -->
+  <section class="section" id="d5">
+    <h2><span class="num">5</span>Testing, Validation &amp; Troubleshooting <span class="weight">Domain 5 · 11%</span></h2>
+    <p class="lead">Bộ 3 chỉ số đánh giá văn bản kinh điển — cực dễ bị hỏi dạng "phân biệt A vs B vs C".</p>
+
+    <div class="term-card">
+      <h3>ROUGE vs BLEU vs BERTScore <span class="badge hot">HIGH-YIELD</span> <span class="badge trap">TRAP</span></h3>
+      <p>3 metric đánh giá chất lượng văn bản sinh ra, mỗi metric tối ưu cho một use case khác nhau:</p>
+      <table class="kw-table">
+        <thead><tr><th>Metric</th><th>Đo cái gì</th><th>Tốt nhất cho</th></tr></thead>
+        <tbody>
+          <tr><td><b>ROUGE</b></td><td><b>Recall</b> của n-gram trùng lặp (ROUGE-N) hoặc LCS (ROUGE-L)</td><td>Tóm tắt văn bản (summarization)</td></tr>
+          <tr><td><b>BLEU</b></td><td><b>Precision</b> của n-gram + brevity penalty (phạt câu quá ngắn)</td><td>Dịch máy (machine translation)</td></tr>
+          <tr><td><b>BERTScore</b></td><td>Độ tương đồng <b>ngữ nghĩa</b> qua embedding, chịu được từ đồng nghĩa/diễn đạt lại</td><td>Khi cần so khớp ý nghĩa dù câu chữ khác nhau (paraphrase-tolerant)</td></tr>
+        </tbody>
+      </table>
+      <div class="trap-box"><svg class="icon"><use href="#i-alert"/></svg>
+        <span><b>TRAP kinh điển:</b> Đề hay hoán đổi 3 metric này làm distractor. Ghi nhớ nhanh: <b>ROUGE = Recall +
+        tóm tắt</b>, <b>BLEU = dịch + Brevity</b> (cùng chữ B), <b>BERTScore = Bert + ngữ nghĩa (embedding)</b>. Nếu đề
+        nói "tolerant to synonyms/paraphrase" → chắc chắn là BERTScore, không phải ROUGE hay BLEU (2 cái đó chỉ so khớp bề mặt n-gram).</span>
+      </div>
+    </div>
+
+    <div class="term-card">
+      <h3>RAG evaluation: Retrieve-only vs Retrieve-and-generate</h3>
+      <p>Đây là 2 loại evaluation job khác nhau cho hệ thống RAG (liên quan trực tiếp tới ROUGE/BLEU/BERTScore ở trên
+         vì retrieve-and-generate có thể dùng các metric này để chấm câu trả lời sinh ra):</p>
+      <ul>
+        <li><b>Retrieve-only</b> — chỉ đo chất lượng <b>truy xuất</b>: relevance (liên quan) và coverage (bao phủ).</li>
+        <li><b>Retrieve-and-generate</b> — đo cả <b>câu trả lời được sinh ra</b>: correctness, completeness,
+            helpfulness, logical coherence, <b>faithfulness</b> (câu trả lời có bám sát nội dung truy xuất được
+            không), và <b>citation precision</b> (trích dẫn đúng nguồn).</li>
+      </ul>
+      <p>Bộ dữ liệu đầu vào: file JSON-lines trên S3 gồm prompt + reference response/context. Tam giác đánh giá quan
+         trọng: <b>Answer Relevance · Context Relevance · Groundedness</b>.</p>
+    </div>
+  </section>
+
+  <!-- ============ CHECKLIST ============ -->
+  <section class="section" id="checklist">
+    <h2><svg class="icon"><use href="#i-check"/></svg>Checklist tự kiểm tra trước khi thi</h2>
+    <p class="lead">Đọc xong, tự hỏi mình có trả lời được các câu này không — nếu vướng câu nào, đọc lại phần tương ứng ở trên.</p>
+    <ul class="checklist">
+      <li><svg class="icon"><use href="#i-check"/></svg>Phân biệt được Fine-tuning / Continued Pre-training / LoRA — cái nào rẻ nhất, cái nào KHÔNG dùng để thêm kiến thức mới?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Biết Titan Multimodal Embeddings khác gì so với embedding text-only?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Phân biệt được Prompt injection vs Prompt leaking?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Nhớ được short-term vs long-term agent memory lưu ở đâu?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Trả lời ngay được: Strands = tool-use trong 1 agent, Agent Squad = routing giữa nhiều agent — không nhầm lẫn?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Biết AgentCore Policy (Cedar) khác gì IAM và Guardrails?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Kể được 3 model server (DJL/TorchServe/Triton) và 3 kỹ thuật nén (quantization/pruning/distillation)?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Biết Custom Model Import bắt buộc phải dùng Provisioned Throughput + provisioned ARN?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Phân biệt rõ AWS KMS (khoá mã hoá) vs Secrets Manager (secret value) vs Parameter Store (không rotation)?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Biết TTFT là gì và khác CountTokens API ra sao?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Biết khi nào chọn Batch Inference thay vì Provisioned Throughput?</li>
+      <li><svg class="icon"><use href="#i-check"/></svg>Thuộc lòng bảng ROUGE (recall/tóm tắt) vs BLEU (precision/dịch) vs BERTScore (semantic/embedding)?</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Nguồn nội dung: cram sheet <a href="https://aiplearning.vercel.app/" target="_blank" rel="noopener">aiplearning.vercel.app</a>
+       (69 flashcard, D1–D5) · đối chiếu gap với <a href="aws_aip_c01_summary.html">aws_aip_c01_summary.html</a> (97 câu ExamTopics)
+       · glossary đầy đủ tại <a href="TERMS.md">TERMS.md</a>.
+       Chỉ mang tính tài liệu ôn tập — xác minh lại với AWS docs khi cần chính xác tuyệt đối.</p>
+  </footer>
+</main>
+
+<button class="scroll-top-btn" id="scrollTopBtn" aria-label="Lên đầu trang">
+  <svg class="icon"><use href="#i-arrow-up"/></svg>
+</button>
+
+<script>
+  var btn = document.getElementById('scrollTopBtn');
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 400) { btn.classList.add('visible'); }
+    else { btn.classList.remove('visible'); }
+  });
+  btn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
