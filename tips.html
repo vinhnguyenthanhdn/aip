@@ -324,10 +324,46 @@
       bài mặc định kỳ vọng bạn dùng Bedrock làm nền tảng trước, chỉ "thoát" sang SageMaker/EC2/dịch vụ khác khi Bedrock
       thực sự không đáp ứng được yêu cầu (ví dụ cần host một custom model không có trên Bedrock).</span>
     </div>
+
+    <h3 style="margin-top:1.5rem;">Dịch vụ AWS luôn là đáp án sai trong bộ đề (100% distractor)</h3>
+    <p>Grep toàn bộ 97 câu — mọi phương án A-F, không chỉ đáp án đúng — cho thấy các dịch vụ sau <b>chưa từng một lần
+       là đáp án đúng</b> dù xuất hiện nhiều lần. Hễ thấy tên dịch vụ này trong một phương án, gần như chắc chắn đó là
+       phương án nhiễu:</p>
+    <table class="kw-table">
+      <thead><tr><th>Dịch vụ</th><th>Tỷ lệ sai</th><th>Vì sao luôn là distractor</th></tr></thead>
+      <tbody>
+        <tr><td><b>Amazon Kendra</b></td><td>9/9</td><td>Search engine thế hệ cũ — đã bị OpenSearch hybrid search + reranker / Bedrock Knowledge Bases thay thế hoàn toàn cho RAG.</td></tr>
+        <tr><td><b>Amazon EC2</b></td><td>4/4</td><td>Tự host trên EC2 luôn tốn effort vận hành hơn dịch vụ managed (Bedrock/Lambda/Step Functions) đang có sẵn cho đúng nhu cầu.</td></tr>
+        <tr><td><b>Amazon ECS</b></td><td>3/3</td><td>Cùng nhóm với EC2 — container tự quản lý luôn thua giải pháp serverless/managed.</td></tr>
+        <tr><td><b>Amazon SQS</b></td><td>7/7</td><td>Queue + polling luôn thua tích hợp native (EventBridge, Step Functions, WebSocket) khi cần orchestration/streaming thời gian thực.</td></tr>
+        <tr><td><b>Amazon ElastiCache</b></td><td>6/6</td><td>Cache tự dựng luôn thua DynamoDB (TTL) cho audit/state, hoặc OpenSearch k-NN cho semantic cache.</td></tr>
+        <tr><td><b>Amazon Athena</b></td><td>4/4</td><td>Query log SQL thủ công luôn thua CloudWatch Logs Insights / Bedrock Model Evaluation có sẵn.</td></tr>
+        <tr><td><b>Amazon QuickSight</b> / <b>Amazon Managed Grafana</b></td><td>5/5, 2/2</td><td>Luôn thua CloudWatch custom dashboard — đề không cần thêm BI tool riêng cho observability GenAI.</td></tr>
+        <tr><td><b>Amazon Kinesis</b> / <b>Amazon Data Firehose</b></td><td>2/2 mỗi loại</td><td>Tự xây streaming ingestion luôn thừa khi EventBridge + Bedrock invocation logging đã đủ.</td></tr>
+        <tr><td><b>AWS WAF</b></td><td>2/2</td><td>Chặn ở tầng network, không hiểu ngữ nghĩa — luôn thua Bedrock Guardrails cho prompt injection/content safety.</td></tr>
+        <tr><td><b>AWS Global Accelerator</b></td><td>2/2</td><td>Luôn thua Bedrock Cross-Region Inference profile cho bài toán độ trễ/failover đa vùng.</td></tr>
+        <tr><td><b>AWS Config</b></td><td>2/2</td><td>Luôn thua CloudFormation Guard/SCP để enforce compliance ngay tại thời điểm triển khai, thay vì chỉ phát hiện sau.</td></tr>
+        <tr><td><b>Amazon Comprehend Medical</b></td><td>2/2</td><td>Đáng chú ý: kể cả use case y tế, đề vẫn ưu tiên kiến trúc RAG/Guardrails grounding chung hơn service NLP chuyên biệt domain.</td></tr>
+        <tr><td><b>SageMaker Model Monitor / Data Wrangler / JumpStart</b>, <b>Amazon Lex</b></td><td>4/4, 2/2, 1/1, 2/2</td><td>Nhóm dịch vụ ML/NLP "tiền-GenAI" — luôn thua tính năng GenAI-native tương ứng của Bedrock.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:1.5rem;">Cùng một dịch vụ, nhưng chỉ đúng khi có đúng một từ khóa</h3>
+    <p>Bẫy tinh vi hơn: dịch vụ xuất hiện ở cả đáp án đúng lẫn sai — khác biệt nằm ở một điều kiện/từ khóa rất nhỏ, dễ đọc lướt qua:</p>
+    <table class="kw-table">
+      <thead><tr><th>Dịch vụ</th><th>Sai khi nào</th><th>Chỉ đúng khi nào</th></tr></thead>
+      <tbody>
+        <tr><td><b>Amazon RDS</b></td><td>Dùng làm vector store thay thế hoặc cache khác (8/9 lần sai)</td><td>Dữ liệu thực sự quan hệ có cấu trúc + cần text-to-SQL (1/9, duy nhất câu về gợi ý nâng hạng cabin dựa trên lịch sử đặt chỗ)</td></tr>
+        <tr><td><b>Amazon Aurora PostgreSQL + pgvector</b></td><td>"Aurora PostgreSQL" thường, không nói rõ chế độ vận hành (4/4 sai)</td><td>Chỉ đúng khi đề bài ghi rõ <b>Serverless</b> (Aurora Serverless với pgvector)</td></tr>
+        <tr><td><b>Amazon Bedrock Flows</b></td><td>Dùng để tự dựng workflow phức tạp (traffic-shifting, prompt evaluation, S3 orchestration) — luôn bị coi là over-engineering (3/3 sai)</td><td>Chỉ đúng khi dùng đơn giản để nối FM + Knowledge Base trong một flow</td></tr>
+        <tr><td><b>AWS Lake Formation</b></td><td>Dùng chung chung để "catalog dữ liệu" (đáng lẽ là Glue Data Catalog) hoặc IAM principal grant trực tiếp trên bảng</td><td>Chỉ đúng khi đi kèm <b>LF-Tags</b> để phân quyền theo cột/đa business-unit/Region</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.85rem; color:var(--muted-2);">Số liệu grep trực tiếp trên <code>aws_aip_c01.json</code> (97 câu, tất cả phương án A-F) — không phải cảm tính.</p>
   </section>
 
   <section class="section" id="traps">
-    <h2><span class="num">3</span>10 bẫy thường gặp trong bộ đề</h2>
+    <h2><span class="num">3</span>12 bẫy thường gặp trong bộ đề</h2>
 
     <div class="trap">
       <div class="trap-head"><span class="trap-num">1</span><span class="trap-title">Provisioned Throughput đã mua nhưng vẫn bị throttle</span></div>
@@ -390,6 +426,27 @@
       <div class="trap-head"><span class="trap-num">10</span><span class="trap-title">Dữ liệu nhạy cảm cần hiển thị khác nhau theo vai trò người dùng</span></div>
       <p>Đáp án "tạo nhiều bản sao knowledge base đã redact sẵn cho từng vai trò" tốn vận hành và khó đồng bộ.
          <span class="fix">Gọi <code>ApplyGuardrail</code> tương ứng với nhóm người dùng (ví dụ Cognito group) ngay tại thời điểm trả lời.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">11</span><span class="trap-title">"Tự host" luôn thua managed service — EC2/ECS luôn là distractor</span></div>
+      <p>Bất cứ đáp án nào tự deploy container/instance trên <code>Amazon EC2</code> hoặc <code>Amazon ECS</code> để làm
+         việc mà Bedrock/Lambda/Step Functions đã làm được đều là phương án tốn effort vận hành hơn — grep 97 câu cho
+         thấy EC2 (4/4) và ECS (3/3) luôn luôn sai, không một lần là đáp án đúng.
+         <span class="fix">Khi thấy "deploy on EC2/ECS" cạnh tranh với một tính năng managed của Bedrock/Lambda, loại
+         ngay phương án EC2/ECS, trừ khi đề nói rõ Bedrock không hỗ trợ việc đó (ví dụ cần host một custom model không
+         có trên Bedrock).</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">12</span><span class="trap-title">Dịch vụ ML/search "tiền-GenAI" luôn là bẫy hoài niệm</span></div>
+      <p><code>Amazon Kendra</code> (9/9), <code>SageMaker Model Monitor</code> (4/4), <code>SageMaker Data Wrangler</code>,
+         <code>SageMaker JumpStart</code>, và <code>Amazon Lex</code> chưa từng là đáp án đúng trong bộ đề — đây là các
+         dịch vụ ML/NLP ra đời trước làn sóng GenAI, luôn bị tính năng GenAI-native của Bedrock thay thế (Knowledge
+         Bases + hybrid search + rerank thay Kendra; Guardrails + Model Evaluation thay Model Monitor; managed FM thay
+         JumpStart; Transcribe + Bedrock streaming thay Lex).
+         <span class="fix">Nếu một phương án nhắc tên các dịch vụ này để giải quyết bài toán RAG/monitoring/data-prep/voice,
+         gần như chắc chắn đó là distractor — tìm phương án dùng tính năng Bedrock tương ứng.</span></p>
     </div>
   </section>
 
