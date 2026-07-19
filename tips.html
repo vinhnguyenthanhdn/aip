@@ -498,6 +498,37 @@
           CloudFormation StackSets với policy <b>mask</b> (không đủ mạnh để ngăn chặn hẳn, và StackSets deploy không
           tự bắt buộc việc phải dùng).</li>
     </ul>
+
+    <h3 style="margin-top:1.5rem;">Kinh nghiệm riêng: Bedrock Knowledge Bases — đừng tự xây thứ KB đã làm sẵn</h3>
+    <p>Knowledge Bases xuất hiện đúng 16 lượt, sai 26 lượt — cũng như Guardrails, bản thân dịch vụ không phải vấn đề
+       mà là <b>cách dùng nó</b>:</p>
+    <ul>
+      <li><b>Đừng tự xây logic mà KB đã có sẵn (lỗi lặp lại nhiều nhất):</b> tách riêng <code>Retrieve</code> +
+          <code>InvokeModel</code> rồi tự viết verification logic để so khớp nguồn và tạo citation (Q24, Q38) — sai;
+          <code>RetrieveAndGenerate</code> API tự trả citation có sẵn. Tự dùng Lambda query embeddings tuần tự để suy
+          ra quan hệ multi-hop (Q17) — sai, dùng <b>GraphRAG + Neptune Analytics</b> tích hợp sẵn. Tự orchestrate
+          nhiều Lambda hoặc train model SageMaker riêng để decompose/expand câu hỏi (Q97) — sai, KB có <b>query
+          decomposition tích hợp sẵn</b>, chỉ cần Bedrock Flow điều phối. Gọi Rerank API tách riêng thành một bước
+          (Q88) vẫn chạy được nhưng thừa — đúng là bật <b>rerank ngay trong cấu hình Knowledge Bases</b>.</li>
+      <li><b>Chunking: hierarchical hợp lý nhưng không tối ưu bằng semantic</b> (Q32) khi vấn đề là tính nhất quán
+          ngữ nghĩa giữa các đoạn — bổ sung nuance cho bẫy chunking đã có ở trên.</li>
+      <li><b>Kiến trúc multi-agent/multi-tenant — KB phải tách đúng cấp độ:</b> mỗi collaborator agent cần <b>KB
+          riêng theo domain</b>, không dùng chung 1 KB cho nhiều supervisor song song hay dồn hết vào 1 agent tổng
+          quát + IAM filtering (Q56). KB đa tenant phải <b>tách theo tài khoản/tenant thật sự</b> — một KB chung dù
+          đồng bộ qua management account hay dùng IAM Identity Center permission set (bẫy đã biết) đều không đạt cách
+          ly thật (Q58). Cross-account KB cho khách hàng ngoài không nên tự chế DIY — dùng đúng feature <b>Amazon Q
+          Business Data Accessor</b> (Q64).</li>
+      <li><b>Retrieval quality & Region:</b> default vector search không đủ khi cần khớp chính xác thuật ngữ/trích
+          dẫn (Q65) — cần <b>hybrid search</b>. Với yêu cầu residency/latency đa vùng (Q72), đáp án đúng dùng KB
+          <b>native vector store của Bedrock</b> trong S3 mỗi Region + cross-Region inference cho model call; dùng
+          <b>Amazon Kendra</b> để tương tác với KB (Kendra lại xuất hiện!) hoặc tự dựng Outposts/Local Zone/RDS custom
+          vector DB đều sai vì thừa hạ tầng.</li>
+      <li><b>Đừng bolt thêm service khác cho việc KB không cần</b> (Q86): Bedrock Agents+KB+Guardrails là đúng, nhưng
+          thêm OpenSearch chỉ để lưu prompt-response log là dư thừa — DynamoDB (TTL) đã đủ cho audit.</li>
+      <li><b>Hai case đã biết, KB chỉ là chi tiết phụ:</b> RAG/KB cho dữ liệu quan hệ có cấu trúc thua text-to-SQL
+          (Q90); redact PII tại sync time hay tạo KB thứ 2 đều sai, cần <code>ApplyGuardrail</code> động tại query
+          time (Q94).</li>
+    </ul>
   </section>
 
   <section class="section" id="traps">
