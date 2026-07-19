@@ -529,6 +529,33 @@
           (Q90); redact PII tại sync time hay tạo KB thứ 2 đều sai, cần <code>ApplyGuardrail</code> động tại query
           time (Q94).</li>
     </ul>
+
+    <h3 style="margin-top:1.5rem;">Kinh nghiệm riêng: AWS Step Functions — Standard vs Express và các bẫy orchestration</h3>
+    <p>Step Functions xuất hiện đúng 12 câu, sai 15 câu trong bộ đề. Ngoài phân biệt Standard/Express, còn nhiều bẫy
+       orchestration lặp lại:</p>
+
+    <table class="kw-table">
+      <thead><tr><th>Pattern</th><th>Chi tiết</th></tr></thead>
+      <tbody>
+        <tr><td><b>Standard vs Express (theo thời lượng)</b></td><td><b>Express</b> giới hạn 5 phút — sai khi clarification cần chờ người dùng lâu (Q44), hay workflow liên quan SageMaker Data Wrangler/training kéo dài (Q78). <b>Standard</b> đúng cho cả hai case này, và luôn đúng khi cần <code>waitForTaskToken</code>/Wait-for-Callback.</td></tr>
+        <tr><td><b>S3 KHÔNG THỂ tự trigger Step Functions trực tiếp</b></td><td>Q93: đáp án sai tuyên bố "S3 gửi notification thẳng tới Step Functions" — cơ chế này <b>không tồn tại</b>. Đáp án đúng luôn phải qua <b>S3 → EventBridge rule → Step Functions</b>.</td></tr>
+        <tr><td><b>Bước xây prompt qua Lambda phải tường minh</b></td><td>Q93: đáp án đúng ghi rõ "Lambda <b>create a prompt</b> to invoke Bedrock"; đáp án sai gọi thẳng Bedrock không qua bước dựng prompt. Khi đề nhấn kiểm soát prompt engineering linh hoạt, đáp án đúng luôn nêu rõ bước "Lambda xây dựng prompt" riêng biệt.</td></tr>
+        <tr><td><b>Payload &gt;256 KB — đừng tách nhiều state machine</b></td><td>Bổ sung cho bẫy #7: ngoài "nén dữ liệu" (sai), phương án <b>tách thành nhiều state machine riêng + EventBridge điều phối giữa chúng</b> (Q27) cũng sai — chỉ <b>S3 URI + ResultPath/ResultSelector trong CÙNG một state machine</b> mới đúng.</td></tr>
+        <tr><td><b>Retry/Catch phải đặt ở từng task riêng</b></td><td>Q53: sai khi dồn tất cả vào 1 task chạy 1 Lambda orchestrator duy nhất — mất khả năng retry/catch riêng theo từng bước. Đúng là <b>tách nhiều task riêng biệt</b> (mỗi agent một task), mỗi task có Retry/Catch native của chính Step Functions.</td></tr>
+      </tbody>
+    </table>
+
+    <p>Đừng dùng Step Functions để tái tạo tính năng managed đã có sẵn ở nơi khác:</p>
+    <table class="kw-table">
+      <thead><tr><th>Nhu cầu</th><th>Step Functions tự chế (sai)</th><th>Đúng là</th></tr></thead>
+      <tbody>
+        <tr><td>Approval workflow cho <b>prompt template</b></td><td>Step Functions + S3 tags versioning (Q9)</td><td><b>Bedrock Prompt Management</b> (đã có version control + approval)</td></tr>
+        <tr><td>Automated evaluation</td><td>Step Functions + Comprehend orchestrate (Q12)</td><td><b>Bedrock Model Evaluation</b> / LLM-as-judge</td></tr>
+        <tr><td>Agent memory/state</td><td>Step Functions + SQS (Q16)</td><td><b>Bedrock AgentCore</b></td></tr>
+        <tr><td>Gọi API nghiệp vụ ngoài</td><td>Step Functions tự orchestrate call API (Q26)</td><td><b>Bedrock Agent action groups</b></td></tr>
+        <tr><td>Data pre-processing pipeline</td><td>Step Functions + EC2 custom code (Q45)</td><td><b>AWS Glue</b> (crawler/ETL/Data Quality)</td></tr>
+      </tbody>
+    </table>
   </section>
 
   <section class="section" id="traps">
