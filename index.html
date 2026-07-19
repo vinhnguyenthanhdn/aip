@@ -271,6 +271,15 @@
   /* copy button sits before the ref link, which then no longer auto-pushes */
   .qmeta .reflink { margin-left: 0; }
 
+  mark.hl {
+    background: linear-gradient(135deg, rgba(251,191,36,0.4), rgba(251,191,36,0.26));
+    color: inherit;
+    border-radius: 3px;
+    padding: 0 2px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+
   .qtext {
     font-size: 1.06rem;
     line-height: 1.72;
@@ -465,6 +474,7 @@
     <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
     <symbol id="i-gap" viewBox="0 0 24 24"><path d="M9 3v18M15 3v18"/><path d="M3 9h4M17 9h4M3 15h4M17 15h4"/></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-eraser" viewBox="0 0 24 24"><path d="M7 21H4a2 2 0 01-2-2v-1a2 2 0 01.586-1.414l10-10a2 2 0 012.828 0l4 4a2 2 0 010 2.828l-8 8"/><path d="M14 21H7"/></symbol>
   </defs>
 </svg>
 
@@ -653,6 +663,7 @@ function render() {
         <span class="topic">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number}</span>
         ${typeBadge}
         <button type="button" class="copybtn" id="copyBtn">${ico('i-copy')}Copy cho AI</button>
+        <button type="button" class="copybtn" id="clearHlBtn" title="Xóa các đoạn đã highlight trong câu này">${ico('i-eraser')}Xóa highlight</button>
         <a class="reflink" href="${q.link}" target="_blank" rel="noopener">examtopics ${ico('i-external')}</a>
       </div>
       <div class="qtext">${renderHTML(q.question_text)}</div>
@@ -691,6 +702,7 @@ function render() {
   }
 
   $('copyBtn').addEventListener('click', () => copyQuestion(q, idx, $('copyBtn')));
+  $('clearHlBtn').addEventListener('click', clearHighlights);
   $('prevBtn').addEventListener('click', () => go(-1));
   $('nextBtn').addEventListener('click', () => goNext());
   $('jumpInput').addEventListener('change', e => {
@@ -748,6 +760,60 @@ function fallbackCopy(text, ok) {
   try { document.execCommand('copy'); ok(); } catch (e) { alert('Không copy được. Hãy copy thủ công.'); }
   document.body.removeChild(ta);
 }
+
+/* ── TEXT HIGHLIGHT ──
+   Highlights are DOM-only (never saved to storage/state), so they vanish
+   automatically whenever render() rebuilds the card (next/prev question). */
+function getTextNodesInRange(range) {
+  const root = range.commonAncestorContainer;
+  const container = root.nodeType === 3 ? root.parentNode : root;
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
+  const nodes = [];
+  let node;
+  while ((node = walker.nextNode())) {
+    if (range.intersectsNode(node)) nodes.push(node);
+  }
+  return nodes;
+}
+
+function highlightSelection() {
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return;
+  const range = sel.getRangeAt(0);
+  if (range.toString().trim() === '') { sel.removeAllRanges(); return; }
+
+  const qcard = $('app').querySelector('.qcard');
+  if (!qcard || !qcard.contains(range.commonAncestorContainer)) return;
+
+  getTextNodesInRange(range).forEach(node => {
+    if (node.parentNode && node.parentNode.classList && node.parentNode.classList.contains('hl')) return;
+    const start = node === range.startContainer ? range.startOffset : 0;
+    const end = node === range.endContainer ? range.endOffset : node.length;
+    if (start >= end) return;
+    const middle = node.splitText(start);
+    middle.splitText(end - start);
+    const mark = document.createElement('mark');
+    mark.className = 'hl';
+    middle.parentNode.insertBefore(mark, middle);
+    mark.appendChild(middle);
+  });
+
+  sel.removeAllRanges();
+}
+
+function clearHighlights() {
+  const qcard = $('app').querySelector('.qcard');
+  if (!qcard) return;
+  qcard.querySelectorAll('mark.hl').forEach(mark => {
+    const parent = mark.parentNode;
+    while (mark.firstChild) parent.insertBefore(mark.firstChild, mark);
+    parent.removeChild(mark);
+    parent.normalize();
+  });
+}
+
+app.addEventListener('mouseup', () => setTimeout(highlightSelection, 0));
+app.addEventListener('touchend', () => setTimeout(highlightSelection, 0));
 
 function check(selected, cset, q) {
   const picked = [...selected];
