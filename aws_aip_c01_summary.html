@@ -162,6 +162,16 @@
     padding: 2px 10px; border-radius: 999px;
     background: var(--accent-dim); color: var(--accent-2); border: 1px solid rgba(99,102,241,0.3);
   }
+  .case-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    margin-left: auto;
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+    color: var(--muted-2); text-decoration: none;
+    padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border);
+    transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .case-link .icon { width: 12px; height: 12px; }
+  .case-link:hover { color: var(--accent-2); border-color: rgba(99,102,241,0.3); background: var(--accent-dim); }
   .case p { font-size: 0.9rem; color: #D3D7E4; margin-bottom: 5px; }
   .case p:last-child { margin-bottom: 0; }
   .case .lbl {
@@ -216,6 +226,7 @@
     <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
     <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 2h6v4H9z"/><path d="M9 11h6M9 15h6"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+    <symbol id="i-external" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><path d="M15 3h6v6M10 14L21 3"/></symbol>
     <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
     <symbol id="i-gap" viewBox="0 0 24 24"><path d="M9 3v18M15 3v18"/><path d="M3 9h4M17 9h4M3 15h4M17 15h4"/></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
@@ -413,6 +424,7 @@ Object.keys(DATA).forEach(domainId => {
       <div class="case-head">
         <span class="case-num">Câu ${num}</span>
         <span class="case-tag">${esc(tag)}</span>
+        <a class="case-link" href="index.html?q=${num}"><svg class="icon"><use href="#i-external"/></svg>Làm trong Quiz</a>
       </div>
       <p><span class="lbl problem">Vấn đề</span>${esc(problem)}</p>
       <p><span class="lbl solution">Giải pháp</span>${esc(solution)}</p>

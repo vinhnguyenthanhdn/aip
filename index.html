@@ -903,6 +903,11 @@ fetch(DATA_URL)
     if (!questions.length) throw new Error('Không có câu hỏi nào');
     loadProgress();
     if (idx >= questions.length) idx = 0;
+    const jumpTo = new URLSearchParams(location.search).get('q');
+    if (jumpTo) {
+      const target = questions.findIndex(q => String(q.question_number) === String(jumpTo));
+      if (target !== -1) idx = target;
+    }
     render();
     updateProgress();
   })
