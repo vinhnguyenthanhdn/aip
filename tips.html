@@ -466,6 +466,38 @@
           <code>GuardrailIdentifier</code>/<code>ModelId</code>. Biến thể của nguyên tắc chung: nghe "managed/security"
           nhưng bỏ sót đúng ràng buộc cụ thể trong đề vẫn là sai.</li>
     </ul>
+
+    <h3 style="margin-top:1.5rem;">Kinh nghiệm riêng: Bedrock Guardrails — cấu hình sai chỗ nào cũng sai cả đáp án</h3>
+    <p>Guardrails xuất hiện đúng 19 lượt, sai 24 lượt trong bộ đề — nhiều câu có <b>cả đúng lẫn sai</b> vì bản thân
+       dịch vụ không phải vấn đề, mà là <b>cách cấu hình</b> quyết định đúng/sai:</p>
+    <ul>
+      <li><b>Chọn sai loại filter cho đúng mục đích</b> — lỗi lặp lại nhiều nhất: <code>content filter</code> (category
+          hate/insults/sexual/violence/misconduct/prompt-attack) bị dùng nhầm để chặn <b>1 chủ đề cụ thể</b> (Q2: "tư
+          vấn đầu tư") hoặc <b>1 tên riêng</b> (Q2: tên đối thủ) — sai; đúng là <b>denied topics</b> cho chủ đề,
+          <b>custom word filters</b> cho tên riêng/cụm từ. Tương tự, dùng content/topic filter cho yêu cầu chặn
+          <b>PII</b> (Q91) cũng sai — phải là <b>sensitive information filter</b> riêng.</li>
+      <li><b>Content filter set "high" cho mọi category</b> (Q14) luôn tăng false positive khi đề cần "ít false
+          positive" — đúng là mức <b>medium</b> cho category chung, chỉ high ở nơi thật sự cần.</li>
+      <li><b>Nhiều guardrail rời rạc (tiered theo audience, hoặc riêng theo từng use case)</b> luôn thua <b>một
+          guardrail cấu hình nhiều filter/policy khác nhau</b> (Q14) — củng cố thêm cho bẫy #4 ở trên.</li>
+      <li><b>Action mode (detect/mask/block) phải đổi theo giai đoạn, không cố định:</b> đúng là <b>mask</b> ở
+          dev/test (quan sát hiệu quả phát hiện) → <b>block</b> ở production (thực sự ngăn). Giữ <b>detect</b> mãi ở
+          production, hoặc chỉ dùng <b>mask</b> ở production, đều KHÔNG đủ để ngăn PII lộ ra thật (Q91). Ngược lại,
+          set action=<b>block</b> khi đề chỉ cần được <b>thông báo</b> (không chặn) cũng sai — phải là <b>detect</b> (Q11).</li>
+      <li><b>"Cross-Region guardrail" là bẫy residency</b> — dùng khi đề yêu cầu xử lý cùng Region với khách hàng
+          (Q91) luôn sai dù logic mask→block vẫn đúng. Khác với <b>guardrail profile</b> (tính năng thật, dùng đúng
+          khi cần failover đa vùng — Q21), "cross-Region guardrail replication" không phải cơ chế thật (Q21).</li>
+      <li><b>Guardrails không phải "cây đũa thần"</b> — không giải quyết access control (đó là IAM condition key trên
+          <code>GuardrailIdentifier</code>/<code>ModelId</code>, Q77); không tự "pattern-match hallucination" để
+          block output chung chung (Q30 — gốc rễ hallucination cần RAG/CoT, guardrail chỉ hỗ trợ qua <b>contextual
+          grounding check</b>); không có "token quota policies" (Q25 — đó là việc của Lambda tokenizer + CloudWatch);
+          không có "audience-based threshold tuning" như một tính năng riêng (Q5 — vẫn phải cấu hình trong cùng một
+          guardrail).</li>
+      <li><b>Enforcement cấp tổ chức (Q81):</b> một <b>SCP đơn giản</b> yêu cầu chỉ định guardrail identifier đã
+          duyệt luôn thắng việc kết hợp thêm permission boundary (dư thừa), hoặc tự deploy guardrail qua
+          CloudFormation StackSets với policy <b>mask</b> (không đủ mạnh để ngăn chặn hẳn, và StackSets deploy không
+          tự bắt buộc việc phải dùng).</li>
+    </ul>
   </section>
 
   <section class="section" id="traps">
