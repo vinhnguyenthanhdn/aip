@@ -274,20 +274,6 @@
        Official Exam Guide. Xem task statement/skill chi tiết theo từng Task tại
        <a href="theory.html">Lý thuyết & Thuật ngữ AWS</a>.</p>
 
-    <h3>Dùng công cụ luyện tập này hiệu quả</h3>
-    <ul>
-      <li>Phần lớn câu hỏi trong bộ đề luyện tập là <b>chọn 1 đáp án</b>, nhưng khoảng 1/5 số câu là <b>chọn nhiều đáp án</b>
-          ("Choose two"/"Choose three") — đề luôn ghi rõ số lượng cần chọn ngay trong câu hỏi, hãy đọc kỹ dòng cuối
-          cùng của đề bài trước khi chọn.</li>
-      <li>Công cụ luyện tập ở trang <a href="index.html">Trắc nghiệm</a> tự động nhận diện câu hỏi single/multi-select
-          dựa trên số ký tự đáp án đúng, hiển thị badge <code>Một đáp án</code> hoặc <code>Chọn N đáp án</code> ở đầu mỗi câu.</li>
-      <li>Bật toggle <b>"Xáo đáp án"</b> ở thanh điều hướng để đảo ngẫu nhiên thứ tự A/B/C/D mỗi khi luyện lại — tránh
-          tình trạng "nhớ vị trí" (ví dụ luôn nhớ "đáp án C") thay vì thực sự hiểu bản chất câu hỏi.</li>
-      <li>Dùng nút <b>"Copy cho AI"</b> trên mỗi câu để dán sang một trợ lý AI khác và hỏi thêm phần giải thích chi tiết
-          khi không chắc lý do một đáp án đúng/sai.</li>
-      <li>Đối chiếu phần <a href="theory.html">Lý thuyết</a> ngay khi sai một câu để hiểu gốc rễ khái niệm, thay vì chỉ
-          học thuộc đáp án của riêng câu đó (bộ đề thi thật sẽ diễn đạt lại tình huống theo cách khác).</li>
-    </ul>
   </section>
 
   <section class="section" id="keywords">
@@ -392,6 +378,46 @@
       <span>Coi chừng: <b>đúng loại API Gateway vẫn có thể là đáp án sai</b> nếu đề nhấn "ít effort/overhead nhất" và
       đã có sẵn giải pháp managed cao cấp hơn (ví dụ tự dựng WebSocket bị loại vì AWS Amplify AI Kit đã có streaming
       response sẵn) — luôn đối chiếu ràng buộc "LEAST effort" trước khi chọn kiến trúc tự xây bằng API Gateway.</span>
+    </div>
+
+    <h3 style="margin-top:1.5rem;">Kinh nghiệm riêng: Phân quyền — tách đúng 3 lớp (user trong app / IAM AWS / Region)</h3>
+    <p>Đề hay trộn lẫn 3 lớp phân quyền khác nhau để gây nhiễu — mỗi lớp có cơ chế đúng riêng, dùng nhầm lớp là sai
+       ngay cả khi "nghe có vẻ hợp lý":</p>
+
+    <p><b>Lớp 1 — Người dùng cuối trong ứng dụng (ai đang chat với AI, họ thuộc nhóm nào):</b></p>
+    <table class="kw-table">
+      <thead><tr><th>Tình huống</th><th>Cơ chế đúng</th></tr></thead>
+      <tbody>
+        <tr><td>Cùng một dữ liệu/knowledge base nhưng cần hiển thị khác nhau theo vai trò (VD surgeon thấy PII đầy đủ, engineer bị redact)</td><td>Gọi <code>ApplyGuardrail</code> tương ứng với <b>nhóm Cognito</b> của user <i>ngay tại thời điểm trả lời</i> — không tạo nhiều bản sao dữ liệu/KB theo vai trò (Q94).</td></tr>
+        <tr><td>Đối tác/ứng dụng bên thứ ba bên ngoài công ty cần xác thực để gọi MCP server</td><td><b>Cognito OAuth 2.1</b> (chuẩn OAuth cho external consumer) — Q52.</td></tr>
+        <tr><td>Ứng dụng/service <i>nội bộ</i> cần xác thực để gọi MCP server (không phải bên thứ ba)</td><td>Chỉ cần <b>IAM + SigV4</b> qua Lambda function URL — đơn giản hơn, không cần dựng thêm Cognito OAuth (Q75; dùng Cognito OAuth ở đây bị coi là thừa/sai).</td></tr>
+        <tr><td>Kiểm soát truy cập dữ liệu S3 theo phòng ban cho Amazon Q Business</td><td><b>Một file <code>acl.json</code></b> map S3 prefix → <b>IAM Identity Center group</b> (Q37) — <b>không phải</b> IAM Identity Center <b>permission set</b> (permission set là công cụ SSO người dùng vào AWS account/console, không phải cơ chế ACL cho dữ liệu ứng dụng — xuất hiện 2 lần trong bộ đề, cả 2 đều sai: Q37-C, Q58-D).</td></tr>
+      </tbody>
+    </table>
+
+    <p><b>Lớp 2 — Principal AWS (IAM role/service nào được phép gọi API gì):</b></p>
+    <table class="kw-table">
+      <thead><tr><th>Tình huống</th><th>Cơ chế đúng</th></tr></thead>
+      <tbody>
+        <tr><td>Chỉ cho phép gọi đúng model/guardrail đã được duyệt</td><td><b>IAM condition key</b> trên <code>GuardrailIdentifier</code>/<code>ModelId</code> trong policy — đúng 2/2 lần xuất hiện, chưa từng sai (Q8, Q77).</td></tr>
+        <tr><td>Phân quyền chi tiết theo nhiều phòng ban mà không muốn tạo hàng chục role/policy riêng</td><td><b>ABAC</b> (attribute-based access control) — map thuộc tính phòng ban vào một policy dùng chung (Q77).</td></tr>
+        <tr><td>Bắt buộc toàn tổ chức chỉ dùng model/guardrail đã duyệt, quản lý tập trung</td><td>Một <b>SCP</b> đơn giản ở cấp Organization yêu cầu chỉ định guardrail khi gọi model đã duyệt — <b>không cần</b> thêm permission boundary chồng lên IAM role (Q81: phương án thêm permission boundary song song với SCP bị coi là dư thừa/sai).</td></tr>
+        <tr><td>Phân quyền cấp <b>cột dữ liệu</b> xuyên nhiều account/business unit</td><td><b>AWS Lake Formation + LF-Tags</b> (xem bảng "cùng dịch vụ chỉ đúng khi có điều kiện" ở trên) — không phải IAM path-based policy hay database-level grant thông thường.</td></tr>
+      </tbody>
+    </table>
+
+    <p><b>Lớp 3 — Region/residency (dữ liệu và lệnh gọi model phải ở đúng khu vực địa lý):</b></p>
+    <p>Đây <b>không bao giờ</b> là một service đơn lẻ — luôn là combo 2-3 phần, thiếu một phần là sai:</p>
+    <ol>
+      <li><b>SCP phải scope đúng một ARN/inference profile cụ thể</b> (ví dụ <code>eu.amazon.nova-pro-v1:0</code>), không phải wildcard rộng (<code>eu.*</code> luôn là bẫy — Q13-E).</li>
+      <li><b>IAM role phải có quyền invoke qua đúng profile đó trên MỌI Region hợp lệ</b> mà cross-Region inference có thể route tới — chỉ enable model access ở một Region duy nhất là chưa đủ (Q13: chỉ bật model access ở eu-west-3 là sai, C).</li>
+      <li><b>VPC endpoint riêng cho kết nối private</b> khi đề yêu cầu không qua internet công cộng (Q96) — thay vì tự deploy FM trên EC2/SageMaker trong Region rồi expose qua API Gateway riêng (luôn là phương án thừa/sai, xem mục API Gateway ở trên).</li>
+    </ol>
+    <div class="callout">
+      <svg class="icon"><use href="#i-info"/></svg>
+      <span>Mẹo đọc đề nhanh: nếu câu hỏi chỉ đưa ra <b>một</b> thay đổi (chỉ sửa SCP, hoặc chỉ sửa IAM role) trong khi
+      đề mô tả rõ cả residency lẫn cross-Region access, đáp án đó gần như chắc chắn thiếu — đáp án đúng thường là loại
+      "chọn 2" (Q13 chọn cả B và D) vì cần sửa <i>cả hai lớp</i> cùng lúc.</span>
     </div>
   </section>
 
