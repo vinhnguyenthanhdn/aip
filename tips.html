@@ -366,6 +366,33 @@
       </tbody>
     </table>
     <p style="font-size:0.85rem; color:var(--muted-2);">Số liệu grep trực tiếp trên <code>aws_aip_c01.json</code> (97 câu, tất cả phương án A-F) — không phải cảm tính.</p>
+
+    <h3 style="margin-top:1.5rem;">Kinh nghiệm riêng: Amazon API Gateway (REST vs HTTP vs WebSocket)</h3>
+    <p>API Gateway là dịch vụ quen thuộc nên hay bị lạm dụng làm phương án nhiễu: xuất hiện trong <b>39/97 câu</b> (tính
+       mọi phương án A-F) nhưng chỉ đúng <b>8/39 lần (21%)</b>. Chọn đúng loại, và nhận ra khi nào <i>không cần</i>
+       Gateway, là chìa khóa:</p>
+    <table class="kw-table">
+      <thead><tr><th>Loại</th><th>Đúng/Tổng</th><th>Chỉ đúng khi nào</th></tr></thead>
+      <tbody>
+        <tr><td><b>WebSocket API</b></td><td>2/4 (50%)</td><td>Cần streaming hai chiều thật, đẩy dữ liệu tới nhiều client đồng thời gần thời gian thực (hiển thị ký tự theo thời gian thực; gợi ý cho agent tổng đài ngay trong lúc khách đang nói).</td></tr>
+        <tr><td><b>HTTP API</b></td><td>2/10 (20%)</td><td>Chỉ 2 tình huống hẹp: expose MCP server qua <b>Streamable HTTP transport</b>, hoặc tách endpoint riêng theo Region để đáp ứng residency + latency.</td></tr>
+        <tr><td><b>REST API</b></td><td>2/18 (11%)</td><td>Chỉ khi làm proxy/entry-point đơn thuần (logic thật nằm ở Lambda + AppConfig), hoặc kết hợp <b>Lambda response streaming</b> khi ưu tiên chi phí hơn WebSocket thật.</td></tr>
+      </tbody>
+    </table>
+    <p>5 bẫy lặp lại nhiều nhất khi thấy API Gateway trong một phương án:</p>
+    <ul>
+      <li><b>Lớp thừa không cần thiết</b> — thêm API Gateway đứng trước Bedrock/agent khi đáp án đúng gọi thẳng qua VPC endpoint/SDK, không cần gateway nào cả.</li>
+      <li><b>Nhét logic routing vào tính năng của Gateway</b> (stage variables, request transformation templates, Lambda authorizer) thay vì dùng <b>AWS AppConfig</b> cho cấu hình động.</li>
+      <li><b>Giả streaming bằng REST/HTTP API + client-side polling</b> — luôn sai khi đề cần real-time thật; chỉ WebSocket hoặc Lambda response streaming mới đúng.</li>
+      <li><b>Canary/weighted routing giữa model version bằng stage weight của API Gateway</b> — đáp án đúng luôn là Step Functions + CloudWatch metric check, không phải cấu hình trọng số ở Gateway.</li>
+      <li><b>Auth cho MCP server bằng REST API + API key</b> — sai; đúng là HTTP API + Streamable HTTP + Cognito OAuth, hoặc Lambda function URL + SigV4.</li>
+    </ul>
+    <div class="callout warn">
+      <svg class="icon"><use href="#i-alert"/></svg>
+      <span>Coi chừng: <b>đúng loại API Gateway vẫn có thể là đáp án sai</b> nếu đề nhấn "ít effort/overhead nhất" và
+      đã có sẵn giải pháp managed cao cấp hơn (ví dụ tự dựng WebSocket bị loại vì AWS Amplify AI Kit đã có streaming
+      response sẵn) — luôn đối chiếu ràng buộc "LEAST effort" trước khi chọn kiến trúc tự xây bằng API Gateway.</span>
+    </div>
   </section>
 
   <section class="section" id="traps">
