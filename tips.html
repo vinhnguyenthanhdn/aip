@@ -419,6 +419,53 @@
       đề mô tả rõ cả residency lẫn cross-Region access, đáp án đó gần như chắc chắn thiếu — đáp án đúng thường là loại
       "chọn 2" (Q13 chọn cả B và D) vì cần sửa <i>cả hai lớp</i> cùng lúc.</span>
     </div>
+
+    <h3 style="margin-top:1.5rem;">Kinh nghiệm riêng: Amazon SageMaker AI — khi nào thực sự cần, khi nào là bẫy</h3>
+    <p>SageMaker AI (tự host/tự train model) xuất hiện 13 lần trong bộ đề nhưng chỉ đúng <b>1/13 (8%)</b> — đây là bẫy
+       nặng nhất trong nhóm dịch vụ "nghe rất hợp lý" vì Bedrock đã có sẵn tính năng managed tương đương cho hầu hết
+       trường hợp:</p>
+    <table class="kw-table">
+      <thead><tr><th>Câu</th><th>SageMaker AI bị dùng để làm gì (sai)</th><th>Đáng lẽ dùng gì</th></tr></thead>
+      <tbody>
+        <tr><td>Q7</td><td>Host model rerank riêng</td><td>Bedrock built-in reranker</td></tr>
+        <tr><td>Q17</td><td>Sinh câu trả lời từ dữ liệu tài chính</td><td>Bedrock FM + Neptune GraphRAG</td></tr>
+        <tr><td>Q22</td><td>Endpoint variants để canary traffic</td><td>Step Functions + CloudWatch metric check (endpoint variants là cơ chế của SageMaker, không áp dụng cho Bedrock model version)</td></tr>
+        <tr><td>Q24</td><td>Host custom Claude để có "reasoning"</td><td>Knowledge Bases citation có sẵn</td></tr>
+        <tr><td>Q26</td><td>Deploy model bằng container</td><td>Bedrock Agent</td></tr>
+        <tr><td>Q33</td><td>Dedicated GPU endpoint / serverless batch endpoint</td><td>Bedrock provisioned throughput + latency-optimized inference</td></tr>
+        <tr><td>Q40</td><td>Tự train content-moderation model</td><td>Bedrock Guardrails / Amazon Rekognition</td></tr>
+        <tr><td>Q67</td><td>Async endpoint cho yêu cầu low-latency</td><td>Sai loại endpoint cho bài toán real-time</td></tr>
+        <tr><td>Q92</td><td>Tự host sentence-transformer để tạo embedding</td><td>Amazon Titan Embeddings</td></tr>
+        <tr><td>Q96</td><td>Deploy FM trong 1 Region cụ thể</td><td>Bedrock Cross-Region Inference profile</td></tr>
+      </tbody>
+    </table>
+    <div class="callout good">
+      <svg class="icon"><use href="#i-check-circle"/></svg>
+      <span><b>Trường hợp đúng duy nhất (Q67-C):</b> SageMaker AI kết hợp <b>SageMaker Neo</b> để deploy FM ra
+      edge/hybrid/on-premises — đây là kịch bản DUY NHẤT trong bộ đề mà Bedrock thực sự không đáp ứng được (Bedrock
+      không host được ở edge/on-prem). Quy tắc: thấy SageMaker AI tự host một tính năng mà Bedrock đã có sẵn (rerank,
+      RAG, canary, citation, embedding, content-mod, GPU/latency) → gần như chắc chắn sai, trừ khi đề nói rõ cần
+      edge/on-premises/hybrid deployment.</span>
+    </div>
+
+    <h3 style="margin-top:1.5rem;">Kinh nghiệm riêng: AWS Glue dùng ngoài vai trò, CDK/CodePipeline nhân bản, và "security chung chung lạc đề"</h3>
+    <ul>
+      <li><b>AWS Glue dùng ngoài vai trò data-prep (Data Catalog/Data Quality/ETL tiền xử lý):</b> Glue + Athena để
+          phân tích log token luôn sai (Q18, Q70 — đáng lẽ CloudWatch Logs Insights); chỉ dùng Glue Data Catalog để
+          "catalog data" mà thiếu CloudTrail luôn thiếu ý audit trail (Q19); Glue workflow cho bước con người duyệt
+          luôn sai (Q35 — đáng lẽ Step Functions <code>waitForTaskToken</code>); Glue ETL job gọi endpoint để
+          "re-deploy" model luôn sai (Q78 — đáng lẽ Step Functions Standard + SageMaker Pipelines).</li>
+      <li><b>CDK/CodePipeline — bẫy nhân bản (Q57):</b> tạo <b>nhiều CDK app/pipeline riêng</b> cho từng
+          environment/FM luôn sai (trùng lặp, khó bảo trì); dùng <code>fromProvisionedModelArn()</code> (gắn cứng 1
+          model unit) cũng sai khi cần linh hoạt đổi FM. <span class="fix">Đúng: một CDK app dùng
+          <code>fromFoundationModelId()</code> (chọn model theo tham số) + một CodePipeline nhiều stage.</span></li>
+      <li><b>"Security chung chung nhưng lạc đề" (Q77):</b> <code>AWS KMS</code> (mã hóa dữ liệu tại rest),
+          <code>AWS Config</code> (theo dõi thay đổi resource), <code>CloudTrail Insights</code> (phát hiện anomaly
+          API access) đều là security control hợp lý nói chung, nhưng <b>không giải quyết đúng yêu cầu cụ thể</b> —
+          kiểm soát AI được phép gọi <i>model/guardrail nào</i>. Đáp án đúng luôn là <b>IAM condition key</b> trên
+          <code>GuardrailIdentifier</code>/<code>ModelId</code>. Biến thể của nguyên tắc chung: nghe "managed/security"
+          nhưng bỏ sót đúng ràng buộc cụ thể trong đề vẫn là sai.</li>
+    </ul>
   </section>
 
   <section class="section" id="traps">
