@@ -309,6 +309,10 @@
         <tr><td><b>"exact terms/acronyms bị bỏ sót" trong RAG</b></td><td><b>Hybrid search</b> (vector + keyword), không phải tăng dimensionality hay đổi toàn bộ datastore.</td></tr>
         <tr><td><b>"payload/JSON vượt giới hạn 256 KB" giữa các bước Step Functions</b></td><td>Lưu dữ liệu lớn vào <b>S3</b>, truyền reference (URI) giữa các state — không nén dữ liệu bằng Lambda.</td></tr>
         <tr><td><b>"switch models without redeploying code"</b></td><td><b>AWS AppConfig</b> (có JSON schema validation + rollout an toàn) tốt hơn Parameter Store thuần hoặc hard-code trong Lambda.</td></tr>
+        <tr><td><b>Workflow cần chờ người dùng/callback lâu</b> (clarification, human approval) hoặc <b>training kéo dài</b></td><td>Step Functions <b>Standard</b> workflow (không giới hạn 5 phút). Ngược lại, workflow tuyến tính ngắn dùng native S3/Lambda integration thì <b>Express</b> mới đúng (Express luôn sai nếu có bước chờ vượt quá 5 phút).</td></tr>
+        <tr><td><b>"cần trích dẫn nguồn cụ thể" (citation) cho RAG</b></td><td><code>RetrieveAndGenerate</code> API / Bedrock Knowledge Bases đã tự trả về citation có sẵn — không cần tự xây bước post-processing so sánh câu trả lời với tài liệu gốc.</td></tr>
+        <tr><td><b>Giảm chi phí khi "cùng ngữ cảnh lặp lại y hệt"</b></td><td><b>Prompt caching</b>. Khác với <b>"câu hỏi diễn đạt khác nhau nhưng cùng nghĩa"</b> → phải dùng <b>semantic cache</b> (OpenSearch k-NN trên embedding) — hai bài toán nhìn giống nhau nhưng đáp án khác nhau, đừng nhầm.</td></tr>
+        <tr><td><b>Định tuyến câu hỏi đơn giản/phức tạp sang model khác nhau để tối ưu chi phí</b></td><td>Bedrock <b>Intelligent Prompt Routing</b> (tính năng có sẵn) — không tự xây model phân loại + Lambda router riêng.</td></tr>
       </tbody>
     </table>
     <div class="callout">
@@ -357,13 +361,15 @@
         <tr><td><b>Amazon Aurora PostgreSQL + pgvector</b></td><td>"Aurora PostgreSQL" thường, không nói rõ chế độ vận hành (4/4 sai)</td><td>Chỉ đúng khi đề bài ghi rõ <b>Serverless</b> (Aurora Serverless với pgvector)</td></tr>
         <tr><td><b>Amazon Bedrock Flows</b></td><td>Dùng để tự dựng workflow phức tạp (traffic-shifting, prompt evaluation, S3 orchestration) — luôn bị coi là over-engineering (3/3 sai)</td><td>Chỉ đúng khi dùng đơn giản để nối FM + Knowledge Base trong một flow</td></tr>
         <tr><td><b>AWS Lake Formation</b></td><td>Dùng chung chung để "catalog dữ liệu" (đáng lẽ là Glue Data Catalog) hoặc IAM principal grant trực tiếp trên bảng</td><td>Chỉ đúng khi đi kèm <b>LF-Tags</b> để phân quyền theo cột/đa business-unit/Region</td></tr>
+        <tr><td><b>Amazon Macie</b></td><td>Dùng để redact PII real-time trong prompt/response, enforce deployment governance, hoặc phát hiện anomalous access pattern (4/5 sai — đó là việc của Guardrails, CloudFormation Guard/SCP, và CloudTrail)</td><td>Chỉ đúng khi là <b>phân loại/discovery dữ liệu nhạy cảm đang nằm ở đâu (at rest)</b> phục vụ compliance đa khu vực (1/5)</td></tr>
+        <tr><td><b>Bedrock Cross-Region Inference profile</b></td><td>Khi phạm vi định tuyến của profile có thể vượt ra ngoài ranh giới residency chặt hơn yêu cầu, hoặc dùng nhầm cho vấn đề không liên quan tới đa Region (ví dụ giảm chi phí do lặp ngữ cảnh — đáng lẽ là prompt caching)</td><td>Chỉ đúng khi phạm vi địa lý của inference profile khớp đúng yêu cầu residency/latency/quota (ví dụ CRI chỉ trong khối <code>eu.*</code> cho ràng buộc "dữ liệu EU không rời châu Âu")</td></tr>
       </tbody>
     </table>
     <p style="font-size:0.85rem; color:var(--muted-2);">Số liệu grep trực tiếp trên <code>aws_aip_c01.json</code> (97 câu, tất cả phương án A-F) — không phải cảm tính.</p>
   </section>
 
   <section class="section" id="traps">
-    <h2><span class="num">3</span>12 bẫy thường gặp trong bộ đề</h2>
+    <h2><span class="num">3</span>14 bẫy thường gặp trong bộ đề</h2>
 
     <div class="trap">
       <div class="trap-head"><span class="trap-num">1</span><span class="trap-title">Provisioned Throughput đã mua nhưng vẫn bị throttle</span></div>
@@ -447,6 +453,29 @@
          JumpStart; Transcribe + Bedrock streaming thay Lex).
          <span class="fix">Nếu một phương án nhắc tên các dịch vụ này để giải quyết bài toán RAG/monitoring/data-prep/voice,
          gần như chắc chắn đó là distractor — tìm phương án dùng tính năng Bedrock tương ứng.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">13</span><span class="trap-title">Cross-Region Inference không tự động đúng — phải khớp đúng phạm vi residency</span></div>
+      <p>CRI đúng 7/13 lần xuất hiện trong bộ đề — nghĩa là gần <b>một nửa số lần CRI được nhắc tới lại là bẫy</b>. Sai
+         khi: SCP mở quá rộng (<code>eu.*</code> thay vì đúng một ARN inference profile cụ thể); dùng CRI để giải quyết
+         vấn đề không liên quan tới đa Region (ví dụ chi phí do ngữ cảnh lặp lại — đáng lẽ là prompt caching); hoặc phạm
+         vi định tuyến của CRI có thể vượt ra ngoài ranh giới residency chặt hơn yêu cầu đề (ví dụ đề yêu cầu dữ liệu ở
+         đúng 1 châu lục nhưng CRI lại cho phép route sang châu lục khác).
+         <span class="fix">Khi thấy CRI trong một phương án, luôn kiểm tra hai điều: (1) phạm vi ARN/Region của profile
+         có khớp <i>chính xác</i> với ràng buộc residency trong đề không, và (2) vấn đề gốc có thực sự là đa Region hay
+         không — đừng thấy CRI là mặc định chọn.</span></p>
+    </div>
+
+    <div class="trap">
+      <div class="trap-head"><span class="trap-num">14</span><span class="trap-title">Amazon Macie chỉ để phân loại dữ liệu tại rest, không phải để chặn PII real-time</span></div>
+      <p>Macie đúng 1/5 lần xuất hiện — case đúng duy nhất là <b>phân loại/discovery dữ liệu nhạy cảm đang nằm ở đâu</b>
+         phục vụ compliance đa khu vực. 4 lần còn lại sai vì bị dùng nhầm vai trò: redact PII real-time trong
+         prompt/response (đó là việc của <b>Guardrails sensitive information filter</b>), enforce deployment governance
+         (đó là việc của <b>CloudFormation Guard/SCP</b>), hay phát hiện anomalous API access pattern (đó là việc của
+         <b>CloudTrail</b>).
+         <span class="fix">Macie = quét & phân loại dữ liệu đã lưu trữ (S3, at rest). Nếu đề cần chặn/che dữ liệu ngay
+         trong luồng inference, luôn tìm Guardrails, không phải Macie.</span></p>
     </div>
   </section>
 
