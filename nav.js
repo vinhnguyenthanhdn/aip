@@ -4,6 +4,7 @@
   const LINKS = [
     { href: 'index.html', icon: 'i-list', label: 'Trắc nghiệm' },
     { href: 'theory.html', icon: 'i-book', label: 'Lý thuyết' },
+    { href: 'aws_aip_c01_summary.html', icon: 'i-clipboard', label: 'Case Study' },
     { href: 'tips.html', icon: 'i-target', label: 'Kinh nghiệm thi' },
     { href: 'gap-terms.html', icon: 'i-gap', label: 'Gap Terms' },
     { href: 'full-glossary.html', icon: 'i-grid', label: 'Full Glossary' },

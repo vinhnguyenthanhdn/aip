@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Study theo Domain — AIP-C01</title>
+<link rel="icon" type="image/png" href="v-icon.png">
+<meta name="description" content="97 tình huống thực tế AWS Certified Generative AI Developer – Professional (AIP-C01), tổ chức theo 5 Content Domain chính thức, tập trung vào dịch vụ AWS và cách giải quyết vấn đề để học lý thuyết.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0B0D13;
+    --bg-2:      #0F1117;
+    --surface:   #161925;
+    --surface-2: #1C2030;
+    --surface-3: #232838;
+    --border:    #272C3E;
+    --border-2:  #333A52;
+    --text:      #F2F4FA;
+    --muted:     #9AA3B7;
+    --muted-2:   #6B7488;
+
+    --accent:    #6366F1;
+    --accent-2:  #818CF8;
+    --accent-dim: rgba(99, 102, 241, 0.14);
+    --good:      #34D399;
+    --good-dim:  rgba(52, 211, 153, 0.14);
+    --bad:       #F87171;
+    --bad-dim:   rgba(248, 113, 113, 0.14);
+    --warn:      #FBBF24;
+    --warn-dim:  rgba(251, 191, 36, 0.14);
+
+    --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+    --font-body: 'IBM Plex Sans', -apple-system, 'Segoe UI', system-ui, sans-serif;
+
+    --space-xs: 0.375rem;
+    --space-s:  0.75rem;
+    --space-m:  1.25rem;
+    --space-l:  2rem;
+    --space-xl: 3rem;
+
+    --radius:    10px;
+    --radius-lg: 16px;
+    --radius-xl: 22px;
+
+    --shadow:    0 8px 24px rgba(0,0,0,0.35);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+
+  body {
+    background:
+      radial-gradient(900px 500px at 12% -10%, rgba(99,102,241,0.10), transparent 60%),
+      radial-gradient(800px 500px at 100% 0%, rgba(52,211,153,0.06), transparent 55%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.65;
+    min-height: 100vh;
+  }
+
+  ::selection { background: var(--accent-dim); color: var(--text); }
+  *:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; border-radius: 4px; }
+  a { color: var(--accent-2); }
+
+  .icon { width: 1.15em; height: 1.15em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+  code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-3); border: 1px solid var(--border); border-radius: 5px; padding: 0.05em 0.4em; color: var(--accent-2); }
+
+  main { max-width: 980px; margin: 0 auto; padding: var(--space-l) var(--space-l) var(--space-xl); }
+
+  /* ── HERO ── */
+  .hero { margin-bottom: var(--space-l); }
+  .hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
+    color: var(--accent-2); background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
+    padding: 3px 11px; border-radius: 999px; margin-bottom: var(--space-m);
+  }
+  .hero h1 { font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: var(--space-s); }
+  .hero p { color: var(--muted); font-size: 0.98rem; max-width: 72ch; }
+  .hero p b { color: #D3D7E4; }
+
+  /* ── TOC ── */
+  .toc {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: var(--space-l) 0; padding: var(--space-m);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  }
+  .toc a {
+    text-decoration: none; color: var(--muted); font-size: 0.82rem; font-weight: 500;
+    padding: 6px 12px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border);
+    transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .toc a:hover { color: var(--text); border-color: var(--border-2); background: var(--surface-3); }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    position: relative; margin-bottom: var(--space-l);
+  }
+  .search-wrap .icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--muted-2); width: 16px; height: 16px; pointer-events: none;
+  }
+  #search {
+    width: 100%; padding: 0.75rem var(--space-m) 0.75rem 2.6rem;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    color: var(--text); font-family: var(--font-body); font-size: 0.94rem;
+  }
+  #search:focus { outline: none; border-color: var(--accent); }
+  #searchMeta {
+    display: block; margin-top: 8px; font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted-2);
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
+    border: 1px solid var(--border); border-radius: var(--radius-xl);
+    padding: var(--space-l); margin-bottom: var(--space-l);
+    scroll-margin-top: 90px;
+  }
+  .section h2 {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    font-size: 1.2rem; font-weight: 800; letter-spacing: -0.01em;
+    margin-bottom: var(--space-s); color: var(--text);
+  }
+  .section h2 .num {
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+    color: var(--accent-2); background: var(--accent-dim); border: 1px solid rgba(99,102,241,0.3);
+    width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; flex: 0 0 auto;
+  }
+  .weight {
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700;
+    color: var(--good); background: var(--good-dim); border: 1px solid rgba(52,211,153,0.35);
+    padding: 2px 10px; border-radius: 999px;
+  }
+  .section > p.lede { color: var(--muted); margin-bottom: var(--space-m); font-size: 0.92rem; }
+
+  /* ── CASE CARDS ── */
+  .case-list { display: flex; flex-direction: column; }
+  .case {
+    padding: var(--space-m) 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .case:last-child { border-bottom: none; padding-bottom: 0; }
+  .case:first-child { padding-top: 0; }
+  .case-head {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 7px;
+  }
+  .case-num {
+    font-family: var(--font-mono); font-weight: 800; font-size: 0.82rem; color: var(--muted-2);
+  }
+  .case-tag {
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+    padding: 2px 10px; border-radius: 999px;
+    background: var(--accent-dim); color: var(--accent-2); border: 1px solid rgba(99,102,241,0.3);
+  }
+  .case p { font-size: 0.9rem; color: #D3D7E4; margin-bottom: 5px; }
+  .case p:last-child { margin-bottom: 0; }
+  .case .lbl {
+    font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin-right: 6px; white-space: nowrap;
+  }
+  .case .lbl.problem { color: var(--muted-2); }
+  .case .lbl.solution { color: var(--good); }
+  .case[hidden] { display: none; }
+  .section.no-match { display: none; }
+
+  footer { border-top: 1px solid var(--border); padding: var(--space-l); text-align: center; }
+  footer p { font-size: 0.76rem; color: var(--muted-2); font-family: var(--font-mono); }
+  footer a { text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── SCROLL TO TOP ── */
+  .scroll-top-btn {
+    position: fixed; right: 24px; bottom: 24px; z-index: 90;
+    width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%;
+    border: 1px solid var(--border-2);
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff; box-shadow: 0 6px 20px rgba(99,102,241,0.4); cursor: pointer;
+    opacity: 0; pointer-events: none; transform: translateY(8px);
+    transition: opacity .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .scroll-top-btn.visible { opacity: 1; pointer-events: auto; transform: none; }
+  .scroll-top-btn:hover { box-shadow: 0 8px 26px rgba(99,102,241,0.55); }
+  .scroll-top-btn .icon { width: 20px; height: 20px; stroke-width: 2.5; }
+
+  @media (max-width: 720px) {
+    main { padding: var(--space-m); }
+    .section, .toc { padding: var(--space-m); }
+    .hero h1 { font-size: 1.5rem; }
+    .scroll-top-btn { right: 16px; bottom: 16px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 5.2L19 10l-5.1 1.8L12 17l-1.9-5.2L5 10l5.1-1.8z"/><path d="M19 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><circle cx="5" cy="6" r="1"/><circle cx="5" cy="12" r="1"/><circle cx="5" cy="18" r="1"/><path d="M10 6h10M10 12h10M10 18h10"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-clipboard" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 2h6v4H9z"/><path d="M9 11h6M9 15h6"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+    <symbol id="i-gap" viewBox="0 0 24 24"><path d="M9 3v18M15 3v18"/><path d="M3 9h4M17 9h4M3 15h4M17 15h4"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  </defs>
+</svg>
+
+<nav data-nav></nav>
+<script src="nav.js"></script>
+
+<main>
+  <div class="hero">
+    <span class="eyebrow"><svg class="icon"><use href="#i-clipboard"/></svg>CASE STUDY THEO CHỦ ĐỀ</span>
+    <h1>97 tình huống AWS — tổ chức theo 5 Content Domain</h1>
+    <p>Cùng bộ 97 câu hỏi luyện tập, nhưng viết lại để <b>học lý thuyết</b> thay vì luyện đoán đáp án: mỗi tình huống chỉ
+       nêu <b>dịch vụ/khái niệm AWS nào là trọng tâm</b> và <b>nó giải quyết vấn đề gì</b> — không còn phần so sánh
+       "phương án A sai vì…, B sai vì…". Nội dung được nhóm theo đúng <b>5 Content Domain chính thức</b> của Exam Guide
+       (xem thêm <a href="theory.html">Lý thuyết &amp; Thuật ngữ</a> để tra khái niệm, hoặc
+       <a href="official-exam-guide.html">Exam Guide gốc</a> để xem task statement đầy đủ).</p>
+  </div>
+
+  <div class="toc" role="navigation" aria-label="Mục lục">
+    <a href="#domain1">Domain 1 · 31% · 25 câu</a>
+    <a href="#domain2">Domain 2 · 26% · 22 câu</a>
+    <a href="#domain3">Domain 3 · 20% · 29 câu</a>
+    <a href="#domain4">Domain 4 · 12% · 13 câu</a>
+    <a href="#domain5">Domain 5 · 11% · 8 câu</a>
+  </div>
+
+  <div class="search-wrap">
+    <svg class="icon"><use href="#i-search"/></svg>
+    <input id="search" type="text" placeholder="Tìm theo dịch vụ AWS, từ khóa, số câu...">
+  </div>
+  <span id="searchMeta">97/97 tình huống</span>
+
+  <section class="section" id="domain1">
+    <h2><span class="num">1</span>Foundation Model Integration, Data Management, and Compliance <span class="weight">31%</span></h2>
+    <p class="lede">Chọn/cấu hình FM, xây pipeline dữ liệu cho FM tiêu thụ, thiết kế vector store, cơ chế truy xuất (RAG), và prompt engineering/governance — domain nặng ký nhất trong đề thi.</p>
+    <div class="case-list" id="d1"></div>
+  </section>
+
+  <section class="section" id="domain2">
+    <h2><span class="num">2</span>Implementation and Integration <span class="weight">26%</span></h2>
+    <p class="lede">Biến thiết kế ở Domain 1 thành hệ thống chạy được: agentic AI &amp; tool-use, chiến lược deploy model, tích hợp kiến trúc doanh nghiệp, API, và công cụ phát triển.</p>
+    <div class="case-list" id="d2"></div>
+  </section>
+
+  <section class="section" id="domain3">
+    <h2><span class="num">3</span>AI Safety, Security, and Governance <span class="weight">20%</span></h2>
+    <p class="lede">Guardrails cho input/output, bảo vệ dữ liệu &amp; quyền riêng tư, quản trị/tuân thủ tổ chức, và nguyên tắc Responsible AI — đảm bảo hệ thống an toàn và có thể kiểm toán.</p>
+    <div class="case-list" id="d3"></div>
+  </section>
+
+  <section class="section" id="domain4">
+    <h2><span class="num">4</span>Operational Efficiency and Optimization for GenAI Applications <span class="weight">12%</span></h2>
+    <p class="lede">Tối ưu chi phí/token, hiệu năng ứng dụng (độ trễ, throughput, caching), và giám sát (observability) cho hệ thống GenAI đang vận hành.</p>
+    <div class="case-list" id="d4"></div>
+  </section>
+
+  <section class="section" id="domain5">
+    <h2><span class="num">5</span>Testing, Validation, and Troubleshooting <span class="weight">11%</span></h2>
+    <p class="lede">Xây hệ thống đánh giá (evaluation) chuyên biệt cho GenAI và xử lý sự cố (context overflow, prompt không nhất quán, retrieval kém, tích hợp lỗi) khác với ML truyền thống.</p>
+    <div class="case-list" id="d5"></div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Nguồn: 97 câu luyện tập AIP-C01, tổ chức theo Exam Guide chính thức · <a href="index.html">Về trang Trắc nghiệm</a></p>
+</footer>
+
+<button type="button" class="scroll-top-btn" id="scrollTopBtn" aria-label="Lên đầu trang">
+  <svg class="icon"><use href="#i-arrow-up"/></svg>
+</button>
+
+<script>
+/* Each entry: [question number, service/topic tag, problem, solution] */
+const DATA = {
+  d1: [
+    [5, "Prompt Management", "Quản lý tập trung nhiều prompt variant theo đơn vị kinh doanh, định dạng phản hồi nhất quán, và kiểm duyệt nội dung có thể điều chỉnh linh hoạt theo thời gian — với chi phí bảo trì thấp nhất.", "Amazon Bedrock Prompt Management cung cấp sẵn cơ chế template/variant tái sử dụng tập trung; Guardrails với category filter và sensitive-term list cho phép điều chỉnh kiểm duyệt theo thời gian mà không cần xây dựng logic hậu xử lý riêng."],
+    [6, "Vector Store · OpenSearch Serverless", "RAG đa ngôn ngữ cần lọc theo metadata trên 10 triệu embedding, độ trễ thấp cho tương tác thời gian thực, tối thiểu công sức vận hành.", "OpenSearch Serverless tự động scale, tích hợp sẵn với Bedrock Knowledge Bases cho RAG và hỗ trợ metadata filtering mà không phải tự quản lý hạ tầng cluster."],
+    [7, "Hybrid Search", "RAG y khoa thiếu khớp từ khóa/thuật ngữ chính xác, trả về quá nhiều kết quả không liên quan; cần giữ độ trễ thấp khi dữ liệu tăng lên hàng triệu.", "Hybrid search (kết hợp vector + keyword matching) có sẵn trong Amazon OpenSearch Service giải quyết trực tiếp vấn đề thiếu khớp từ khóa mà không cần thêm hạ tầng mới."],
+    [9, "Prompt Management · Governance", "Quản trị hàng trăm prompt template đa nhóm/đa vùng với version control, workflow phê duyệt kèm thông báo, và audit trail chi tiết.", "Bedrock Prompt Management có sẵn version control và tham số hoá biến prompt; kết hợp CloudTrail ghi audit log và IAM policy kiểm soát quyền phê duyệt — tận dụng dịch vụ quản lý sẵn có thay vì tự xây pipeline riêng."],
+    [17, "Graph RAG · Neptune Analytics", "RAG tài chính cần nắm bắt quan hệ đa bước (multi-hop) giữa nhiều thực thể liên kết chặt chẽ, trả lời toàn diện dưới 3 giây, ít overhead vận hành.", "Bedrock Knowledge Bases tích hợp Graph RAG với Amazon Neptune Analytics, tự động phát hiện quan hệ multi-hop giữa các thực thể mà không cần xây dựng logic thủ công."],
+    [22, "Canary Deployment", "Cần canary deployment tự động chuyển traffic dần giữa các phiên bản model dựa trên metric thời gian thực, tự tăng/giảm theo ngưỡng hiệu năng, và rollback không cần can thiệp thủ công.", "Step Functions (kích hoạt bởi EventBridge) thực hiện shift traffic theo giai đoạn, gọi Lambda kiểm tra CloudWatch metrics để tự tăng traffic hoặc rollback hoàn toàn tự động — đúng vòng đời triển khai/rollback cho việc tùy biến FM."],
+    [28, "Vector Search quy mô lớn", "Semantic search trên 20 triệu nhà hàng và 200 triệu review, trả kết quả dưới 500ms cho 95% truy vấn, dữ liệu cập nhật mỗi giờ, mở rộng tiết kiệm chi phí.", "Di chuyển dữ liệu sang Amazon OpenSearch Service (tối ưu cho vector search quy mô lớn), dùng FM của Bedrock tạo embedding và thực hiện k-NN search cho truy vấn ngôn ngữ tự nhiên."],
+    [43, "Document Chunking · Legal", "Chunking hiện tại cắt đứt ngữ cảnh pháp lý gây thiếu/outdated thông tin; cần cải thiện độ liên quan retrieval khi dữ liệu tăng từ 90GB lên 360GB.", "Semantic chunking (chia theo ranh giới ngữ nghĩa) giữ trọn luận điểm/điều khoản pháp lý, giải quyết đúng nguyên nhân gốc là bỏ sót ngữ cảnh khi cắt đoạn theo kích thước cố định."],
+    [44, "Step Functions · Conversational Context", "Duy trì ngữ cảnh hội thoại, chạy được clarification workflow có thể chờ lâu, lưu trữ mã hóa lịch sử hội thoại, phục vụ hàng nghìn user đồng thời.", "Step Functions Standard hỗ trợ pattern Wait-for-Callback, phù hợp cho workflow làm rõ (clarification) cần chờ phản hồi người dùng lâu hơn giới hạn của Express; DynamoDB on-demand + SSE đáp ứng scale và mã hóa."],
+    [45, "Glue · Data Quality", "Pre-process dữ liệu phi cấu trúc: validate chất lượng, tạo metadata audit, giám sát metrics, tùy biến chunking — với ít công sức phát triển nhất.", "AWS Glue crawler tự tạo catalog/metadata, Glue ETL cho transform/chunking tùy biến, Glue Data Quality có sẵn để validate và giám sát — toàn bộ là dịch vụ managed."],
+    [46, "Knowledge Bases · Metadata Filtering", "Cải thiện độ chính xác retrieval bằng cách giảm phạm vi tài liệu quét qua nhiều loại nội dung/thời gian, không fine-tune, thay đổi kiến trúc tối thiểu.", "Bật metadata-aware filtering ngay trong Bedrock Knowledge Base bằng cách index metadata của object S3, cho phép lọc theo loại nội dung/thời gian mà không cần đổi hạ tầng hiện có."],
+    [47, "Vector DB Algorithm", "Cấu hình vector database cho dataset nhỏ, index count thấp, phục vụ similarity search với độ chính xác và hiệu năng tối đa.", "Amazon MemoryDB với thuật toán Flat (tìm kiếm chính xác/brute-force) phù hợp dataset nhỏ — đảm bảo accuracy tối đa vì chi phí tính toán chấp nhận được khi index nhỏ, kết hợp in-memory cho hiệu năng cao."],
+    [48, "Serverless Data Pipeline", "Xử lý 50GB dữ liệu JSON: trích xuất, loại bỏ PII, tạo embedding làm retrieval corpus, cost-effective, xong trong 4 giờ, ít overhead vận hành.", "Step Functions điều phối hoàn toàn serverless (Comprehend phát hiện PII, Bedrock tạo embedding) tích hợp trực tiếp với OpenSearch Serverless để lưu vector — không cần quản lý cluster/hạ tầng nào."],
+    [49, "AppConfig · Feature Flags", "Chuyển đổi động giữa các model theo customer tier, A/B testing tính năng mới mà không redeploy code, và validate tham số model trước khi áp dụng.", "AWS AppConfig có sẵn feature flags cho A/B testing và JSON schema validation cho tham số model, cùng cơ chế deploy an toàn — dịch vụ managed chuyên dụng cho đúng use case này."],
+    [57, "CDK · Model Selection", "Deploy sang cả dev và production, tích hợp FM, và cho phép product owner dễ dàng chuyển đổi giữa các FM để test ở mỗi environment.", "Một CDK app dùng fromFoundationModelId() cho phép chỉ định model ID linh hoạt (on-demand, không gắn cứng ARN), kết hợp một pipeline CodePipeline nhiều stage — đổi FM qua cấu hình mà không cần đổi code."],
+    [59, "AppConfig · Safe Rollout", "Chuyển đổi model provider mà không cần sửa hay redeploy code Lambda, cùng khả năng rollout an toàn, validation và rollback cấu hình.", "AWS AppConfig thiết kế riêng cho dynamic configuration, hỗ trợ chiến lược rollout dần dần, validation và rollback tự động khi lỗi."],
+    [63, "S3 Metadata Framework", "Xây dựng khung metadata nhất quán trên S3 (timestamp, tác giả, phân loại lĩnh vực) để FM hiểu ngữ cảnh tài liệu mà không cần đọc toàn bộ nội dung.", "Dùng đúng các cơ chế metadata gốc của S3: system metadata cho timestamp, object tags cho phân loại domain, và user-defined metadata cho thông tin tác giả — đơn giản, nhất quán, không cần dịch vụ ngoài."],
+    [65, "Hybrid Search + Reranker", "Trợ lý pháp lý cần truy xuất tài liệu án lệ liên quan theo cả quan hệ ngữ nghĩa lẫn thuật ngữ/trích dẫn pháp lý chính xác, tốc độ nhanh, độ chính xác cao.", "Hybrid search (vector + keyword) trên OpenSearch vừa bắt được ngữ nghĩa vừa khớp chính xác thuật ngữ/trích dẫn, cùng reranker model của Bedrock để tối ưu độ liên quan."],
+    [68, "CloudFormation · Well-Architected GenAI Lens", "Cần các thành phần chuẩn hóa, tái sử dụng, có version và được quản trị nhất quán cho bảo mật/observability/RAG trên nhiều business unit.", "CloudFormation template chuẩn hóa theo AWS Well-Architected GenAI Lens, quản lý version qua repo tập trung, và CI/CD pipeline với CloudFormation Guard để tự động enforce nhất quán."],
+    [78, "SageMaker Pipelines · Retraining", "Tự động huấn luyện lại và triển khai lại model SageMaker khi có file dữ liệu khách hàng mới được tải lên S3.", "Step Functions Standard workflow (không giới hạn thời gian chạy, phù hợp training kéo dài) với state đầu phản ứng sự kiện upload S3, sau đó chạy SageMaker Pipelines để retrain và redeploy."],
+    [80, "Multimodal Data Pipeline", "Nạp dữ liệu đa phương thức cho assistant nghiên cứu hành vi động vật, tránh diễn giải suy đoán, ghi audit log phục vụ kiểm toán đạo đức nghiên cứu.", "SageMaker Processing và Transcribe tiền xử lý dữ liệu đa phương thức, nạp bản tóm tắt vào Bedrock Knowledge Base để câu trả lời có căn cứ (RAG), Guardrails chặn đầu ra mang tính suy đoán, AppConfig quản lý prompt, CloudTrail ghi log."],
+    [88, "Knowledge Bases · Reranking", "Cải thiện độ liên quan tài liệu truy xuất trong RAG (50.000+ tài liệu) để giảm hallucination, chi phí vận hành thấp nhất.", "Dùng tính năng rerank có sẵn ngay trong cấu hình Bedrock Knowledge Bases (built-in reranking model) — không cần xây dựng thêm hạ tầng hay gọi API riêng biệt."],
+    [90, "Text-to-SQL cho dữ liệu có cấu trúc", "Model gợi ý nâng hạng cabin cần truy xuất lịch sử di chuyển khách hàng từ RDS để đưa ra kết quả nhất quán, liên quan và chính xác trên nhiều hãng/khách hàng.", "Vì dữ liệu là quan hệ có cấu trúc trong RDS, text-to-SQL với SQL validation truy xuất chính xác và nhất quán hơn semantic/vector search; guardrails cùng Step Functions + Lambda orchestrate workflow validation giảm hallucination một cách có hệ thống."],
+    [92, "Semantic Search low-ops", "Tìm kiếm ngữ nghĩa trên bộ sưu tập tài liệu số hóa (dưới 1 triệu file) không có từ khóa metadata, chi phí vận hành thấp nhất.", "Titan Embeddings (Bedrock, managed) tạo vector và lưu trong Aurora PostgreSQL Serverless với pgvector — cả hai đều serverless/managed, giảm tối đa công sức vận hành so với tự quản lý cluster OpenSearch hay tự host model embedding."],
+    [97, "Query Decomposition", "Ứng dụng y tế cần trả lời câu hỏi phức tạp chính xác cao (giảm semantic dilution), dùng thuật ngữ y khoa chuyên biệt, đáp ứng 1000 query/phút với độ trễ dưới 2 giây, chi phí thấp.", "Bedrock Knowledge Base có tính năng query decomposition tích hợp sẵn, kết hợp Bedrock Flow điều phối FM và knowledge base — toàn bộ dùng tính năng managed có sẵn, không cần xây dựng thêm logic phức tạp."],
+  ],
+  d2: [
+    [3, "Amplify AI Kit · Streaming UI", "Timeout/chậm khi gọi RetrieveAndGenerate qua Lambda resolver (đồng bộ) cho câu hỏi phức tạp, cần cải thiện trải nghiệm người dùng.", "AWS Amplify AI Kit hỗ trợ sẵn streaming response cho GraphQL/AppSync và tối ưu client-side rendering — giải quyết đúng vấn đề chờ lâu mà không cần tái kiến trúc lớn."],
+    [4, "Định tuyến Model thông minh", "Định tuyến động giữa nhiều FM dựa trên logic nghiệp vụ phức tạp (chi phí, region, A/B test) thay đổi theo giờ, không cần deploy code mới, lan truyền tức thời tới hàng nghìn request đồng thời.", "AWS AppConfig cho phép cập nhật cấu hình routing động không cần redeploy; AppConfig Agent cache cục bộ giúp Lambda lấy cấu hình mới với độ trễ thấp ngay cả khi có nhiều request đồng thời."],
+    [10, "Streaming Real-time", "Hiển thị phản hồi AI theo từng ký tự (streaming) trong thời gian thực, hỗ trợ hàng nghìn user đồng thời với độ trễ thấp, dù phản hồi mất 15-45 giây.", "API Gateway WebSocket kết hợp InvokeModelWithResponseStream đẩy từng phần phản hồi tới client ngay khi model sinh ra — phù hợp kết nối lâu dài và nhiều user đồng thời."],
+    [16, "Bedrock AgentCore", "Reasoning agent trên Lambda/REST API cần lưu memory xuyên tương tác, chia sẻ state, hỗ trợ cả invocation event-driven và đồng bộ, kèm access control theo session — cần giải pháp scalable nhất.", "Bedrock AgentCore cung cấp sẵn memory quản lý, session-aware reasoning, identity, event handling và observability tích hợp; đăng ký Lambda/REST API làm actions qua API Gateway/EventBridge để AgentCore gọi trực tiếp mà không cần code orchestration riêng."],
+    [23, "Provisioned Throughput", "Ứng dụng đã mua provisioned throughput nhưng vẫn bị throttle vì code gọi invoke_model bằng modelId thông thường thay vì trỏ đến capacity đã mua.", "Phải thay modelId bằng ARN của provisioned model (trả về từ CreateProvisionedModelThroughput) thì request mới thực sự được route đến đúng capacity đã mua."],
+    [26, "Bedrock Agent · Action Groups", "Ứng dụng CSKH cần xử lý 50.000 tài liệu sản phẩm cập nhật hàng ngày, tích hợp API quản lý đơn hàng, duy trì ngữ cảnh đa lượt hội thoại, ghi audit trail, overhead vận hành thấp nhất.", "Bedrock Agent với action groups gọi API đơn hàng, gắn knowledge base để RAG tìm tài liệu sản phẩm (tự cập nhật dễ dàng hàng ngày), và bật trace events để ghi audit — đều là tính năng managed sẵn có."],
+    [35, "Human-in-the-loop · Step Functions", "Cần workflow human-in-the-loop để kỹ thuật viên duyệt khuyến nghị bảo trì AI-generated trước khi áp dụng, và lưu trữ toàn bộ quyết định duyệt để phục vụ audit.", "Step Functions với bước approval dùng waitForTaskToken để tạm dừng thực thi chờ người duyệt, Lambda gọi SendTaskSuccess với quyết định — pattern chuẩn của AWS cho human approval; kết quả lưu vào DynamoDB để audit."],
+    [39, "Real-time Voice-to-Suggestion", "Trợ lý AI thời gian thực cho tổng đài cần chuyển giọng nói thành gợi ý tăng dần trong lúc khách còn đang nói, độ trễ đầu-cuối dưới 1 giây, chỉ dùng managed service, streaming hai chiều.", "Amazon Transcribe streaming với partial results cho văn bản từng phần sớm nhất có thể, chuyển ngay đến Bedrock qua InvokeModelWithResponseStream, đẩy kết quả tới agent qua API Gateway WebSocket."],
+    [52, "MCP Server Security", "Lưu trữ MCP server trên Lambda truy cập thông tin user, cấu hình AI agent dùng MCP server đó, chỉ cho phép user được ủy quyền truy cập.", "API Gateway HTTP API + Streamable HTTP transport kết hợp Cognito OAuth 2.1 cung cấp cơ chế xác thực/ủy quyền chuẩn cho MCP server truy cập qua mạng."],
+    [53, "Step Functions Retry/Catch", "Điều phối 3 Bedrock agent chạy tuần tự cùng 1 Lambda tính reward, đảm bảo graceful degradation khi service gián đoạn, hiệu quả vận hành cao nhất.", "Step Functions state machine với 4 task (3 agent + Lambda) có sẵn cơ chế Retry/Catch cho từng bước, quản lý lỗi tập trung native mà không cần code orchestration riêng."],
+    [54, "Step Functions Native Integration", "Xây workflow lấy một phần nội dung từ template lưu trên S3, gửi tới model Bedrock để review, và lưu response ngược lại S3.", "Step Functions Express với S3 GetObject/PutObject native integration và Pass step dùng intrinsic function để parse, cùng InvokeModel step — gọn, không cần code Lambda cho một workflow tuyến tính đơn giản."],
+    [56, "Multi-Agent · Supervisor Pattern", "Xây kiến trúc multi-agent cho nhiều phòng ban (clinical, insurance, scheduling, claims), có khả năng mở rộng thêm tính năng, xử lý hàng nghìn tương tác song song, trả lời đúng theo domain.", "Mô hình supervisor-collaborator chuẩn: 1 supervisor phân loại intent rồi route tới các collaborator agent chuyên biệt theo domain, mỗi collaborator dùng RAG với knowledge base riêng — dễ mở rộng thêm collaborator mới."],
+    [60, "Resilient Retry Strategy", "Xây retry strategy tự động xử lý lỗi service tạm thời, tránh làm quá tải Bedrock khi peak, thích ứng tình trạng dịch vụ thay đổi, hỗ trợ streaming response và giới hạn token.", "Adaptive retry (exponential backoff + jitter) kết hợp circuit breaker ngăn quá tải khi tỷ lệ lỗi cao, cùng streaming handler buffer và resume từ chunk cuối."],
+    [64, "Amazon Q Business · Data Accessor", "Tăng cường prompt bằng dữ liệu riêng của khách hàng nhưng khách hàng phải giữ toàn quyền sở hữu/kiểm soát dữ liệu, không cần truy cập thời gian thực, công ty không muốn triển khai/quản lý dịch vụ trong môi trường khách hàng.", "Amazon Q Business index do khách hàng tự thiết lập và làm chủ, chỉ định công ty là data accessor để truy vấn qua API an toàn — khách hàng giữ toàn quyền kiểm soát, công ty không cần triển khai gì phía khách hàng."],
+    [67, "Hybrid Cloud/On-Prem Inference", "Cần hỗ trợ cả suy luận real-time và batch throughput cao, đồng thời triển khai hybrid trên cloud và on-premises để tuân thủ data residency.", "Provisioned throughput của Bedrock đảm bảo hiệu năng ổn định cho khối lượng lớn; SageMaker Neo triển khai edge/on-prem và Lambda điều phối hybrid."],
+    [71, "Đa vùng · Residency + Quota", "Ứng dụng phục vụ EU và Bắc Mỹ với độ trễ thấp, dữ liệu EU phải ở lại châu Âu, và cần chịu tăng đột biến traffic vượt service quota mà không tăng độ phức tạp vận hành.", "Cross-Region inference profiles của Bedrock với mã địa lý cụ thể đảm bảo tuân thủ residency đồng thời tận dụng khả năng co giãn quota; API Gateway endpoint riêng cho từng vùng để định tuyến người dùng."],
+    [72, "Tách biệt Data Residency & Inference", "AI assistant RAG đa khu vực cần độ trễ thấp gần thời gian thực, trong khi dữ liệu độc quyền của khách hàng không được rời khỏi khu vực địa lý của họ.", "Dữ liệu độc quyền (knowledge base) lưu trong S3 tại từng Region riêng biệt bằng Bedrock Knowledge Bases (giữ đúng residency), còn cross-Region model inference profile chỉ áp dụng cho việc gọi model (không phải dữ liệu) để đảm bảo độ trễ thấp."],
+    [73, "Converse API", "Ứng dụng chạy trên 2 môi trường compute khác nhau (Lambda Python, EKS JavaScript), phải dùng chung một FM, giữ ngữ cảnh hội thoại nhiều lượt, xác thực nhất quán.", "Converse API thống nhất với IAM roles cho xác thực nhất quán trên cả hai môi trường, duy trì ngữ cảnh bằng cách truyền lại các message trước đó trong mảng messages."],
+    [75, "MCP Server Stateless", "Triển khai các MCP server (stateless) dưới dạng Lambda, phục vụ cả ứng dụng nội bộ lẫn đối tác thứ ba, xác thực/ủy quyền chặt chẽ, ít overhead vận hành nhất.", "Lambda function URLs với Streamable HTTP transport (giữ đúng giao thức MCP) kết hợp SigV4/IAM authentication, cấp quyền InvokeFunctionUrl cho người dùng/role được ủy quyền — đơn giản, không cần thêm lớp API Gateway."],
+    [76, "Retry + Distributed Tracing", "Cần xử lý lỗi tạm thời khi gọi FM lúc traffic cao, tránh cascading failure, có distributed tracing để tìm nguyên nhân độ trễ, liên kết vấn đề hiệu năng với đặc điểm từng FM.", "AWS SDK ở chế độ standard retry với exponential backoff và jitter xử lý lỗi tạm thời/throttling mà không gây cascading failure; AWS X-Ray tracing với annotations để truy vết phân tán và lọc theo đặc điểm FM."],
+    [82, "Streaming API chi phí thấp", "API cho ứng dụng GenAI cần stream response giảm độ trễ, giới hạn token, và có retry logic khi model timeout/trả về partial response, chi phí vận hành thấp nhất.", "API Gateway REST API tích hợp Lambda gọi Bedrock, tận dụng Lambda response streaming để stream kết quả, kiểm soát token limit ngay trong Lambda, cấu hình timeout của Lambda/API Gateway để retry."],
+    [93, "Event-driven Pipeline", "Khi có file ghi âm cuộc gọi mới trên S3, cần tự động tạo tóm tắt và phân tích cảm xúc dạng có cấu trúc bằng cách phối hợp Transcribe và Bedrock.", "S3 gửi event tới EventBridge, EventBridge rule kích hoạt Step Functions điều phối: Transcribe chuyển âm thanh thành văn bản, kiểm tra hoàn tất job, rồi Lambda xây dựng prompt phù hợp để gọi Bedrock tạo output có cấu trúc."],
+  ],
+  d3: [
+    [1, "SageMaker Clarify · Fairness", "Đánh giá công bằng (fairness/bias) theo nhóm nhân khẩu học giữa 2 prompt, giám sát thời gian thực, cảnh báo khi lệch hơn 15%, báo cáo tuần so sánh, ít công sức phát triển tùy chỉnh nhất.", "SageMaker Clarify là dịch vụ có sẵn chuyên phân tích bias/fairness, publish thẳng vào CloudWatch để tạo alarm/dashboard mà không cần xây dựng logic tùy chỉnh."],
+    [2, "Guardrails · Denied Topics", "Dùng Bedrock Guardrails để chặn AI đưa lời khuyên tài chính cụ thể, nhắc đến đối thủ cạnh tranh, và đưa ra tuyên bố không có căn cứ (phải grounded theo tài liệu được duyệt).", "Denied topics guardrail chặn hẳn chủ đề rủi ro cao (tư vấn đầu tư cụ thể); custom word filters với action block chặn tên riêng đối thủ cạnh tranh; ngưỡng grounding cao buộc câu trả lời bám sát tài liệu tài chính đã duyệt."],
+    [8, "VPC Endpoint + Lake Formation", "Đảm bảo kết nối riêng tư hoàn toàn giữa VPC ứng dụng và Bedrock, đồng thời cấp quyền truy cập chi tiết đến cấp cột (column-level) cho data lake xuyên tài khoản.", "VPC interface endpoint cho Bedrock runtime đảm bảo traffic không qua internet công cộng, IAM condition giới hạn endpoint/role được phép gọi, và Lake Formation LF-tag-based access control hỗ trợ cấp quyền column-level xuyên account."],
+    [11, "Guardrails Action Modes", "Flow Bedrock với Nova Pro cần 4 input bắt buộc, định dạng output nhất quán, và chỉ cần được thông báo (không chặn) khi phản hồi chứa ngôn ngữ bắt nạt/xúc phạm.", "Prompt Management định nghĩa input variables và output format nhất quán, gắn vào node prompts của flow; guardrail với insults content filter đặt action \"detect\" (không phải \"block\") đúng theo yêu cầu chỉ nhận thông báo mà không chặn phản hồi bị gắn cờ."],
+    [13, "SCP · Cross-Region Inference", "Sửa lỗi SCP chặn khi dev gọi Nova Pro qua profile không đúng Region, trong khi vẫn phải giới hạn chỉ dùng cross-Region inference (CRI) trong eu-central-1, giữ nguyên governance chặt và chính xác.", "Mở rộng SCP để cho phép cụ thể CRI qua đúng inference profile eu.amazon.nova-pro-v1:0 (thay vì chặn hoàn toàn), vẫn giữ kiểm soát chính xác theo data residency; đảm bảo IAM role có quyền invoke đúng profile trên các Region EU liên quan."],
+    [14, "Guardrails Fine-tuning", "Cấu hình guardrail cho AI tài chính: chặn tư vấn đầu tư, chặn nội dung độc hại, mask PII, lọc cả input/output theo mức độ nhạy cảm, ít false positive, và có nhiều chiến lược xử lý khác nhau cho từng loại nội dung nhạy cảm.", "Một guardrail với content filter mức medium (giảm false positive so với high toàn bộ), denied topics rõ ràng cho investment advice, và sensitive info filter áp dụng chiến lược khác nhau (mask cho PII đầu ra, block cho thông tin tài chính ở input) cùng input/output evaluation riêng cho audit."],
+    [15, "RAG Grounding", "Khắc phục việc mô hình gợi ý sản phẩm không có trong catalog/không liên quan và độ trễ cao, trong bối cảnh hầu hết tương tác là duy nhất.", "Xây dựng knowledge base và RAG buộc model chỉ gợi ý dựa trên dữ liệu catalog thực tế (grounded), giải quyết gốc rễ vấn đề gợi ý sản phẩm không tồn tại; PerformanceConfigLatency=optimized giảm độ trễ phản hồi."],
+    [19, "Data Lineage · Glue Data Catalog", "Đảm bảo truy xuất nguồn gốc đầy đủ cho nội dung GenAI: đăng ký nguồn dữ liệu, gắn thẻ metadata để attribution, duy trì audit log truy cập/sử dụng xuyên suốt pipeline.", "AWS Glue Data Catalog đăng ký và gắn thẻ metadata cho mọi nguồn dữ liệu (nội bộ &amp; bên ngoài) phục vụ attribution, kết hợp CloudTrail ghi log truy cập/hoạt động xuyên suốt nhiều dịch vụ."],
+    [21, "Defense-in-Depth · Prompt Injection", "Cần giải pháp phòng thủ nhiều lớp chặn prompt injection tinh vi, lưu log kiểm toán đầy đủ cho mọi can thiệp an toàn, và có khả năng chuyển đổi dự phòng liên vùng (cross-Region failover).", "Bedrock Guardrails với content filter mức cao chặn injection, guardrail profile để có inference liên vùng (đáp ứng failover), và CloudWatch Logs với custom metrics ghi chi tiết các can thiệp guardrail."],
+    [24, "Knowledge Bases · Source Citation", "Ứng dụng tư vấn cần giải thích lý luận từng bước, trích dẫn nguồn dữ liệu cụ thể, độ trễ dưới 3 giây, triển khai với overhead vận hành thấp nhất.", "Bedrock Knowledge Bases với source attribution có sẵn kết hợp RAG, tận dụng tính năng built-in để trích dẫn nguồn mà không cần xây dựng logic riêng."],
+    [30, "Giảm Hallucination khi tóm tắt", "Cần giảm hallucination khi tóm tắt tài liệu kỹ thuật dài, đồng thời xử lý hơn 1.000 tài liệu/giờ và trả kết quả trong 3 giây mỗi tài liệu.", "Zero-shot chain-of-thought với xác minh sự kiện từng bước giúp mô hình suy luận có kiểm chứng trước khi trả lời; kết hợp RAG với knowledge base, semantic chunking và embedding tinh chỉnh để bám sát nội dung nguồn thay vì chỉ dựa vào một lượt suy diễn."],
+    [36, "Loan Document Pipeline · PII Redaction", "Ứng dụng đánh giá hồ sơ vay cần trích xuất dữ liệu có cấu trúc, redact PII trước khi inference, định tuyến kết quả tin cậy thấp đến người duyệt cùng Region, tuân thủ data residency, chịu tải 25.000 hồ sơ/ngày với 99.9% availability.", "Textract + Amazon A2I cùng Region để trích xuất và định tuyến trang tin cậy thấp cho người duyệt; Lambda redact PII trước inference kết hợp Bedrock guardrails kiểm soát nội dung và IAM role theo Region đảm bảo residency; Glue Data Quality validate dữ liệu có cấu trúc và Step Functions điều phối bước prompt engineering trước khi gọi Bedrock."],
+    [37, "Amazon Q Business ACL", "Amazon Q Business cần tôn trọng access control theo nhóm IAM Identity Center của nhân viên khi truy cập dữ liệu S3 phân theo prefix từng phòng ban, overhead vận hành thấp nhất.", "Một file acl.json duy nhất ở cấp cao nhất của bucket, ánh xạ từng prefix phòng ban với nhóm IAM Identity Center tương ứng — đây là cơ chế ACL chuẩn của Amazon Q Business, chỉ cần quản lý một file."],
+    [38, "Clinical RAG · Citation", "Hệ thống hỗ trợ quyết định lâm sàng chỉ được đưa ra khuyến nghị dựa trên tài liệu y khoa đã duyệt, phải trích dẫn nguồn cụ thể, không được hallucinate, overhead vận hành thấp nhất.", "Bedrock Knowledge Base kết nối tài liệu lâm sàng đã duyệt và gọi RetrieveAndGenerate API — API này tự động trả về citation kèm câu trả lời, không cần xây dựng logic riêng."],
+    [40, "Multi-modal Content Moderation", "Nền tảng cần kiểm duyệt nội dung (ảnh + văn bản) do người dùng tải lên để chặn nội dung không phù hợp và PII trước khi tạo composition, tích hợp với luồng lưu trữ S3 hiện có, overhead quản lý hạ tầng thấp nhất.", "Step Functions điều phối, tận dụng Bedrock Guardrails có sẵn để lọc nội dung, Comprehend để phát hiện PII, và Rekognition để kiểm duyệt ảnh — toàn bộ đều là managed service không cần quản lý hạ tầng."],
+    [41, "Amazon Q Developer Governance", "Đảm bảo team dev mới bắt buộc dùng đúng resource được công ty duyệt (thư viện nội bộ, thuật toán, code mẫu) khi dùng Amazon Q Developer, mà không được sửa đổi ở cấp project.", "Amazon Q Developer customization cho phép admin cấu hình nguồn dữ liệu duyệt ở cấp tổ chức, áp dụng tự động cho team mà không cần chỉnh từng project."],
+    [58, "Multi-tenant Knowledge Base", "Cung cấp thông tin phòng trống near real-time cho từng khách sạn, duy trì access control tách biệt theo từng hotel, hiệu năng ổn định khi peak.", "Mỗi hotel có một Knowledge Base riêng trong cấu trúc multi-account đảm bảo cách ly access control hoàn toàn theo tài khoản, dùng ingestion trực tiếp cho dữ liệu real-time và đồng bộ định kỳ cho thông tin ít quan trọng hơn."],
+    [61, "Banking Assistant Governance", "AI assistant ngân hàng phải chặn PII không gửi vào prompt của model, từ chối tư vấn đầu tư, và ghi audit log đầy đủ (kể cả ảnh/tài liệu) với nỗ lực vận hành thấp nhất.", "Guardrails với sensitive information policy để lọc PII, topic policy để chặn chủ đề đầu tư, cùng Converse API và delivery/image logging vào S3 để log đầy đủ tương tác — tất cả tính năng native của Bedrock."],
+    [62, "Transparent RAG at Scale", "Ứng dụng RAG tài chính cần trích dẫn nguồn minh bạch, audit trail đầy đủ, phục vụ 10.000 người dùng đồng thời với độ trễ dưới 2 giây, ít overhead vận hành nhất.", "Tận dụng tracing có sẵn của Bedrock Agents, Knowledge Bases tích hợp RAG với trích dẫn nguồn tự động, cùng kiến trúc Multi-AZ, API Gateway/Lambda và CloudFront để đạt độ trễ thấp và khả năng mở rộng."],
+    [77, "Fine-grained FM Access Governance", "Nền tảng phân tích video cần tuân thủ chuẩn riêng tư, bảo mật I/O của model, kiểm soát pattern truy cập FM, audit đầy đủ ai đã truy cập gì và khi nào.", "IAM attribute-based access control ánh xạ phòng ban tới quyền hạn cụ thể, VPC endpoints, IAM condition keys giới hạn GuardrailIdentifier/ModelId (kiểm soát pattern truy cập FM), cùng CloudTrail ghi cả management/data event, S3 server access logging, CloudTrail Lake và CloudWatch alarm."],
+    [81, "Org-wide Enforced Governance", "Trong tổ chức multi-account, cần chặn chủ đề/thông tin độc quyền lọt vào prompt Bedrock, đảm bảo nhân viên chỉ dùng model được duyệt, và quản lý tập trung.", "SCP ở cấp Organization buộc mọi lệnh gọi phải chỉ định guardrail và chỉ cho phép model được duyệt, đảm bảo enforcement tập trung không thể bị bypass; CloudFormation StackSets triển khai guardrail với block filtering policy tới mọi account."],
+    [84, "Safety Control đã kiểm chứng", "Ứng dụng roast coffee bị thiếu nhất quán, độ trễ retrieval cao và gợi ý không an toàn; cần đạt 99.5% nhất quán, độ trễ dưới 1 giây, chặn output không an toàn/hallucination bằng safety control đã kiểm chứng.", "Provisioned throughput đảm bảo độ trễ ổn định và nhất quán, guardrails với semantic denial rules chặn các khuyến nghị không an toàn, và Prompt Management với approval workflow kiểm soát tính nhất quán của prompt."],
+    [85, "Data Residency đa châu lục", "Xử lý dữ liệu đa châu lục phải tuân thủ residency (xử lý trong cùng châu lục), có audit trail cho quyết định AI và khả năng phân loại dữ liệu.", "S3 Object Lock + bucket policy theo Region đảm bảo residency, tiền xử lý dữ liệu trong Region gốc trước khi gửi tới Bedrock, Macie phân loại dữ liệu, và CloudTrail cung cấp audit trail bất biến."],
+    [86, "Governance Toàn diện chi phí thấp", "Cần giải pháp governance toàn diện: phát hiện hallucination, safety control, giám sát model drift real-time, audit trail prompt-response, tích hợp dashboard compliance có sẵn, triển khai trong 60 ngày, độ trễ dưới 200ms, chi phí vận hành thấp nhất.", "Toàn dịch vụ Bedrock managed (guardrails cho content/toxicity, Model Evaluation để phát hiện hallucination) kết hợp DynamoDB (TTL) lưu audit log độ trễ thấp và CloudWatch custom metrics tích hợp trực tiếp dashboard hiện có."],
+    [87, "Lake Formation LF-Tags", "Cần kiểm soát truy cập để FM chỉ nhận dữ liệu đã redact PII theo cột, quản lý theo business unit/Region trong Lake Formation đa vùng, ghi audit trail đầy đủ.", "LF-Tags gắn business unit/Region lên database/table cho phép Lake Formation quản lý phân quyền tập trung, linh hoạt theo cột (redact PII), CloudTrail ghi audit toàn diện — cách này scale tốt cho nhiều business unit/Region."],
+    [89, "Parallel Content Filtering", "Cần lọc nội dung nhiều lớp bằng Comprehend (chặn nội dung xúc phạm, bảo vệ PII, phát hiện yêu cầu tư vấn phi đạo đức) mà vẫn đảm bảo tất cả bước lọc hoàn tất trước khi nội dung tới FM, giữ thời gian phản hồi chấp nhận được.", "Xử lý song song bất đồng bộ (toxicity detection, prompt safety classification, PII detection) giúp các bước lọc hoàn tất nhanh trước khi tới FM, mỗi loại filter được ánh xạ đúng chức năng cần thiết."],
+    [91, "PII Lifecycle · Mask → Block", "AI assistant không được để lộ PII trong response, phải xử lý trong cùng Region với khách hàng (data residency), cần đánh giá hiệu quả chặn PII trước khi go-live.", "Guardrail với sensitive information filters, chế độ mask trong giai đoạn dev/test để đánh giá hiệu quả phát hiện mà vẫn quan sát được nội dung, chuyển sang block khi production để ngăn hẳn PII lộ ra; triển khai guardrail riêng theo từng Region (không cross-Region) để tuân thủ residency."],
+    [94, "Dynamic PII theo Identity", "AI assistant phải hiện PII đầy đủ cho surgeon, redact PII cho engineer, chỉ tham chiếu báo cáo dưới 3 năm tuổi, dựa trên knowledge base và Cognito hiện có.", "S3 Lifecycle tự xóa báo cáo cũ hơn 3 năm, Lambda đồng bộ định kỳ knowledge base, và tại thời điểm truy vấn gọi ApplyGuardrail tương ứng với nhóm Cognito của user để redact PII trong response nếu cần — surgeon vẫn thấy PII gốc trong khi engineer bị redact động, không cần nhân bản dữ liệu."],
+    [96, "SCP + Private Connectivity", "Công ty EU bị SCP giới hạn chỉ dùng eu-north-1/eu-west-1, nhưng FM lại host ở eu-central-1/eu-west-3; cần truy cập private và giữ traffic trong đúng các Region có FM.", "Cross-Region inference profile (eu.amazon.*) đảm bảo lệnh gọi chỉ đi trong các Region châu Âu nơi FM được host, kết hợp Bedrock VPC endpoint cho kết nối private, và mở rộng SCP để cho phép dùng inference profile tại đúng các Region có FM."],
+  ],
+  d4: [
+    [18, "Hallucination & Cost Monitoring", "Giám sát gần thời gian thực để phát hiện hallucination, token bất thường, và cảnh báo sớm chi phí bất thường, ít phát triển tùy chỉnh/bảo trì nhất.", "Model invocation logging ghi text output, Guardrails có sẵn tính năng contextual grounding check để phát hiện hallucination trực tiếp, kết hợp CloudWatch anomaly detection alarm tự động cho token usage."],
+    [20, "Step Functions Parallel State", "Xử lý song song nhiều loại phân tích (tài chính, sentiment, compliance) cho batch 5 report, mỗi report gọi nhiều FM, phải hoàn thành trong 10 giây (hiện tại 45 giây khi xử lý tuần tự).", "Step Functions Parallel state gọi đồng thời nhiều Lambda cho từng loại phân tích, giảm đáng kể tổng thời gian xuống dưới 10 giây, cùng CloudWatch theo dõi latency."],
+    [25, "Proactive Token/Cost Management", "Cần hệ thống quản lý token chủ động cảnh báo khi gần đến giới hạn token theo từng model, xử lý hơn 5.000 request/phút, theo dõi usage để phân bổ chi phí theo đơn vị kinh doanh.", "Lambda với tokenizer riêng cho từng model ước tính token TRƯỚC khi gửi request (chủ động), publish CloudWatch alarm khi gần ngưỡng, lưu chi tiết usage vào DynamoDB để tính chi phí."],
+    [31, "Model Performance Observability", "Cần giải pháp quan sát để phát hiện suy giảm hiệu năng của FM so với baseline đã thiết lập và cảnh báo kèm dữ liệu tương quan trong vòng 10 phút.", "CloudWatch Application Insights, custom metrics (chất lượng gợi ý, token usage, latency) qua embedded metric format có dimension, kết hợp CloudWatch anomaly detection và Logs Insights."],
+    [33, "Real-time Inference at Scale", "Ứng dụng gợi ý real-time cho agent CSKH cần xử lý 500.000 cuộc gọi đồng thời, độ trễ dưới 200ms, không vượt ngân sách compute hàng tháng, có auto scaling.", "Model tối ưu độ trễ thấp trên Bedrock kết hợp provisioned throughput và chính sách auto scaling, cân bằng giữa hiệu năng thời gian thực và kiểm soát chi phí."],
+    [42, "Prompt Caching", "Đảm bảo latency thấp và hiệu năng ổn định khi traffic tăng đột biến (50k lên 150k/ngày), với 40% câu hỏi có ngữ cảnh lặp lại, theo cách tiết kiệm chi phí nhất.", "Latency-optimized inference giảm độ trễ, còn prompt caching tận dụng 40% ngữ cảnh lặp để giảm chi phí và tăng tốc, không cần trả trước cho capacity cố định."],
+    [50, "Multi-region Throughput Scaling", "Xử lý traffic surge (10k lên 30k request/giờ) trên nhiều Region, đảm bảo phản hồi dưới 2 giây, giải quyết bottleneck throughput.", "Cross-Region inference profile tự động phân phối traffic qua nhiều Region để tăng throughput linh hoạt theo nhu cầu, kết hợp token batching giảm overhead API."],
+    [51, "Semantic Cache", "Giảm số lần gọi model dư thừa khi 40% câu hỏi có cách diễn đạt khác nhau nhưng cùng nghĩa, đảm bảo câu hỏi tương đương về ngữ nghĩa nhận câu trả lời nhất quán, độ trễ thấp.", "OpenSearch với k-NN cho phép tìm kiếm gần đúng trên vector embedding để nhận diện câu hỏi tương đồng về ngữ nghĩa dù khác cách diễn đạt — đúng bản chất semantic caching."],
+    [66, "Token Usage Observability", "Cần giải pháp observability thời gian thực cho mức tiêu thụ token trên nhiều model Bedrock, hỗ trợ dashboard tùy chỉnh cho nhiều nhóm và cảnh báo, ít overhead vận hành nhất.", "Tận dụng trực tiếp CloudWatch Logs Insights (phân tích log invocation theo ứng dụng/tool) và CloudWatch metrics/alarms có sẵn của Bedrock — không cần xây dựng thêm hạ tầng."],
+    [70, "Per-integration Anomaly Detection", "Cần phát hiện bất thường trong tiêu thụ token theo từng tool integration cụ thể và tự động điều chỉnh ngưỡng cảnh báo khi traffic pattern thay đổi.", "CloudWatch metric filters để tách pattern theo từng tool và CloudWatch anomaly detection alarms tự động điều chỉnh baseline — đúng yêu cầu \"tự động điều chỉnh ngưỡng\"."],
+    [74, "Time-zone Traffic Distribution", "Ứng dụng bị throttling do traffic đỉnh điểm lệch theo múi giờ khác nhau; cần duy trì hoạt động liên tục, giữ chất lượng, không phát sinh chi phí cố định theo giờ khi traffic thấp.", "Bật invocation logging, theo dõi các metric liên quan (Invocations, InputTokenCount, OutputTokenCount, Invocation Throttles) và phân tán traffic qua cross-Region inference endpoints để hấp thụ đỉnh tải theo từng khu vực mà không phải trả phí cố định."],
+    [83, "Intelligent Prompt Routing", "Cần định tuyến tự động câu hỏi đơn giản (70%) sang model nhỏ rẻ và câu hỏi phức tạp (30%) sang model lớn mạnh hơn, tối ưu chi phí và độ trễ, công sức triển khai ít nhất.", "Amazon Bedrock intelligent prompt routing là tính năng có sẵn, tự động phân tích độ phức tạp và định tuyến đến model phù hợp mà không cần xây dựng logic riêng."],
+    [95, "Unified Tech+Business Observability", "Cần một giải pháp observability hợp nhất, kết hợp metric kỹ thuật (CloudWatch) và metric kinh doanh, tự động cảnh báo khi có suy giảm hiệu năng.", "CloudWatch custom dashboard tích hợp cả metric vận hành và metric kinh doanh, composite alarm kết hợp với anomaly detection để tự động phát hiện suy giảm bất thường, SNS thông báo stakeholder."],
+  ],
+  d5: [
+    [12, "Hallucination Detection · LLM-as-judge", "Ứng dụng RAG y tế cần độ chính xác truy xuất cao, phát hiện hallucination trong nội dung sinh ra, và giảm chi phí review thủ công.", "Kết hợp LLM-as-a-judge sàng lọc tự động phần lớn response (giảm chi phí review) với human review chỉ dành cho edge case, cùng built-in Bedrock evaluation đo retrieval precision và hallucination rate."],
+    [27, "Step Functions Payload Limit", "Workflow multi-agent trên Step Functions bị lỗi vì output giữa các state vượt quá giới hạn 256 KB; cần khắc phục nhưng vẫn giữ nguyên pattern ReAct hiện có, overhead thấp nhất.", "Dùng S3 URI cho output lớn, dùng ResultPath/ResultSelector để truyền tham chiếu S3 giữa các bước, giữ nguyên trình tự và pattern hiện có mà không cần thay đổi kiến trúc lớn."],
+    [29, "Prompt Version Control & Testing", "Hệ thống tóm tắt tài liệu lâm sàng cho kết quả không nhất quán với tài liệu phức tạp; cần giải pháp chẩn đoán nguyên nhân, so sánh hiệu năng prompt theo metrics chuẩn, và lưu lịch sử phiên bản prompt.", "Thiết lập version control cho prompt trong code repository, có test suite gồm tài liệu phức tạp và metrics định lượng, cùng khung kiểm thử tự động để so sánh các phiên bản."],
+    [32, "Context Window Overflow", "Ứng dụng xử lý tài liệu kỹ thuật 50-200 trang bị lỗi phản hồi không nhất quán và bị cắt cụt (truncated) do vượt giới hạn context window của FM.", "Semantic chunking (chia theo ngữ nghĩa, ngưỡng percentile) kết hợp RetrieveAndGenerate để chỉ chọn động các đoạn liên quan nhất theo độ tương đồng embedding, tránh nhồi toàn bộ tài liệu vào context."],
+    [34, "Automated Model Evaluation", "Nền tảng cần đánh giá model Bedrock theo use case ecommerce với dataset tùy chỉnh trong S3, hiển thị metrics độ chính xác trên dashboard, overhead vận hành thấp nhất.", "Đưa dataset lên S3 kèm IAM và cấu hình CORS (điều kiện cần để evaluation job truy cập); Lambda theo lịch tạo evaluation job Bedrock có sẵn (metric chuẩn cho text generation/summarization), Lambda thứ hai kiểm tra trạng thái và đẩy log vào CloudWatch Logs Insights dashboard."],
+    [55, "Combined Auto+Human Evaluation", "Đánh giá chất lượng AI assistant tài chính (chính xác, tuân thủ quy định, phù hợp hội thoại) kết hợp automated evaluation quy mô lớn với human review có mục tiêu cho tương tác quan trọng.", "Bedrock Evaluations dùng Claude Sonnet làm judge model đánh giá tự động ở quy mô lớn, Guardrails custom kiểm tra tuân thủ tài chính, Amazon A2I bổ sung human review có chọn lọc cho tương tác bị gắn cờ."],
+    [69, "CI/CD Quality Gate", "Cần tự động phát hiện sự không nhất quán đa ngôn ngữ sau khi nâng cấp model, đánh giá 15.000 hội thoại song song trong 45 phút, tích hợp CI/CD và chặn triển khai nếu không đạt ngưỡng chất lượng.", "Thiết lập bộ hội thoại test đa ngôn ngữ có cùng ý nghĩa, chạy song song bằng Bedrock model evaluation job, áp dụng ngưỡng similarity/hallucination và tích hợp vào CI/CD để chặn release lỗi."],
+    [79, "Retrieval + Generation Evaluation", "Cần so sánh nhiều chiến lược chunking, đánh giá chất lượng sinh văn bản của 2 FM, áp ngưỡng chất lượng để quyết định triển khai trong hệ thống RAG y tế.", "Retrieve-and-generate evaluation job của Bedrock với metric custom precision@k và LLM-as-a-judge (thang 1-5), đưa từng chiến lược chunking vào dataset đánh giá và dùng Claude Sonnet đánh giá phản hồi của cả hai FM — trong một job duy nhất."],
+  ],
+};
+
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+Object.keys(DATA).forEach(domainId => {
+  const container = document.getElementById(domainId);
+  const html = DATA[domainId].map(([num, tag, problem, solution]) => `
+    <div class="case" id="q${num}" data-text="${esc((tag + ' ' + problem + ' ' + solution).toLowerCase())}">
+      <div class="case-head">
+        <span class="case-num">Câu ${num}</span>
+        <span class="case-tag">${esc(tag)}</span>
+      </div>
+      <p><span class="lbl problem">Vấn đề</span>${esc(problem)}</p>
+      <p><span class="lbl solution">Giải pháp</span>${esc(solution)}</p>
+    </div>`).join('');
+  container.innerHTML = html;
+});
+
+const TOTAL = Object.values(DATA).reduce((n, arr) => n + arr.length, 0);
+const search = document.getElementById('search');
+const searchMeta = document.getElementById('searchMeta');
+const allCases = Array.from(document.querySelectorAll('.case'));
+const allSections = Array.from(document.querySelectorAll('.section'));
+
+search.addEventListener('input', () => {
+  const q = search.value.trim().toLowerCase();
+  let visible = 0;
+  allCases.forEach(c => {
+    const match = !q || c.dataset.text.includes(q);
+    c.hidden = !match;
+    if (match) visible++;
+  });
+  allSections.forEach(sec => {
+    const anyVisible = sec.querySelectorAll('.case:not([hidden])').length > 0;
+    sec.classList.toggle('no-match', !anyVisible);
+  });
+  searchMeta.textContent = visible + '/' + TOTAL + ' tình huống';
+});
+
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+window.addEventListener('scroll', () => {
+  scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+});
+scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+
+</body>
+</html>
