@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="nav.css">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -71,38 +72,6 @@
   .icon { width: 1.15em; height: 1.15em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
   code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface-3); border: 1px solid var(--border); border-radius: 5px; padding: 0.05em 0.4em; color: var(--accent-2); }
   a { color: var(--accent-2); }
-
-  /* ── NAV ── */
-  nav {
-    display: flex; align-items: center; justify-content: space-between; gap: var(--space-m);
-    padding: var(--space-s) var(--space-l);
-    background: rgba(11, 13, 19, 0.72);
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 20;
-  }
-  .nav-brand { display: flex; align-items: center; gap: var(--space-s); text-decoration: none; color: var(--text); }
-  .nav-logo {
-    width: 34px; height: 34px; display: grid; place-items: center; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff;
-    box-shadow: 0 4px 14px rgba(99,102,241,0.45);
-  }
-  .nav-logo .icon { width: 19px; height: 19px; stroke-width: 2.25; }
-  .nav-title { display: flex; flex-direction: column; line-height: 1.15; }
-  .nav-title b { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; letter-spacing: -0.02em; }
-  .nav-title span { font-size: 0.68rem; color: var(--muted-2); letter-spacing: 0.02em; }
-
-  .nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-  .navlink {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 0.5rem 0.9rem; border-radius: var(--radius);
-    font-size: 0.85rem; font-weight: 500; color: var(--muted);
-    text-decoration: none; transition: color .2s var(--ease), background .2s var(--ease);
-  }
-  .navlink .icon { width: 15px; height: 15px; }
-  .navlink:hover { color: var(--text); background: var(--surface-2); }
-  .navlink.active { color: var(--accent-2); background: var(--accent-dim); font-weight: 600; }
 
   /* ── LAYOUT ── */
   main { max-width: 980px; margin: 0 auto; padding: var(--space-l) var(--space-l) var(--space-xl); }
@@ -240,8 +209,6 @@
   .scroll-top-btn .icon { width: 20px; height: 20px; stroke-width: 2.5; }
 
   @media (max-width: 720px) {
-    nav { padding: var(--space-s) var(--space-m); flex-wrap: wrap; }
-    .nav-links { order: 3; width: 100%; justify-content: space-between; }
     main { padding: var(--space-m); }
     .section { padding: var(--space-m); }
     .hero h1 { font-size: 1.5rem; }
@@ -273,20 +240,8 @@
   </defs>
 </svg>
 
-<nav>
-  <a href="index.html" class="nav-brand">
-    <span class="nav-logo"><svg class="icon"><use href="#i-spark"/></svg></span>
-    <span class="nav-title"><b>AIP-C01</b><span>AWS GenAI Developer Pro</span></span>
-  </a>
-  <div class="nav-links">
-    <a class="navlink" href="index.html"><svg class="icon"><use href="#i-list"/></svg>Trắc nghiệm</a>
-    <a class="navlink" href="theory.html"><svg class="icon"><use href="#i-book"/></svg>Lý thuyết</a>
-    <a class="navlink" href="tips.html"><svg class="icon"><use href="#i-target"/></svg>Kinh nghiệm thi</a>
-    <a class="navlink" href="official-exam-guide.html"><svg class="icon"><use href="#i-clipboard"/></svg>Exam Guide</a>
-    <a class="navlink" href="gap-terms.html"><svg class="icon"><use href="#i-gap"/></svg>Gap Terms</a>
-    <a class="navlink active" href="full-glossary.html"><svg class="icon"><use href="#i-grid"/></svg>Full Glossary</a>
-  </div>
-</nav>
+<nav data-nav></nav>
+<script src="nav.js"></script>
 
 <main>
   <div class="hero">

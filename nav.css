@@ -1,0 +1,46 @@
+/* Shared top nav for all AIP-C01 pages. Markup is injected by nav.js —
+   edit structural/visual rules only here, don't re-add them per page.
+   Relies on the design-token custom properties each page already defines
+   in :root (--space-*, --text, --accent, --surface-2, --font-mono, etc). */
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  padding: var(--space-s) var(--space-l);
+  background: rgba(11, 13, 19, 0.72);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-brand { display: flex; align-items: center; gap: var(--space-s); text-decoration: none; color: var(--text); }
+.nav-logo {
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(99,102,241,0.45);
+}
+.nav-logo .icon { width: 19px; height: 19px; stroke-width: 2.25; }
+.nav-title { display: flex; flex-direction: column; line-height: 1.15; }
+.nav-title b { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 800; letter-spacing: -0.02em; }
+.nav-title span { font-size: 0.68rem; color: var(--muted-2); letter-spacing: 0.02em; }
+
+.nav-links { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.navlink {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0.5rem 0.9rem; border-radius: var(--radius);
+  font-size: 0.85rem; font-weight: 500; color: var(--muted);
+  text-decoration: none; transition: color .2s var(--ease), background .2s var(--ease);
+}
+.navlink .icon { width: 15px; height: 15px; }
+.navlink:hover { color: var(--text); background: var(--surface-2); }
+.navlink.active { color: var(--accent-2); background: var(--accent-dim); font-weight: 600; }
+
+@media (max-width: 720px) {
+  nav { padding: var(--space-s) var(--space-m); flex-wrap: wrap; }
+  .nav-links { order: 3; width: 100%; justify-content: space-between; }
+}
