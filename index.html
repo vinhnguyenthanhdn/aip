@@ -147,6 +147,59 @@
   /* ── LAYOUT ── */
   main { max-width: 860px; margin: 0 auto; padding: var(--space-l) var(--space-l) var(--space-xl); }
 
+  /* ── SEARCH ── */
+  .search-wrap { position: relative; padding-top: var(--space-m); }
+  .search-box {
+    display: flex; align-items: center; gap: var(--space-s);
+    padding: 0.65rem var(--space-m);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    transition: border-color .2s var(--ease);
+  }
+  .search-box:focus-within { border-color: var(--accent); }
+  .search-box .icon { width: 17px; height: 17px; color: var(--muted); flex: 0 0 auto; }
+  .search-box input {
+    flex: 1; border: none; outline: none; background: none;
+    color: var(--text); font-family: var(--font-body); font-size: 0.9rem;
+  }
+  .search-box input::placeholder { color: var(--muted-2); }
+  .search-clear {
+    display: grid; place-items: center; width: 24px; height: 24px;
+    border-radius: 999px; border: none; background: var(--surface-2);
+    color: var(--muted); cursor: pointer; flex: 0 0 auto;
+  }
+  .search-clear .icon { width: 13px; height: 13px; }
+  .search-clear:hover { color: var(--text); background: var(--surface-3); }
+  .search-results {
+    position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 20;
+    max-height: 420px; overflow-y: auto;
+    background: var(--surface); border: 1px solid var(--border-2);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+    animation: cardIn .2s var(--ease);
+  }
+  .search-count {
+    padding: var(--space-s) var(--space-m) 4px;
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted-2);
+  }
+  .search-result {
+    display: flex; flex-direction: column; gap: 4px; width: 100%;
+    text-align: left; padding: var(--space-s) var(--space-m);
+    background: none; border: none; border-top: 1px solid var(--border);
+    color: var(--text); cursor: pointer; font-family: var(--font-body);
+  }
+  .search-count + .search-result { border-top: none; }
+  .search-result:hover, .search-result:focus-visible { background: var(--surface-2); }
+  .sr-meta {
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .sr-snippet { font-size: 0.84rem; color: var(--muted); line-height: 1.5; }
+  .sr-snippet mark { background: var(--accent-dim); color: var(--accent-2); border-radius: 3px; padding: 0 2px; }
+  .search-empty {
+    padding: var(--space-l) var(--space-m); text-align: center;
+    color: var(--muted); font-size: 0.85rem;
+  }
+
   /* ── PROGRESS ── */
   .progress-wrap {
     padding: var(--space-m) 0;
@@ -475,6 +528,7 @@
     <symbol id="i-gap" viewBox="0 0 24 24"><path d="M9 3v18M15 3v18"/><path d="M3 9h4M17 9h4M3 15h4M17 15h4"/></symbol>
     <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
     <symbol id="i-eraser" viewBox="0 0 24 24"><path d="M7 21H4a2 2 0 01-2-2v-1a2 2 0 01.586-1.414l10-10a2 2 0 012.828 0l4 4a2 2 0 010 2.828l-8 8"/><path d="M14 21H7"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></symbol>
   </defs>
 </svg>
 
@@ -492,6 +546,17 @@
 <script src="nav.js"></script>
 
 <main>
+  <div class="search-wrap" id="searchWrap" hidden>
+    <div class="search-box">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input type="text" id="searchInput" placeholder="Tìm câu hỏi theo từ khóa…" autocomplete="off">
+      <button type="button" class="search-clear" id="searchClearBtn" hidden aria-label="Xóa tìm kiếm">
+        <svg class="icon"><use href="#i-x"/></svg>
+      </button>
+    </div>
+    <div class="search-results" id="searchResults" hidden></div>
+  </div>
+
   <div class="progress-wrap" id="progressWrap" hidden>
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
     <div class="progress-stats">
@@ -534,6 +599,7 @@ let idx = 0;
 let answered = {};
 let shuffleAnswers = false;
 let shuffleOrder = {}; // idx -> shuffled key order, cached so it stays stable while answering
+let searchIndex = []; // qi -> { qText, answerEntries, lower } built once questions load
 
 const $ = id => document.getElementById(id);
 const app = $('app');
@@ -573,6 +639,90 @@ function questionToText(q, qi) {
   lines.push(multi ? `(Chọn ${cset.size} đáp án)` : '(Chọn một đáp án)');
   lines.push('Hãy chọn đáp án đúng và giải thích ngắn gọn lý do.');
   return lines.join('\n');
+}
+
+/* ── SEARCH ── */
+function escapeHtml(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function buildSearchIndex() {
+  searchIndex = questions.map(q => {
+    const qText = toPlainText(q.question_text);
+    const answerEntries = Object.keys(q.answers).sort().map(k => ({ key: k, text: toPlainText(q.answers[k]) }));
+    const lower = (qText + ' ' + answerEntries.map(a => a.text).join(' ')).toLowerCase();
+    return { qText, answerEntries, lower };
+  });
+}
+
+function buildSnippet(text, term) {
+  const lower = text.toLowerCase();
+  const i = lower.indexOf(term);
+  if (i === -1) return escapeHtml(text.slice(0, 140)) + (text.length > 140 ? '…' : '');
+  const start = Math.max(0, i - 50);
+  const end = Math.min(text.length, i + term.length + 70);
+  let out = escapeHtml(text.slice(start, i)) +
+    '<mark>' + escapeHtml(text.slice(i, i + term.length)) + '</mark>' +
+    escapeHtml(text.slice(i + term.length, end));
+  if (start > 0) out = '…' + out;
+  if (end < text.length) out += '…';
+  return out;
+}
+
+function performSearch(rawQuery) {
+  const term = rawQuery.trim().toLowerCase();
+  const resultsEl = $('searchResults');
+  $('searchClearBtn').hidden = !rawQuery;
+
+  if (!term) { resultsEl.hidden = true; resultsEl.innerHTML = ''; return; }
+  if (!questions.length) return;
+
+  const matches = [];
+  questions.forEach((q, qi) => {
+    const entry = searchIndex[qi];
+    if (!entry || !entry.lower.includes(term)) return;
+    let snippetSource = entry.qText;
+    let matchedIn = 'question';
+    if (!entry.qText.toLowerCase().includes(term)) {
+      const found = entry.answerEntries.find(a => a.text.toLowerCase().includes(term));
+      if (found) { snippetSource = found.text; matchedIn = `đáp án ${found.key}`; }
+    }
+    matches.push({ qi, snippetSource, matchedIn });
+  });
+
+  resultsEl.hidden = false;
+  if (!matches.length) {
+    resultsEl.innerHTML = `<div class="search-empty">Không tìm thấy câu hỏi nào chứa "${escapeHtml(rawQuery.trim())}"</div>`;
+    return;
+  }
+
+  resultsEl.innerHTML = `<div class="search-count">${matches.length} câu hỏi khớp</div>` + matches.map(m => {
+    const q = questions[m.qi];
+    const snippet = buildSnippet(m.snippetSource, term);
+    const matchNote = m.matchedIn !== 'question' ? ` · khớp ở ${m.matchedIn}` : '';
+    return `<button type="button" class="search-result" data-qi="${m.qi}">
+      <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number}${matchNote}</span>
+      <span class="sr-snippet">${snippet}</span>
+    </button>`;
+  }).join('');
+
+  resultsEl.querySelectorAll('.search-result').forEach(btn => {
+    btn.addEventListener('click', () => {
+      idx = parseInt(btn.dataset.qi, 10);
+      saveProgress();
+      render();
+      updateProgress();
+      closeSearch();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function closeSearch() {
+  $('searchResults').hidden = true;
+  $('searchResults').innerHTML = '';
+  $('searchInput').value = '';
+  $('searchClearBtn').hidden = true;
 }
 
 function isMulti(q) { return (q.answer || '').replace(/[^A-Z]/gi, '').length > 1; }
@@ -890,6 +1040,16 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') { const b = $('prevBtn'); if (b && !b.disabled) b.click(); }
 });
 
+$('searchInput').addEventListener('input', e => performSearch(e.target.value));
+$('searchInput').addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+$('searchClearBtn').addEventListener('click', () => { closeSearch(); $('searchInput').focus(); });
+document.addEventListener('click', e => {
+  if (!$('searchWrap').contains(e.target)) $('searchResults').hidden = true;
+});
+$('searchInput').addEventListener('focus', () => {
+  if ($('searchInput').value.trim()) $('searchResults').hidden = false;
+});
+
 const scrollTopBtn = $('scrollTopBtn');
 window.addEventListener('scroll', () => {
   scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
@@ -901,6 +1061,8 @@ fetch(DATA_URL)
   .then(data => {
     questions = data.filter(q => q && q.answers && q.question_text);
     if (!questions.length) throw new Error('Không có câu hỏi nào');
+    buildSearchIndex();
+    $('searchWrap').hidden = false;
     loadProgress();
     if (idx >= questions.length) idx = 0;
     const jumpTo = new URLSearchParams(location.search).get('q');
