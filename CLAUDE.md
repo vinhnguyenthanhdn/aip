@@ -13,3 +13,7 @@
 - **Connecting to Supabase Postgres from GitHub Actions** — always use the **Session Pooler** connection string (`aws-*.pooler.supabase.com:5432`), never **Direct connection** (`db.<ref>.supabase.co:5432`)
   - Direct connection resolves IPv6-only; GitHub Actions runners have no outbound IPv6 → `pg_dump`/`psql` fails with "Network is unreachable"
   - Session Pooler is IPv4-compatible and still supports full session semantics (unlike Transaction Pooler on port 6543, which breaks tools relying on prepared statements)
+
+## Agent Browser
+profiles:
+  kingley: 49222
