@@ -200,6 +200,21 @@
     color: var(--muted); font-size: 0.85rem;
   }
 
+  .search-filters { display: flex; gap: var(--space-s); margin-top: var(--space-s); }
+  .filter-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.76rem;
+    color: var(--muted); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 5px 12px; cursor: pointer;
+    transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .filter-chip .icon { width: 13px; height: 13px; }
+  .filter-chip:hover { color: var(--text); border-color: var(--border-2); background: var(--surface-2); }
+  .filter-chip.active { color: var(--good); border-color: rgba(52,211,153,0.4); background: var(--good-dim); }
+  .filter-chip .count { color: var(--muted-2); }
+  .filter-chip.active .count { color: var(--good); }
+
   /* ── PROGRESS ── */
   .progress-wrap {
     padding: var(--space-m) 0;
@@ -554,6 +569,12 @@
         <svg class="icon"><use href="#i-x"/></svg>
       </button>
     </div>
+    <div class="search-filters">
+      <button type="button" class="filter-chip" id="multiListBtn">
+        <svg class="icon"><use href="#i-list"/></svg>
+        Câu multi choice <span class="count" id="multiListCount">…</span>
+      </button>
+    </div>
     <div class="search-results" id="searchResults" hidden></div>
   </div>
 
@@ -600,6 +621,7 @@ let answered = {};
 let shuffleAnswers = false;
 let shuffleOrder = {}; // idx -> shuffled key order, cached so it stays stable while answering
 let searchIndex = []; // qi -> { qText, answerEntries, lower } built once questions load
+let listMode = null; // null | 'multi' — which non-search listing is currently shown in #searchResults
 
 const $ = id => document.getElementById(id);
 const app = $('app');
@@ -673,6 +695,7 @@ function performSearch(rawQuery) {
   const term = rawQuery.trim().toLowerCase();
   const resultsEl = $('searchResults');
   $('searchClearBtn').hidden = !rawQuery;
+  if (listMode) { listMode = null; $('multiListBtn').classList.remove('active'); }
 
   if (!term) { resultsEl.hidden = true; resultsEl.innerHTML = ''; return; }
   if (!questions.length) return;
@@ -723,6 +746,56 @@ function closeSearch() {
   $('searchResults').innerHTML = '';
   $('searchInput').value = '';
   $('searchClearBtn').hidden = true;
+}
+
+/* ── LIST ALL MULTI-CHOICE QUESTIONS ──
+   Reuses the search-results dropdown UI/UX, just with a fixed filter instead of a text query. */
+function renderMultiList() {
+  const resultsEl = $('searchResults');
+  const matches = [];
+  questions.forEach((q, qi) => { if (isMulti(q)) matches.push(qi); });
+
+  resultsEl.hidden = false;
+  if (!matches.length) {
+    resultsEl.innerHTML = `<div class="search-empty">Không có câu multi choice nào</div>`;
+    return;
+  }
+
+  resultsEl.innerHTML = `<div class="search-count">${matches.length} câu multi choice</div>` + matches.map(qi => {
+    const q = questions[qi];
+    const plain = toPlainText(q.question_text);
+    const snippet = escapeHtml(plain.slice(0, 140)) + (plain.length > 140 ? '…' : '');
+    return `<button type="button" class="search-result" data-qi="${qi}">
+      <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number} · Chọn ${correctSet(q).size} đáp án</span>
+      <span class="sr-snippet">${snippet}</span>
+    </button>`;
+  }).join('');
+
+  resultsEl.querySelectorAll('.search-result').forEach(btn => {
+    btn.addEventListener('click', () => {
+      idx = parseInt(btn.dataset.qi, 10);
+      saveProgress();
+      render();
+      updateProgress();
+      closeMultiList();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function closeMultiList() {
+  $('searchResults').hidden = true;
+  $('searchResults').innerHTML = '';
+  $('multiListBtn').classList.remove('active');
+  listMode = null;
+}
+
+function toggleMultiList() {
+  if (listMode === 'multi') { closeMultiList(); return; }
+  closeSearch();
+  listMode = 'multi';
+  $('multiListBtn').classList.add('active');
+  renderMultiList();
 }
 
 function isMulti(q) { return (q.answer || '').replace(/[^A-Z]/gi, '').length > 1; }
@@ -1043,8 +1116,13 @@ document.addEventListener('keydown', e => {
 $('searchInput').addEventListener('input', e => performSearch(e.target.value));
 $('searchInput').addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
 $('searchClearBtn').addEventListener('click', () => { closeSearch(); $('searchInput').focus(); });
+$('multiListBtn').addEventListener('click', toggleMultiList);
 document.addEventListener('click', e => {
-  if (!$('searchWrap').contains(e.target)) $('searchResults').hidden = true;
+  if (!$('searchWrap').contains(e.target)) {
+    $('searchResults').hidden = true;
+    $('multiListBtn').classList.remove('active');
+    listMode = null;
+  }
 });
 $('searchInput').addEventListener('focus', () => {
   if ($('searchInput').value.trim()) $('searchResults').hidden = false;
@@ -1062,6 +1140,7 @@ fetch(DATA_URL)
     questions = data.filter(q => q && q.answers && q.question_text);
     if (!questions.length) throw new Error('Không có câu hỏi nào');
     buildSearchIndex();
+    $('multiListCount').textContent = questions.filter(isMulti).length;
     $('searchWrap').hidden = false;
     loadProgress();
     if (idx >= questions.length) idx = 0;
