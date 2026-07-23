@@ -189,10 +189,20 @@
   }
   .search-count + .search-result { border-top: none; }
   .search-result:hover, .search-result:focus-visible { background: var(--surface-2); }
+  .sr-top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-s); }
   .sr-meta {
     font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted);
     letter-spacing: 0.02em;
   }
+  .sr-status {
+    display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto;
+    font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600;
+    padding: 2px 9px; border-radius: 999px; border: 1px solid var(--border);
+    color: var(--muted-2); background: var(--surface-2);
+  }
+  .sr-status .icon { width: 11px; height: 11px; }
+  .sr-status.ok { color: var(--good); background: var(--good-dim); border-color: rgba(52,211,153,0.3); }
+  .sr-status.err { color: var(--bad); background: var(--bad-dim); border-color: rgba(248,113,113,0.3); }
   .sr-snippet { font-size: 0.84rem; color: var(--muted); line-height: 1.5; }
   .sr-snippet mark { background: var(--accent-dim); color: var(--accent-2); border-radius: 3px; padding: 0 2px; }
   .search-empty {
@@ -724,7 +734,10 @@ function performSearch(rawQuery) {
     const snippet = buildSnippet(m.snippetSource, term);
     const matchNote = m.matchedIn !== 'question' ? ` · khớp ở ${m.matchedIn}` : '';
     return `<button type="button" class="search-result" data-qi="${m.qi}">
-      <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number}${matchNote}</span>
+      <span class="sr-top">
+        <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number}${matchNote}</span>
+        ${answerStatusBadge(m.qi)}
+      </span>
       <span class="sr-snippet">${snippet}</span>
     </button>`;
   }).join('');
@@ -766,7 +779,10 @@ function renderMultiList() {
     const plain = toPlainText(q.question_text);
     const snippet = escapeHtml(plain.slice(0, 140)) + (plain.length > 140 ? '…' : '');
     return `<button type="button" class="search-result" data-qi="${qi}">
-      <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number} · Chọn ${correctSet(q).size} đáp án</span>
+      <span class="sr-top">
+        <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number} · Chọn ${correctSet(q).size} đáp án</span>
+        ${answerStatusBadge(qi)}
+      </span>
       <span class="sr-snippet">${snippet}</span>
     </button>`;
   }).join('');
@@ -796,6 +812,14 @@ function toggleMultiList() {
   listMode = 'multi';
   $('multiListBtn').classList.add('active');
   renderMultiList();
+}
+
+function answerStatusBadge(qi) {
+  const a = answered[qi];
+  if (!a) return `<span class="sr-status">Chưa làm</span>`;
+  return a.correct
+    ? `<span class="sr-status ok">${ico('i-check')}Đúng</span>`
+    : `<span class="sr-status err">${ico('i-x')}Sai</span>`;
 }
 
 function isMulti(q) { return (q.answer || '').replace(/[^A-Z]/gi, '').length > 1; }
