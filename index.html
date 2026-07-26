@@ -225,6 +225,36 @@
   .filter-chip .count { color: var(--muted-2); }
   .filter-chip.active .count { color: var(--good); }
 
+  .search-scope-filters { display: flex; gap: var(--space-s); margin-top: var(--space-s); flex-wrap: wrap; }
+  .scope-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.76rem;
+    color: var(--muted); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 5px 12px; cursor: pointer;
+    transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+  }
+  .scope-chip input { accent-color: var(--good); cursor: pointer; }
+  .scope-chip:hover { color: var(--text); border-color: var(--border-2); }
+  .scope-chip.active { color: var(--good); border-color: rgba(52,211,153,0.4); background: var(--good-dim); }
+
+  .search-history-item { display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--border); }
+  .search-count + .search-history-item { border-top: none; }
+  .sh-term {
+    flex: 1; display: flex; align-items: center; gap: 8px;
+    text-align: left; padding: var(--space-s) var(--space-m);
+    background: none; border: none; color: var(--text); cursor: pointer;
+    font-family: var(--font-body); font-size: 0.85rem;
+  }
+  .sh-term .icon { width: 14px; height: 14px; color: var(--muted); flex: 0 0 auto; }
+  .sh-term:hover, .sh-term:focus-visible { background: var(--surface-2); }
+  .sh-remove {
+    display: grid; place-items: center; width: 26px; height: 26px; margin-right: var(--space-s);
+    border-radius: 999px; border: none; background: none; color: var(--muted); cursor: pointer; flex: 0 0 auto;
+  }
+  .sh-remove .icon { width: 12px; height: 12px; }
+  .sh-remove:hover { color: var(--bad); background: var(--bad-dim); }
+
   /* ── PROGRESS ── */
   .progress-wrap {
     padding: var(--space-m) 0;
@@ -554,6 +584,7 @@
     <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
     <symbol id="i-eraser" viewBox="0 0 24 24"><path d="M7 21H4a2 2 0 01-2-2v-1a2 2 0 01.586-1.414l10-10a2 2 0 012.828 0l4 4a2 2 0 010 2.828l-8 8"/><path d="M14 21H7"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
   </defs>
 </svg>
 
@@ -578,6 +609,11 @@
       <button type="button" class="search-clear" id="searchClearBtn" hidden aria-label="Xóa tìm kiếm">
         <svg class="icon"><use href="#i-x"/></svg>
       </button>
+    </div>
+    <div class="search-scope-filters" id="searchScopeFilters">
+      <label class="scope-chip active" data-scope="question"><input type="checkbox" checked>Trong đề</label>
+      <label class="scope-chip active" data-scope="correct"><input type="checkbox" checked>Đáp án đúng</label>
+      <label class="scope-chip active" data-scope="wrong"><input type="checkbox" checked>Đáp án sai</label>
     </div>
     <div class="search-filters">
       <button type="button" class="filter-chip" id="multiListBtn">
@@ -624,6 +660,9 @@
 const DATA_URL = 'aws_aip_c01.json';
 const STORAGE_KEY = 'aip-c01-progress';
 const SHUFFLE_KEY = 'aip-c01-shuffle';
+const SEARCH_HISTORY_KEY = 'aip-c01-search-history';
+const SEARCH_SCOPE_KEY = 'aip-c01-search-scope';
+const MAX_SEARCH_HISTORY = 12;
 
 let questions = [];
 let idx = 0;
@@ -632,6 +671,8 @@ let shuffleAnswers = false;
 let shuffleOrder = {}; // idx -> shuffled key order, cached so it stays stable while answering
 let searchIndex = []; // qi -> { qText, answerEntries, lower } built once questions load
 let listMode = null; // null | 'multi' — which non-search listing is currently shown in #searchResults
+let searchHistory = []; // most-recent-first list of past search terms
+let searchScope = { question: true, correct: true, wrong: true }; // where a match may occur to count as a result
 
 const $ = id => document.getElementById(id);
 const app = $('app');
@@ -675,15 +716,16 @@ function questionToText(q, qi) {
 
 /* ── SEARCH ── */
 function escapeHtml(str) {
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 function buildSearchIndex() {
   searchIndex = questions.map(q => {
     const qText = toPlainText(q.question_text);
-    const answerEntries = Object.keys(q.answers).sort().map(k => ({ key: k, text: toPlainText(q.answers[k]) }));
-    const lower = (qText + ' ' + answerEntries.map(a => a.text).join(' ')).toLowerCase();
-    return { qText, answerEntries, lower };
+    const cset = correctSet(q);
+    const answerEntries = Object.keys(q.answers).sort().map(k => ({ key: k, text: toPlainText(q.answers[k]), isCorrect: cset.has(k) }));
+    return { qText, answerEntries };
   });
 }
 
@@ -707,20 +749,33 @@ function performSearch(rawQuery) {
   $('searchClearBtn').hidden = !rawQuery;
   if (listMode) { listMode = null; $('multiListBtn').classList.remove('active'); }
 
-  if (!term) { resultsEl.hidden = true; resultsEl.innerHTML = ''; return; }
+  if (!term) { renderSearchHistory(); return; }
   if (!questions.length) return;
+
+  if (!searchScope.question && !searchScope.correct && !searchScope.wrong) {
+    resultsEl.hidden = false;
+    resultsEl.innerHTML = `<div class="search-empty">Vui lòng chọn ít nhất một loại kết quả</div>`;
+    return;
+  }
 
   const matches = [];
   questions.forEach((q, qi) => {
     const entry = searchIndex[qi];
-    if (!entry || !entry.lower.includes(term)) return;
-    let snippetSource = entry.qText;
-    let matchedIn = 'question';
-    if (!entry.qText.toLowerCase().includes(term)) {
-      const found = entry.answerEntries.find(a => a.text.toLowerCase().includes(term));
-      if (found) { snippetSource = found.text; matchedIn = `đáp án ${found.key}`; }
+    if (!entry) return;
+    let snippetSource = null, noteType = null, noteKey = null;
+
+    if (searchScope.question && entry.qText.toLowerCase().includes(term)) {
+      snippetSource = entry.qText; noteType = 'question';
     }
-    matches.push({ qi, snippetSource, matchedIn });
+    if (!snippetSource && searchScope.correct) {
+      const found = entry.answerEntries.find(a => a.isCorrect && a.text.toLowerCase().includes(term));
+      if (found) { snippetSource = found.text; noteType = 'correct'; noteKey = found.key; }
+    }
+    if (!snippetSource && searchScope.wrong) {
+      const found = entry.answerEntries.find(a => !a.isCorrect && a.text.toLowerCase().includes(term));
+      if (found) { snippetSource = found.text; noteType = 'wrong'; noteKey = found.key; }
+    }
+    if (snippetSource) matches.push({ qi, snippetSource, noteType, noteKey });
   });
 
   resultsEl.hidden = false;
@@ -732,7 +787,9 @@ function performSearch(rawQuery) {
   resultsEl.innerHTML = `<div class="search-count">${matches.length} câu hỏi khớp</div>` + matches.map(m => {
     const q = questions[m.qi];
     const snippet = buildSnippet(m.snippetSource, term);
-    const matchNote = m.matchedIn !== 'question' ? ` · khớp ở ${m.matchedIn}` : '';
+    let matchNote = '';
+    if (m.noteType === 'correct') matchNote = ` · khớp ở đáp án đúng ${m.noteKey}`;
+    else if (m.noteType === 'wrong') matchNote = ` · khớp ở đáp án sai ${m.noteKey}`;
     return `<button type="button" class="search-result" data-qi="${m.qi}">
       <span class="sr-top">
         <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number}${matchNote}</span>
@@ -744,6 +801,7 @@ function performSearch(rawQuery) {
 
   resultsEl.querySelectorAll('.search-result').forEach(btn => {
     btn.addEventListener('click', () => {
+      addToSearchHistory(rawQuery.trim());
       idx = parseInt(btn.dataset.qi, 10);
       saveProgress();
       render();
@@ -759,6 +817,81 @@ function closeSearch() {
   $('searchResults').innerHTML = '';
   $('searchInput').value = '';
   $('searchClearBtn').hidden = true;
+}
+
+/* ── SEARCH HISTORY ── */
+function loadSearchHistory() {
+  try { searchHistory = JSON.parse(localStorage.getItem(SEARCH_HISTORY_KEY) || '[]'); } catch (e) { searchHistory = []; }
+  if (!Array.isArray(searchHistory)) searchHistory = [];
+}
+function saveSearchHistory() {
+  try { localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(searchHistory)); } catch (e) {}
+}
+function addToSearchHistory(term) {
+  if (!term) return;
+  searchHistory = searchHistory.filter(t => t.toLowerCase() !== term.toLowerCase());
+  searchHistory.unshift(term);
+  if (searchHistory.length > MAX_SEARCH_HISTORY) searchHistory.length = MAX_SEARCH_HISTORY;
+  saveSearchHistory();
+}
+function removeFromSearchHistory(term) {
+  searchHistory = searchHistory.filter(t => t !== term);
+  saveSearchHistory();
+  renderSearchHistory();
+}
+
+function renderSearchHistory() {
+  const resultsEl = $('searchResults');
+  if (listMode) { listMode = null; $('multiListBtn').classList.remove('active'); }
+  if (!searchHistory.length) { resultsEl.hidden = true; resultsEl.innerHTML = ''; return; }
+
+  resultsEl.hidden = false;
+  resultsEl.innerHTML = `<div class="search-count">Tìm kiếm gần đây</div>` + searchHistory.map(term => `
+    <div class="search-history-item">
+      <button type="button" class="sh-term" data-term="${escapeHtml(term)}">${ico('i-clock')}${escapeHtml(term)}</button>
+      <button type="button" class="sh-remove" data-term="${escapeHtml(term)}" aria-label="Xóa lịch sử tìm kiếm">${ico('i-x')}</button>
+    </div>
+  `).join('');
+
+  resultsEl.querySelectorAll('.sh-term').forEach(btn => {
+    btn.addEventListener('click', () => {
+      $('searchInput').value = btn.dataset.term;
+      performSearch(btn.dataset.term);
+    });
+  });
+  resultsEl.querySelectorAll('.sh-remove').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      removeFromSearchHistory(btn.dataset.term);
+    });
+  });
+}
+
+/* ── SEARCH SCOPE FILTERS ── */
+function loadSearchScope() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SEARCH_SCOPE_KEY) || 'null');
+    if (s && typeof s === 'object') {
+      searchScope = { question: !!s.question, correct: !!s.correct, wrong: !!s.wrong };
+    }
+  } catch (e) {}
+}
+function saveSearchScope() {
+  try { localStorage.setItem(SEARCH_SCOPE_KEY, JSON.stringify(searchScope)); } catch (e) {}
+}
+function initSearchScopeFilters() {
+  document.querySelectorAll('.scope-chip').forEach(label => {
+    const scope = label.dataset.scope;
+    const checkbox = label.querySelector('input[type=checkbox]');
+    checkbox.checked = searchScope[scope];
+    label.classList.toggle('active', searchScope[scope]);
+    checkbox.addEventListener('change', () => {
+      searchScope[scope] = checkbox.checked;
+      label.classList.toggle('active', checkbox.checked);
+      saveSearchScope();
+      if ($('searchInput').value.trim()) performSearch($('searchInput').value);
+    });
+  });
 }
 
 /* ── LIST ALL MULTI-CHOICE QUESTIONS ──
@@ -1138,7 +1271,13 @@ document.addEventListener('keydown', e => {
 });
 
 $('searchInput').addEventListener('input', e => performSearch(e.target.value));
-$('searchInput').addEventListener('keydown', e => { if (e.key === 'Escape') closeSearch(); });
+$('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeSearch();
+  if (e.key === 'Enter') {
+    const v = e.target.value.trim();
+    if (v) { addToSearchHistory(v); performSearch(v); }
+  }
+});
 $('searchClearBtn').addEventListener('click', () => { closeSearch(); $('searchInput').focus(); });
 $('multiListBtn').addEventListener('click', toggleMultiList);
 document.addEventListener('click', e => {
@@ -1149,8 +1288,13 @@ document.addEventListener('click', e => {
   }
 });
 $('searchInput').addEventListener('focus', () => {
-  if ($('searchInput').value.trim()) $('searchResults').hidden = false;
+  const v = $('searchInput').value.trim();
+  if (v) { $('searchResults').hidden = false; } else { renderSearchHistory(); }
 });
+
+loadSearchScope();
+initSearchScopeFilters();
+loadSearchHistory();
 
 const scrollTopBtn = $('scrollTopBtn');
 window.addEventListener('scroll', () => {
