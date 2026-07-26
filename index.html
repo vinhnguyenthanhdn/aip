@@ -851,7 +851,8 @@ function renderSearchHistory() {
   `).join('');
 
   resultsEl.querySelectorAll('.sh-term').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
       $('searchInput').value = btn.dataset.term;
       performSearch(btn.dataset.term);
     });
