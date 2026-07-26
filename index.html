@@ -209,6 +209,20 @@
     padding: var(--space-l) var(--space-m); text-align: center;
     color: var(--muted); font-size: 0.85rem;
   }
+  .search-count-row {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-s);
+    padding: var(--space-s) var(--space-m) 4px;
+  }
+  .search-count-row .search-count { padding: 0; }
+  .retry-all-btn {
+    display: inline-flex; align-items: center; gap: 5px; flex: 0 0 auto;
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+    color: var(--accent-2); background: var(--accent-dim);
+    border: 1px solid rgba(99,102,241,0.35); border-radius: 999px;
+    padding: 4px 10px; cursor: pointer;
+  }
+  .retry-all-btn .icon { width: 12px; height: 12px; }
+  .retry-all-btn:hover { filter: brightness(1.15); }
 
   .search-filters { display: flex; gap: var(--space-s); margin-top: var(--space-s); }
   .filter-chip {
@@ -336,6 +350,21 @@
     animation: cardIn .35s var(--ease);
   }
   @keyframes cardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .retry-banner {
+    display: flex; align-items: center; gap: var(--space-s);
+    font-family: var(--font-mono); font-size: 0.76rem; font-weight: 600;
+    color: var(--accent-2); background: var(--accent-dim);
+    border: 1px solid rgba(99,102,241,0.3); border-radius: var(--radius-lg);
+    padding: var(--space-s) var(--space-m); margin-bottom: var(--space-m);
+  }
+  .retry-banner .icon { width: 14px; height: 14px; }
+  .retry-exit-btn {
+    margin-left: auto; font-family: var(--font-mono); font-size: 0.72rem;
+    color: var(--muted); background: none; border: 1px solid var(--border);
+    border-radius: 999px; padding: 3px 10px; cursor: pointer;
+  }
+  .retry-exit-btn:hover { color: var(--text); border-color: var(--border-2); background: var(--surface-2); }
 
   .qmeta {
     display: flex;
@@ -679,6 +708,7 @@ let shuffleAnswers = false;
 let shuffleOrder = {}; // idx -> shuffled key order, cached so it stays stable while answering
 let searchIndex = []; // qi -> { qText, answerEntries, lower } built once questions load
 let listMode = null; // null | 'multi' — which non-search listing is currently shown in #searchResults
+let retryQueue = null; // null, or array of qi being retried (Trước/Sau restricted to these until done/exited)
 let searchHistory = []; // most-recent-first list of past search terms
 let searchScope = { question: true, correct: true, wrong: true }; // where a match may occur to count as a result
 
@@ -812,6 +842,7 @@ function performSearch(rawQuery) {
   resultsEl.querySelectorAll('.search-result').forEach(btn => {
     btn.addEventListener('click', () => {
       addToSearchHistory(rawQuery.trim());
+      retryQueue = null;
       idx = parseInt(btn.dataset.qi, 10);
       saveProgress();
       render();
@@ -938,6 +969,7 @@ function renderMultiList() {
 
   resultsEl.querySelectorAll('.search-result').forEach(btn => {
     btn.addEventListener('click', () => {
+      retryQueue = null;
       idx = parseInt(btn.dataset.qi, 10);
       saveProgress();
       render();
@@ -980,7 +1012,14 @@ function renderAnsweredList(kind) {
     return;
   }
 
-  resultsEl.innerHTML = `<div class="search-count">${matches.length} câu đã làm ${kind === 'correct' ? 'đúng' : 'sai'}</div>` + matches.map(qi => {
+  const headerHTML = kind === 'wrong'
+    ? `<div class="search-count-row">
+        <span class="search-count">${matches.length} câu đã làm sai</span>
+        <button type="button" class="retry-all-btn" id="retryAllWrongBtn">${ico('i-refresh')}Làm lại tất cả</button>
+      </div>`
+    : `<div class="search-count">${matches.length} câu đã làm đúng</div>`;
+
+  resultsEl.innerHTML = headerHTML + matches.map(qi => {
     const q = questions[qi];
     const plain = toPlainText(q.question_text);
     const snippet = escapeHtml(plain.slice(0, 140)) + (plain.length > 140 ? '…' : '');
@@ -995,7 +1034,10 @@ function renderAnsweredList(kind) {
 
   resultsEl.querySelectorAll('.search-result').forEach(btn => {
     btn.addEventListener('click', () => {
-      idx = parseInt(btn.dataset.qi, 10);
+      const qi = parseInt(btn.dataset.qi, 10);
+      retryQueue = null;
+      if (kind === 'wrong') delete answered[qi]; // hide the old pick so retrying this question feels fresh
+      idx = qi;
       saveProgress();
       render();
       updateProgress();
@@ -1003,6 +1045,10 @@ function renderAnsweredList(kind) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
+
+  if (kind === 'wrong') {
+    $('retryAllWrongBtn').addEventListener('click', () => startRetryWrong(matches));
+  }
 }
 
 function closeAnsweredList() {
@@ -1092,6 +1138,7 @@ function render() {
   const cset = correctSet(q);
   const prev = answered[idx];
   const keys = getDisplayKeys(idx, q);
+  const retryPos = retryQueue ? retryQueue.indexOf(idx) : -1;
 
   const answersHTML = keys.map(k => {
     let cls = 'answer ' + (multi ? 'multi' : 'single');
@@ -1112,8 +1159,16 @@ function render() {
     ? `<span class="badge multi">${ico('i-list')}Chọn ${cset.size} đáp án</span>`
     : `<span class="badge">${ico('i-check-circle')}Một đáp án</span>`;
 
+  const retryBanner = retryQueue
+    ? `<div class="retry-banner">${ico('i-refresh')}Đang làm lại câu sai — ${retryPos + 1}/${retryQueue.length}
+        <button type="button" class="retry-exit-btn" id="retryExitBtn">Thoát</button></div>`
+    : '';
+  const prevDisabled = retryQueue ? retryPos <= 0 : idx === 0;
+  const nextDisabled = retryQueue ? retryPos >= retryQueue.length - 1 : idx === questions.length - 1;
+
   app.innerHTML = `
     <div class="qcard">
+      ${retryBanner}
       <div class="qmeta">
         <span class="topic">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number}</span>
         ${typeBadge}
@@ -1125,11 +1180,11 @@ function render() {
       <div class="answers" id="answers">${answersHTML}</div>
       <div class="qactions" id="qactions"></div>
       <div class="qnav">
-        <button class="btn btn-ghost" id="prevBtn" ${idx === 0 ? 'disabled' : ''}>${ico('i-prev')}Trước</button>
+        <button class="btn btn-ghost" id="prevBtn" ${prevDisabled ? 'disabled' : ''}>${ico('i-prev')}Trước</button>
         <div class="qjump">
           <input type="number" id="jumpInput" min="1" max="${questions.length}" value="${idx + 1}"> / ${questions.length}
         </div>
-        <button class="btn btn-ghost" id="nextBtn" ${idx === questions.length - 1 ? 'disabled' : ''}>Sau${ico('i-next')}</button>
+        <button class="btn btn-ghost" id="nextBtn" ${nextDisabled ? 'disabled' : ''}>Sau${ico('i-next')}</button>
       </div>
       <div class="kbd-hint">Mẹo: dùng <kbd>←</kbd> <kbd>→</kbd> để chuyển câu</div>
     </div>
@@ -1162,8 +1217,9 @@ function render() {
   $('nextBtn').addEventListener('click', () => goNext());
   $('jumpInput').addEventListener('change', e => {
     const n = parseInt(e.target.value, 10);
-    if (!isNaN(n) && n >= 1 && n <= questions.length) { idx = n - 1; saveProgress(); render(); updateProgress(); }
+    if (!isNaN(n) && n >= 1 && n <= questions.length) { retryQueue = null; idx = n - 1; saveProgress(); render(); updateProgress(); }
   });
+  if ($('retryExitBtn')) $('retryExitBtn').addEventListener('click', exitRetry);
 
   updateProgress();
 }
@@ -1181,11 +1237,12 @@ function renderActions(isAnswered, selected, multi, cset, q) {
     const hintText = shuffleAnswers
       ? 'Đáp án đúng đã được đánh dấu trực tiếp ở trên'
       : `Đáp án đúng: <b>${[...cset].sort().join(', ')}</b>`;
+    const isLastInSession = retryQueue ? (retryQueue.indexOf(idx) === retryQueue.length - 1) : (idx === questions.length - 1);
     el.innerHTML = `
       <span class="verdict ${correct ? 'ok' : 'err'}">${ico(correct ? 'i-check' : 'i-x')}${correct ? 'Chính xác' : 'Chưa đúng'}</span>
       <span class="hint">${hintText}</span>
       <button class="btn ${correct ? 'btn-good' : 'btn-primary'}" id="contBtn" style="margin-left:auto">
-        ${idx === questions.length - 1 ? `${ico('i-award')}Xem kết quả` : `Câu tiếp${ico('i-next')}`}
+        ${isLastInSession ? `${ico('i-award')}Xem kết quả` : `Câu tiếp${ico('i-next')}`}
       </button>
     `;
     $('contBtn').addEventListener('click', () => goNext());
@@ -1279,12 +1336,43 @@ function check(selected, cset, q) {
 }
 
 function go(delta) {
+  if (retryQueue) {
+    const n = retryQueue.indexOf(idx) + delta;
+    if (n >= 0 && n < retryQueue.length) { idx = retryQueue[n]; saveProgress(); render(); updateProgress(); }
+    return;
+  }
   const n = idx + delta;
   if (n >= 0 && n < questions.length) { idx = n; saveProgress(); render(); updateProgress(); }
 }
 function goNext() {
+  if (retryQueue) {
+    if (retryQueue.indexOf(idx) < retryQueue.length - 1) go(1);
+    else { retryQueue = null; showSummary(); }
+    return;
+  }
   if (idx < questions.length - 1) go(1);
   else showSummary();
+}
+
+/* ── RETRY WRONG QUESTIONS ──
+   Clears previous answers for the given questions so they render unanswered,
+   and restricts Trước/Sau navigation to only those questions until done or exited. */
+function startRetryWrong(qis) {
+  if (!qis.length) return;
+  qis.forEach(qi => { delete answered[qi]; });
+  retryQueue = qis.slice();
+  idx = retryQueue[0];
+  saveProgress();
+  render();
+  updateProgress();
+  closeAnsweredList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function exitRetry() {
+  retryQueue = null;
+  render();
+  updateProgress();
 }
 
 function showSummary() {
@@ -1323,7 +1411,7 @@ function showSummary() {
 
 function resetAll() {
   if (!confirm('Xóa toàn bộ tiến trình và làm lại từ đầu?')) return;
-  answered = {}; idx = 0; shuffleOrder = {};
+  answered = {}; idx = 0; shuffleOrder = {}; retryQueue = null;
   localStorage.removeItem(STORAGE_KEY);
   render(); updateProgress();
 }
