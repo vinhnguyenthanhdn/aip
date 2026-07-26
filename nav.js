@@ -8,6 +8,7 @@
     { href: 'tips.html', icon: 'i-target', label: 'Kinh nghiệm thi' },
     { href: 'gap-terms.html', icon: 'i-gap', label: 'Gap Terms' },
     { href: 'full-glossary.html', icon: 'i-grid', label: 'Full Glossary' },
+    { href: 'gallery.html', icon: 'i-image', label: 'Gallery' },
   ];
 
   const current = location.pathname.split('/').pop() || 'index.html';
