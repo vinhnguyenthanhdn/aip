@@ -762,20 +762,20 @@ function performSearch(rawQuery) {
   questions.forEach((q, qi) => {
     const entry = searchIndex[qi];
     if (!entry) return;
-    let snippetSource = null, noteType = null, noteKey = null;
+    let snippetSource = null;
 
     if (searchScope.question && entry.qText.toLowerCase().includes(term)) {
-      snippetSource = entry.qText; noteType = 'question';
+      snippetSource = entry.qText;
     }
     if (!snippetSource && searchScope.correct) {
       const found = entry.answerEntries.find(a => a.isCorrect && a.text.toLowerCase().includes(term));
-      if (found) { snippetSource = found.text; noteType = 'correct'; noteKey = found.key; }
+      if (found) snippetSource = found.text;
     }
     if (!snippetSource && searchScope.wrong) {
       const found = entry.answerEntries.find(a => !a.isCorrect && a.text.toLowerCase().includes(term));
-      if (found) { snippetSource = found.text; noteType = 'wrong'; noteKey = found.key; }
+      if (found) snippetSource = found.text;
     }
-    if (snippetSource) matches.push({ qi, snippetSource, noteType, noteKey });
+    if (snippetSource) matches.push({ qi, snippetSource });
   });
 
   resultsEl.hidden = false;
@@ -787,12 +787,9 @@ function performSearch(rawQuery) {
   resultsEl.innerHTML = `<div class="search-count">${matches.length} câu hỏi khớp</div>` + matches.map(m => {
     const q = questions[m.qi];
     const snippet = buildSnippet(m.snippetSource, term);
-    let matchNote = '';
-    if (m.noteType === 'correct') matchNote = ` · khớp ở đáp án đúng ${m.noteKey}`;
-    else if (m.noteType === 'wrong') matchNote = ` · khớp ở đáp án sai ${m.noteKey}`;
     return `<button type="button" class="search-result" data-qi="${m.qi}">
       <span class="sr-top">
-        <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number}${matchNote}</span>
+        <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number}</span>
         ${answerStatusBadge(m.qi)}
       </span>
       <span class="sr-snippet">${snippet}</span>
