@@ -317,6 +317,13 @@
   .chip .icon { width: 13px; height: 13px; }
   .chip.ok { color: var(--good); border-color: rgba(52,211,153,0.3); background: var(--good-dim); }
   .chip.err { color: var(--bad); border-color: rgba(248,113,113,0.3); background: var(--bad-dim); }
+  .progress-stats .chip {
+    cursor: pointer; font: inherit; -webkit-appearance: none; appearance: none;
+    transition: filter .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .progress-stats .chip:hover { filter: brightness(1.2); }
+  .progress-stats .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .progress-stats .chip.active { box-shadow: 0 0 0 1px currentColor inset; }
 
   /* ── QUESTION CARD ── */
   .qcard {
@@ -630,8 +637,8 @@
     <div class="progress-stats">
       <span id="progressLabel">Câu 1 / 82</span>
       <span style="display:flex; gap:8px;">
-        <span class="chip ok"><svg class="icon"><use href="#i-check"/></svg><b id="okCount">0</b></span>
-        <span class="chip err"><svg class="icon"><use href="#i-x"/></svg><b id="errCount">0</b></span>
+        <button type="button" class="chip ok" id="okChip"><svg class="icon"><use href="#i-check"/></svg><b id="okCount">0</b></button>
+        <button type="button" class="chip err" id="errChip"><svg class="icon"><use href="#i-x"/></svg><b id="errCount">0</b></button>
       </span>
     </div>
   </div>
@@ -748,7 +755,12 @@ function performSearch(rawQuery) {
   const term = rawQuery.trim().toLowerCase();
   const resultsEl = $('searchResults');
   $('searchClearBtn').hidden = !rawQuery;
-  if (listMode) { listMode = null; $('multiListBtn').classList.remove('active'); }
+  if (listMode) {
+    listMode = null;
+    $('multiListBtn').classList.remove('active');
+    $('okChip').classList.remove('active');
+    $('errChip').classList.remove('active');
+  }
 
   if (!term) { renderSearchHistory(); return; }
   if (!questions.length) return;
@@ -840,7 +852,12 @@ function removeFromSearchHistory(term) {
 
 function renderSearchHistory() {
   const resultsEl = $('searchResults');
-  if (listMode) { listMode = null; $('multiListBtn').classList.remove('active'); }
+  if (listMode) {
+    listMode = null;
+    $('multiListBtn').classList.remove('active');
+    $('okChip').classList.remove('active');
+    $('errChip').classList.remove('active');
+  }
   if (!searchHistory.length) { resultsEl.hidden = true; resultsEl.innerHTML = ''; return; }
 
   resultsEl.hidden = false;
@@ -941,9 +958,68 @@ function closeMultiList() {
 function toggleMultiList() {
   if (listMode === 'multi') { closeMultiList(); return; }
   closeSearch();
+  closeAnsweredList();
   listMode = 'multi';
   $('multiListBtn').classList.add('active');
   renderMultiList();
+}
+
+/* ── LIST ANSWERED-CORRECT / ANSWERED-WRONG QUESTIONS ──
+   Same dropdown UI as renderMultiList(), filtered by the answered[] map instead. */
+function renderAnsweredList(kind) {
+  const resultsEl = $('searchResults');
+  const matches = [];
+  questions.forEach((q, qi) => {
+    const a = answered[qi];
+    if (a && a.correct === (kind === 'correct')) matches.push(qi);
+  });
+
+  resultsEl.hidden = false;
+  if (!matches.length) {
+    resultsEl.innerHTML = `<div class="search-empty">${kind === 'correct' ? 'Chưa có câu nào làm đúng' : 'Chưa có câu nào làm sai'}</div>`;
+    return;
+  }
+
+  resultsEl.innerHTML = `<div class="search-count">${matches.length} câu đã làm ${kind === 'correct' ? 'đúng' : 'sai'}</div>` + matches.map(qi => {
+    const q = questions[qi];
+    const plain = toPlainText(q.question_text);
+    const snippet = escapeHtml(plain.slice(0, 140)) + (plain.length > 140 ? '…' : '');
+    return `<button type="button" class="search-result" data-qi="${qi}">
+      <span class="sr-top">
+        <span class="sr-meta">${ico('i-layers')}Topic ${q.topic_number} · Câu ${q.question_number}</span>
+        ${answerStatusBadge(qi)}
+      </span>
+      <span class="sr-snippet">${snippet}</span>
+    </button>`;
+  }).join('');
+
+  resultsEl.querySelectorAll('.search-result').forEach(btn => {
+    btn.addEventListener('click', () => {
+      idx = parseInt(btn.dataset.qi, 10);
+      saveProgress();
+      render();
+      updateProgress();
+      closeAnsweredList();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+}
+
+function closeAnsweredList() {
+  $('searchResults').hidden = true;
+  $('searchResults').innerHTML = '';
+  $('okChip').classList.remove('active');
+  $('errChip').classList.remove('active');
+  listMode = null;
+}
+
+function toggleAnsweredList(kind) {
+  if (listMode === kind) { closeAnsweredList(); return; }
+  closeSearch();
+  closeMultiList();
+  listMode = kind;
+  $(kind === 'correct' ? 'okChip' : 'errChip').classList.add('active');
+  renderAnsweredList(kind);
 }
 
 function answerStatusBadge(qi) {
@@ -1279,10 +1355,14 @@ $('searchInput').addEventListener('keydown', e => {
 });
 $('searchClearBtn').addEventListener('click', () => { closeSearch(); $('searchInput').focus(); });
 $('multiListBtn').addEventListener('click', toggleMultiList);
+$('okChip').addEventListener('click', () => toggleAnsweredList('correct'));
+$('errChip').addEventListener('click', () => toggleAnsweredList('wrong'));
 document.addEventListener('click', e => {
-  if (!$('searchWrap').contains(e.target)) {
+  if (!$('searchWrap').contains(e.target) && !$('progressWrap').contains(e.target)) {
     $('searchResults').hidden = true;
     $('multiListBtn').classList.remove('active');
+    $('okChip').classList.remove('active');
+    $('errChip').classList.remove('active');
     listMode = null;
   }
 });
