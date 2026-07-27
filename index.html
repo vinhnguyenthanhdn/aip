@@ -587,6 +587,8 @@
     .qcard, .summary { padding: var(--space-m); }
     .qtext { font-size: 1rem; }
     .scroll-top-btn { right: 16px; bottom: 16px; }
+    /* iOS Safari auto-zooms on focus into any input under 16px font-size */
+    .search-box input, .qjump input { font-size: 16px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
