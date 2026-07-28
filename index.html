@@ -1433,6 +1433,7 @@ document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
   if (e.key === 'ArrowRight') { const b = $('nextBtn'); if (b && !b.disabled) b.click(); }
   if (e.key === 'ArrowLeft') { const b = $('prevBtn'); if (b && !b.disabled) b.click(); }
+  if (e.key === 'Enter') { const b = $('checkBtn'); if (b && !b.disabled) b.click(); }
 });
 
 $('searchInput').addEventListener('input', e => performSearch(e.target.value));
